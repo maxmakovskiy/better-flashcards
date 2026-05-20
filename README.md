@@ -24,9 +24,9 @@ It is something that I personally use very often, primary example is Anki flashc
 ## 3. Objectives
 
 The platform allows users to:
-- create and organize personalized learning materials into structured study decks
-- improve long-term knowledge retention through adaptive repetition and review scheduling
-- track learning progress and identify weak areas over time
+- Create and organize personalized learning materials into structured study decks
+- Improve long-term knowledge retention through adaptive repetition and review scheduling
+- Track learning progress and identify weak areas over time
 
 ## 4. Features
 
@@ -49,6 +49,7 @@ Bonus features if time permits:
 - Knowledge Graph Visualization of related cards within (among) subject(s)
 - Replay previous study session
 - Shared decks and collaborative editing
+- Public/private decks
 
 ## 5. Technologies
 
@@ -75,4 +76,3 @@ Overview of the components and their interactions (client, server, database, thi
 
 *(Optional)* Ideas for future improvements identified but outside the scope of the lab/project:
 - Elements of social network (list of friends/clubs of interest/competitions)
-- public/private decks
