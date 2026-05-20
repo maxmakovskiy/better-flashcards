@@ -2,13 +2,13 @@
 
 ## Content
 
-1.[General information](#1-general-information)
-2.[Project description](#2-project-description)
-3.[Objectives](#3-objectives)
-4.[Features](#4-features)
-3.[Technologies](#5-technologies)
-3.[Architecture](#6-architecture)
-3.[Possible Future Developments](#7-possible-future-developments)
+1.[General information](#1-general-information) <br/>
+2.[Project description](#2-project-description) <br/>
+3.[Objectives](#3-objectives) <br/>
+4.[Features](#4-features) <br/>
+3.[Technologies](#5-technologies) <br/>
+3.[Architecture](#6-architecture) <br/>
+3.[Possible Future Developments](#7-possible-future-developments) <br/>
 
 ## 1. General Information
 
@@ -34,16 +34,18 @@ The platform allows users to:
 
 The features the application **must** provide in order to be considered complete:
 
-- User authentication (create accound, log-in)
-- Deck and Flashcard management (CRUD decks/cards, cards can include text or/and images)
-- Adaptive study system (spaced repetition scheduling)
-- Interactive study mode (pair/choose/guess/type the other side of a card)
+- User authentication with identity provider
+- Deck and Flashcard management (CRUD decks/cards, cards include text)
+- Adaptive study system (spaced repetition scheduling, SM-2)
+- Interactive study mode (guess the other side of a card)
 - Learning dashboard (track study progress, view study statistics)
 
 ### 4.2 Optional Features
 
 Bonus features if time permits:
 
+- Cards can include the images
+- More study modes (pair it/choose it/type it)
 - Knowledge Graph Visualization of related cards within (among) subject(s)
 - Replay previous study session
 - Shared decks and collaborative editing
@@ -54,19 +56,23 @@ List the planned technologies and **briefly justify each choice**.
 
 For example:
 
-* **Frontend**: React, MUI, Zustand, Framer Motion
-* **Backend**: Next.js
-* **Database**: Prisma, Sqlite (or Posgres)
-* **Authentication** Auth.js
-* **Other tools**: *(tests, linter, build tools…)*
+- **Frontend**: 
+    - React (DOM manipulating lib)
+    - MUI (component lib)
+    - Zustand (state management, if React Context is not enough)
+    - Motion for React (card animations)
+- **Backend**: Next.js
+- **Database**: Prisma (orm), Sqlite
+- **Authentication**: NextAuth.js
 
 ## 6. Architecture
 
 Overview of the components and their interactions (client, server, database, third-party services, etc.). A small diagram is welcome.
 
-- db entity-relashionship schema
+![er schema](docs/db_er_scheme.png)
 
 ## 7. Possible Future Developments
 
 *(Optional)* Ideas for future improvements identified but outside the scope of the lab/project:
 - Elements of social network (list of friends/clubs of interest/competitions)
+- public/private decks
