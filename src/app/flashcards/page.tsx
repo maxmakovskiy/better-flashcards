@@ -1,3 +1,9 @@
+import Box from '@mui/material/Box'
+
 export default function HomePage() {
-    return <p>Home, sweet home !</p>;
+    return (
+        <Box>
+            Home, sweet home !
+        </Box>
+    );
 }
