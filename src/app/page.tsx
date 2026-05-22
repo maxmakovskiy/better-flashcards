@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
+import NextLink from '@/app/_components/Link'
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
 import Paper from '@mui/material/Paper'
-import NextLink from '@/app/_components/Link'
 
 export default function WelcomePage() {
   return (

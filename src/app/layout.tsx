@@ -4,6 +4,7 @@ import { notoSans } from '@/app/fonts'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export const metadata: Metadata = {
   title: "Better flashcards",
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" className={`${notoSans.variable}`}>
       <body>
         <AppRouterCacheProvider>
+          <CssBaseline />
           <ThemeProvider theme={theme}>
             {children}
           </ThemeProvider>
