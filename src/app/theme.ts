@@ -9,6 +9,8 @@ const theme = createTheme({
         primary: {
             main: '#474973',
             contrastText: 'white',
+            light: '#A69CAC',
+            dark: '#161B33'
         },
     },
     components: {

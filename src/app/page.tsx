@@ -1,10 +1,8 @@
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
 import NextLink from '@/app/_components/Link'
-import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
 import Paper from '@mui/material/Paper'
 import BrainIcon from '@/app/_components/BrainIcon'
 
