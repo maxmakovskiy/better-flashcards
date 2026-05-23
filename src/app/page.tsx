@@ -6,6 +6,7 @@ import Link from '@mui/material/Link'
 import NextLink from '@/app/_components/Link'
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
 import Paper from '@mui/material/Paper'
+import BrainIcon from '@/app/_components/BrainIcon'
 
 export default function WelcomePage() {
   return (
@@ -21,7 +22,7 @@ export default function WelcomePage() {
                 }}
           >
               <Grid>
-                  <SpaceDashboardIcon fontSize="large"/>
+                  <BrainIcon fontSize="large" />
               </Grid>
               <Grid container sx={{justifyContent:'center'}}>
               <Grid>

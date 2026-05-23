@@ -2,17 +2,18 @@
 
 import { useState, ReactNode } from 'react';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography'
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { AppBar } from '@/app/flashcards/_components/appbar'
 import { Drawer } from '@/app/flashcards/_components/drawer'
 import { DrawerHeader } from '@/app/flashcards/_components/drawer-header'
 import HomeIcon from '@mui/icons-material/Home'
@@ -23,9 +24,9 @@ import NextLink from '@/app/_components/Link'
 const drawerWidth: number = 240
 
 const menuItems = new Map<string, object>([
-    ["Home", {icon: <HomeIcon />, url: "/flashcards"}],
-    ["Dashboard", {icon: <DashboardIcon />, url: "/flashcards/dashboard"}],
-    ["Decks", {icon: <BackupTableIcon />, url: "/flashcards/decks"}],
+    ["Home", {icon: <HomeIcon color='primary' />, url: "/flashcards"}],
+    ["Dashboard", {icon: <DashboardIcon color='primary' />, url: "/flashcards/dashboard"}],
+    ["Decks", {icon: <BackupTableIcon color='primary' />, url: "/flashcards/decks"}],
 ])
 
 export default function FlashcardsLayout({children}: {children: ReactNode}) {
@@ -33,36 +34,26 @@ export default function FlashcardsLayout({children}: {children: ReactNode}) {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <AppBar position="fixed" open={open} drawerWidth={drawerWidth}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={() => setOpen(!open)}
-                        edge="start"
-                        sx={[
-                            {
-                                marginRight: 5,
-                            },
-                        ]}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
             <Drawer variant="permanent" open={open} drawerWidth={drawerWidth}>
-                <DrawerHeader>
-                    <IconButton onClick={() => setOpen(false)}>
-                        <ChevronLeftIcon />
-                    </IconButton>
+                <DrawerHeader open={open}>
+                    {!open ?
+                        <IconButton color="primary" onClick={() => setOpen(true)}>
+                            <ChevronRightIcon />
+                        </IconButton>
+                        :
+                        <IconButton color="primary" onClick={() => setOpen(false)}>
+                            <ChevronLeftIcon />
+                            <Typography color="primary" >Close</Typography>
+                        </IconButton>
+                    }
                 </DrawerHeader>
-                <Divider />
+                <Divider sx={{border: '1px solid #474973'}}/>
                 <List>
                     {[...menuItems].map(([text, {icon, url}]) => (
                         <ListItem
                             key={text}
-                            component={NextLink}
                             href={url}
+                            component={NextLink}
                             sx={{ display: 'block' }}
                             disablePadding
                         >
@@ -111,13 +102,12 @@ export default function FlashcardsLayout({children}: {children: ReactNode}) {
                                     ]}
                                 />
                             </ListItemButton>
-                            <Divider />
+                            <Divider sx={{border: '1px solid #474973'}}/>
                         </ListItem>
                     ))}
                 </List>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
                 {children}
             </Box>
         </Box>
