@@ -10,6 +10,8 @@ import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import ExtensionIcon from '@mui/icons-material/Extension'
+import Game from '@/app/flashcards/_components/game'
+import LinearProgress from '@mui/material/LinearProgress'
 
 const mockCards = [
     {title:'Spanish Vocabulary', numOfCards: 150},
@@ -36,7 +38,7 @@ export default function HomePage() {
                       borderRightStyle: 'dashed',
                 }}
             >
-                <Stack spacing={2} sx={{ bgcolor:'pink', py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
+                <Stack spacing={2} sx={{ bgcolor:'secondary.light', py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
                     <Box sx={{ display:'flex', alignItems:'center'}}>
                         <BrainIcon color="primary" fontSize="large" />
                         <Typography variant="h5">BrainPulse</Typography>
@@ -102,9 +104,36 @@ export default function HomePage() {
                 </Stack>
             </Grid>
             <Grid size={5}>
-                <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                    <ExtensionIcon sx={{ color: 'secondary.main', fontSize: '164px'}}/>
-                </Stack>
+                    {(1 === 2) ?
+                        <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                            <ExtensionIcon sx={{ color: 'secondary.main', fontSize: '164px'}}/>
+                        </Stack>
+                        :
+                        <Stack sx={{height: '100%'}}>
+                            <Grid spacing={2} container sx={{p:'1em', bgcolor:'#F8F9FA', borderBottom:1}}>
+                                <Grid size={9}>
+                                    <Stack spacing={1}>
+                                        <Grid container>
+                                            <Grid size={10}>
+                                                <Typography variant="h6">Spanish Vocabulary</Typography>
+                                            </Grid>
+                                            <Grid size={2}>
+                                                <Typography variant="h6">18/42</Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={Number(18/42 * 100)}
+                                        />
+                                    </Stack>
+                                </Grid>
+                                <Grid size={3}>
+                                    <Button variant="contained">Pause Session</Button>
+                                </Grid>
+                            </Grid>
+                            <Game />
+                        </Stack>
+                    }
             </Grid>
         </Grid>
     );
