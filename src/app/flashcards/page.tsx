@@ -30,7 +30,7 @@ const mockCards = [
 
 export default function HomePage() {
     return (
-        <Grid container>
+        <Grid container sx={{bgcolor:'secondary.light'}}>
             <Grid size={7}
                   sx={{
                       borderRight:4,
@@ -38,7 +38,7 @@ export default function HomePage() {
                       borderRightStyle: 'dashed',
                 }}
             >
-                <Stack spacing={2} sx={{ bgcolor:'secondary.light', py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
+                <Stack spacing={2} sx={{ py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
                     <Box sx={{ display:'flex', alignItems:'center'}}>
                         <BrainIcon color="primary" fontSize="large" />
                         <Typography variant="h5">BrainPulse</Typography>
@@ -110,7 +110,7 @@ export default function HomePage() {
                         </Stack>
                         :
                         <Stack sx={{height: '100%'}}>
-                            <Grid spacing={2} container sx={{p:'1em', bgcolor:'#F8F9FA', borderBottom:1}}>
+                            <Grid spacing={2} container sx={{p:'1em'}}>
                                 <Grid size={9}>
                                     <Stack spacing={1}>
                                         <Grid container>
@@ -131,6 +131,7 @@ export default function HomePage() {
                                     <Button variant="contained">Pause Session</Button>
                                 </Grid>
                             </Grid>
+                            <Divider />
                             <Game />
                         </Stack>
                     }
