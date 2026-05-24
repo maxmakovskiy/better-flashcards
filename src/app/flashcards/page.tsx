@@ -9,6 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 import DeckCard from '@/app/flashcards/_components/deck-card'
+import ExtensionIcon from '@mui/icons-material/Extension'
 
 const mockCards = [
     {title:'Spanish Vocabulary', numOfCards: 150},
@@ -28,7 +29,13 @@ const mockCards = [
 export default function HomePage() {
     return (
         <Grid container>
-            <Grid size={6} sx={{ borderColor: 'primary.main', borderRight:2}}>
+            <Grid size={7}
+                  sx={{
+                      borderRight:4,
+                      borderRightColor: 'secondary.main',
+                      borderRightStyle: 'dashed',
+                }}
+            >
                 <Stack spacing={2} sx={{ bgcolor:'pink', py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
                     <Box sx={{ display:'flex', alignItems:'center'}}>
                         <BrainIcon color="primary" fontSize="large" />
@@ -94,7 +101,11 @@ export default function HomePage() {
 
                 </Stack>
             </Grid>
-            <Grid size={4}>game</Grid>
+            <Grid size={5}>
+                <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                    <ExtensionIcon sx={{ color: 'secondary.main', fontSize: '164px'}}/>
+                </Stack>
+            </Grid>
         </Grid>
     );
 }

@@ -15,7 +15,16 @@ export default function DeckCard({ title, numOfCards }) {
     return (
         <Card
             onClick={() => console.log("hello, I'm ", title)}
-            sx={{height:'100%', whiteSpace:'nowrap', '&:hover': {cursor:'pointer', opacity:0.9} }}
+            sx={{
+                height:'100%',
+                whiteSpace:'nowrap',
+                transition: 'transform .3s cubic-bezier(0,0,.5,1)',
+                '&:hover': {
+                    cursor:'pointer',
+                    transform: 'scale(1.025)',
+                    textDecoration: 'underline'
+                }
+            }}
         >
             <CardContent>
                 <Stack direction="row" sx={{ alignItems:'center', justifyContent:'space-between' }}>
@@ -27,10 +36,7 @@ export default function DeckCard({ title, numOfCards }) {
                     sx={{
                         color: 'text.primary',
                         textOverflow: 'ellipsis',
-                        overflow:'hidden',
-                        '&:hover': {
-                            textDecoration:'underline'
-                        }
+                        overflow: 'hidden'
                     }}
                     gutterBottom
                 >

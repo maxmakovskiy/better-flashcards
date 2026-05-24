@@ -8,10 +8,15 @@ const theme = createTheme({
     palette: {
         primary: {
             main: '#474973',
-            contrastText: 'white',
             light: '#A69CAC',
-            dark: '#161B33'
+            dark: '#161B33',
+            contrastText: 'white',
         },
+        secondary: {
+            main: '#ADB5BD',
+            light: '#CED4DA',
+            dark: '#6C757D',
+        }
     },
     components: {
         MuiDrawer: {
