@@ -8,20 +8,37 @@ import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
-import GameCard from './game-card'
+import AnswerGameCard from './answer-game-card'
+import QuestionGameCard, { QuestionGameCardProps } from "./question-game-card"
 
-export default function Game() {
+interface GameProps {
+    cards: [object];
+}
+
+export default function Game({cards}: GameProps) {
     return (
         <Stack sx={{ alignItems:'center', pt:'2em'}} spacing={3}>
-            <Paper elevate={0} sx={{border:3, height:'13em', width:'20em'}}></Paper>
-            <GameCard answerRevealedHandler={() => console.log("card is revealed")}>
+            <QuestionGameCard
+                height='13em'
+                width='20em'
+            >
+                <Typography variant="body1">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
+                    blanditiis tenetur unde suscipit ?
+                </Typography>
+            </QuestionGameCard>
+            <AnswerGameCard
+                height='13em'
+                width='20em'
+                answerRevealedHandler={() => console.log("card is revealed")}
+            >
                 <Typography variant="body1">
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
                     blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur,
                     neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum
                     quasi quidem quibusdam.
                 </Typography>
-            </GameCard>
+            </AnswerGameCard>
             <Grid container spacing={2}>
                 <Grid size={3}>
                     <Button variant="contained" color="error">Again</Button>

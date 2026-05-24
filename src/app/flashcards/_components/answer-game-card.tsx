@@ -17,12 +17,14 @@ import { animate, motion, useMotionValue, useTransform } from "motion/react"
 interface GameCardProps {
     answerRevealedHandler: () => void;
     children: ReactNode;
+    width: string;
+    height: string;
 }
 
-export default function GameCard({answerRevealedHandler, children}: GameCardProps) {
+export default function AnswerGameCard({answerRevealedHandler, children, width, height}: GameCardProps) {
     const count = useMotionValue(10)
     const blur = useTransform(count, [10, 0], ["blur(10px)", "blur(0px)"])
-    const scale = useTransform(count, [10, 0], [0.9, 1])
+    // const scale = useTransform(count, [10, 0], [0.9, 1])
 
     useEffect(() => {
         const controls = animate(count, 0, { duration: 10 })
@@ -35,14 +37,15 @@ export default function GameCard({answerRevealedHandler, children}: GameCardProp
     return (
         <Paper
             component={motion.div}
-            // elevation={0}
-            style={{filter: blur, scale: scale}}
+            elevation={0}
+            // style={{filter: blur, scale: scale}}
+            style={{filter: blur}}
             sx={{
                 border: 3,
                 py: '1em',
                 px: '2em',
-                height:'13em',
-                width:'20em',
+                height: height,
+                width: width,
                 overflow: 'scroll'
             }}
         >

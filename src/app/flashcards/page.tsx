@@ -13,19 +13,28 @@ import ExtensionIcon from '@mui/icons-material/Extension'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
 
+const mockDecks = [
+    {title:'Spanish Vocabulary', numOfCards: 150},
+    {title:'React Basics', numOfCards: 250},
+    {title:'Networks exam', numOfCards: 200},
+    {title:'Data Structures', numOfCards: 300},
+    {title:'Spanish Vocabulary', numOfCards: 150},
+    {title:'React Basics', numOfCards: 250},
+    {title:'Networks exam', numOfCards: 200},
+    {title:'Data Structures', numOfCards: 300},
+    {title:'Spanish Vocabulary', numOfCards: 150},
+    {title:'React Basics', numOfCards: 250},
+    {title:'Networks exam', numOfCards: 200},
+    {title:'Data Structures', numOfCards: 300},
+];
+
 const mockCards = [
-    {title:'Spanish Vocabulary', numOfCards: 150},
-    {title:'React Basics', numOfCards: 250},
-    {title:'Networks exam', numOfCards: 200},
-    {title:'Data Structures', numOfCards: 300},
-    {title:'Spanish Vocabulary', numOfCards: 150},
-    {title:'React Basics', numOfCards: 250},
-    {title:'Networks exam', numOfCards: 200},
-    {title:'Data Structures', numOfCards: 300},
-    {title:'Spanish Vocabulary', numOfCards: 150},
-    {title:'React Basics', numOfCards: 250},
-    {title:'Networks exam', numOfCards: 200},
-    {title:'Data Structures', numOfCards: 300},
+    {front:'go out', back:'go to an event'},
+    {front:'come up with', back:'produce an idea'},
+    {front:'come on', back:'say this to encourage someone'},
+    {front:'set up', back:'create/arrange'},
+    {front:'make up', back:'be the parts that form'},
+    {front:'come back', back:'return to a place'},
 ];
 
 export default function HomePage() {
@@ -88,7 +97,7 @@ export default function HomePage() {
                     </Stack>
 
                     <Grid container spacing={2}>
-                        {mockCards.map((card, index) => (
+                        {mockDecks.map((card, index) => (
                             <Grid
                                 key={index}
                                 size={4}
