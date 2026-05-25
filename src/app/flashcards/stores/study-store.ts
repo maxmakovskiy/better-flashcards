@@ -1,7 +1,5 @@
 import { createStore } from 'zustand/vanilla'
 
-
-
 export type Card = {
     id: string
     front: string
@@ -44,6 +42,7 @@ export type StudyStoreAction = {
     resumeSession: () => void
     completeSession: () => void
     resetSession: () => void
+    setCards: (cards: Card[]) => void
 }
 
 export type StudyStore = StudySession & StudyStoreAction
@@ -79,6 +78,12 @@ export const createStudyStore = (
         selectDeck: (deckId) => {
             set({
                 selectedDeckId: deckId,
+            })
+        },
+
+        setCards: (cards) => {
+            set({
+                cards: cards,
             })
         },
 

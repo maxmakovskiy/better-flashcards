@@ -11,11 +11,12 @@ import Button from '@mui/material/Button'
 import AnswerGameCard from './answer-game-card'
 import QuestionGameCard, { QuestionGameCardProps } from "./question-game-card"
 
-interface GameProps {
-    cards: [object];
-}
+import {Deck, Card, StudySession, StudyStore} from "../stores/study-store"
+import { useStudyStore } from "../providers/study-store-provider"
 
-export default function Game({cards}: GameProps) {
+export default function Game() {
+    const cards = useStudyStore((s: StudyStore) => s.cards)
+
     return (
         <Stack sx={{ alignItems:'center', pt:'2em'}} spacing={3}>
             <QuestionGameCard

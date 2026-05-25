@@ -1,4 +1,4 @@
-<diagram program="umletino" version="15.1"><zoom_level>12</zoom_level><element><id>UMLClass</id><coordinates><x>60</x><y>192</y><w>156</w><h>156</h></coordinates><panel_attributes>User
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>6</x><y>150</y><w>130</w><h>130</h></coordinates><panel_attributes>User
 --
 _- email_
 - first_name
@@ -6,7 +6,7 @@ _- email_
 - created_at
 - updated_at
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>444</x><y>192</y><w>156</w><h>156</h></coordinates><panel_attributes>Deck
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>326</x><y>150</y><w>130</w><h>130</h></coordinates><panel_attributes>Deck
 --
 _- deck_id_
 - title
@@ -14,7 +14,7 @@ _- deck_id_
 - created_at
 - updated_at
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>432</x><y>492</y><w>216</w><h>312</h></coordinates><panel_attributes>Flashcard
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>316</x><y>400</y><w>180</w><h>260</h></coordinates><panel_attributes>Flashcard
 --
 - front_side_text
 - front_side_img_url
@@ -30,14 +30,14 @@ _- deck_id_
 
 - created_at
 - updated_at
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>480</x><y>336</y><w>156</w><h>180</h></coordinates><panel_attributes>lt=[flashcard_no]-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>346</x><y>270</y><w>140</w><h>150</h></coordinates><panel_attributes>lt=[flashcard_no]-
 m1=1..1
 m2=0..*
-belongs to ^</panel_attributes><additional_attributes>40;10;40;130</additional_attributes></element><element><id>Relation</id><coordinates><x>204</x><y>228</y><w>264</w><h>60</h></coordinates><panel_attributes>lt=-
+belongs to ^</panel_attributes><additional_attributes>50;10;50;130</additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>180</y><w>220</w><h>50</h></coordinates><panel_attributes>lt=-
 m1=0..*
 m2=1..1
 has &gt;
-</panel_attributes><additional_attributes>200;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>792</x><y>192</y><w>180</w><h>168</h></coordinates><panel_attributes>Study Session
+</panel_attributes><additional_attributes>200;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>616</x><y>150</y><w>150</w><h>140</h></coordinates><panel_attributes>Study Session
 --
 _- 	session_id_
 - started_at
@@ -47,7 +47,7 @@ _- 	session_id_
 - avg_response_time
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>804</x><y>648</y><w>180</w><h>120</h></coordinates><panel_attributes>Review History
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>626</x><y>530</y><w>150</w><h>100</h></coordinates><panel_attributes>Review History
 --
 	- difficulty_rating
 - response_time_ms
@@ -56,13 +56,13 @@ _- 	session_id_
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>588</x><y>240</y><w>228</w><h>48</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>446</x><y>190</y><w>190</w><h>40</h></coordinates><panel_attributes>lt=-
 m1=0..*
-m2=1..*</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>636</x><y>348</y><w>300</w><h>300</h></coordinates><panel_attributes>lt=-
+m2=1..1</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>486</x><y>280</y><w>250</w><h>250</h></coordinates><panel_attributes>lt=-
 m1=0..*
-m2=0..*</panel_attributes><additional_attributes>10;220;210;220;210;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>444</x><y>12</y><w>156</w><h>84</h></coordinates><panel_attributes>Tag
+m2=0..*</panel_attributes><additional_attributes>10;220;210;220;210;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>326</x><y>0</y><w>130</w><h>70</h></coordinates><panel_attributes>Tag
 --
 _- name_
-- description</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>504</x><y>84</y><w>60</w><h>132</h></coordinates><panel_attributes>lt=-
+- description</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>376</x><y>60</y><w>50</w><h>110</h></coordinates><panel_attributes>lt=-
 m1=0..*
-m2=0..*</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>876</x><y>600</y><w>36</w><h>72</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element></diagram>
+m2=0..*</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>686</x><y>490</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element></diagram>

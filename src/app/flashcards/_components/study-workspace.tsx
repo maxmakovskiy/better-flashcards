@@ -11,20 +11,28 @@ import Divider from '@mui/material/Divider'
 import CircularProgress from '@mui/material/CircularProgress'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
+import Skeleton from '@mui/material/Skeleton';
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import ExtensionIcon from '@mui/icons-material/Extension'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
 import {Deck, Card, StudySession, StudyStore} from "../stores/study-store"
-import {useStudyStore} from "../providers/study-store-provider"
+import { useStudyStore } from "../providers/study-store-provider"
 
 interface StudyWorkspaceProps {
-    decks: Array<Deck>;
+    decks: Map<string, Deck>;
     activeStudySession?: StudySession;
 }
 
 export default function StudyWorkspace({ decks, activeStudySession }: StudyWorkspaceProps) {
     const initializeSession = useStudyStore((s: StudyStore) => s.initializeSession)
+    const selectDeck = useStudyStore((s: StudyStore) => s.selectDeck)
+    const selectedDeckId = useStudyStore((s: StudyStore) => s.selectedDeckId)
+    //TODO: Is reviewedCount the number of card inside the deck that were
+    // rescheduled for the next time and won't be available today nonetheless ?
+    const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
+    const setCards = useStudyStore((s: StudyStore) => s.setCards)
+    const cards = useStudyStore((s: StudyStore) => s.cards)
 
     useEffect(() => {
         if (activeStudySession) {
@@ -33,7 +41,19 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
     }, [])
 
     const pickDeckHandler = (id: string) => {
-        console.log('pick deck with ', id)
+        console.log('selecting the deck with ', id)
+        selectDeck(id)
+        fetch(`/flashcards/decks/${id}/cards`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Cannot fetch deck with id ${id}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                setCards(data.data)
+            })
+            // .catch(_ => setError(true));
     }
 
     return (
@@ -95,14 +115,14 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                     </Stack>
 
                     <Grid container spacing={2}>
-                        {decks.map((deck) => (
+                        {[...decks].map(([_, deck]) => (
                             <Grid
                                 key={deck.id}
                                 size={4}
                                 spacing={2}
+                                onClick={() => pickDeckHandler(deck.id)}
                             >
                                 <DeckCard
-                                    onClick={() => pickDeckHandler(deck.id)}
                                     {...deck} />
                             </Grid>
 
@@ -113,7 +133,7 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                 </Stack>
             </Grid>
             <Grid size={5}>
-                {(1 === 2) ?
+                {(selectedDeckId === null) ?
                     <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
                         <ExtensionIcon sx={{ color: 'secondary.main', fontSize: '164px'}}/>
                     </Stack>
@@ -124,16 +144,29 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                                 <Stack spacing={1}>
                                     <Grid container>
                                         <Grid size={10}>
-                                            <Typography variant="h6">Spanish Vocabulary</Typography>
+                                            <Typography variant="h6">
+                                                {cards
+                                                    ? decks.get(selectedDeckId).title
+                                                    : <Skeleton />
+                                                }
+                                            </Typography>
                                         </Grid>
                                         <Grid size={2}>
-                                            <Typography variant="h6">18/42</Typography>
+                                            <Typography variant="h6">
+                                                {cards
+                                                    ? `${reviewedCount}/${cards.length}`
+                                                    : <Skeleton />
+                                                }
+                                            </Typography>
                                         </Grid>
                                     </Grid>
-                                    <LinearProgress
-                                        variant="determinate"
-                                        value={Number(18/42 * 100)}
-                                    />
+                                    {cards
+                                        ? <LinearProgress
+                                            variant="determinate"
+                                            value={Number(18/42 * 100)}
+                                          />
+                                        : <Skeleton />
+                                    }
                                 </Stack>
                             </Grid>
                             <Grid size={3}>

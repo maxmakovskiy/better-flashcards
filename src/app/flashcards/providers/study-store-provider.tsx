@@ -1,4 +1,7 @@
 'use client'
+// Almost fully taken from:
+// https://zustand.docs.pmnd.rs/learn/guides/nextjs
+// optionally: https://zustand.docs.pmnd.rs/learn/guides/initialize-state-with-props
 
 import { type ReactNode, createContext, useState, useContext } from 'react'
 import { useStore } from 'zustand'
