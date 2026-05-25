@@ -1,3 +1,5 @@
+'use client';
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
@@ -92,7 +94,7 @@ export default function HomePage() {
                     </Grid>
 
                     <Stack direction="row" sx={{ justifyContent:'space-between', alignItems:'center'}}>
-                        <Typography variant="h6">Your Decks</Typography>
+                        <Typography variant="h6">Your Decks to review today</Typography>
                         <Button variant="contained" startIcon={<AddIcon />}>Create New Deck</Button>
                     </Stack>
 
@@ -103,7 +105,9 @@ export default function HomePage() {
                                 size={4}
                                 spacing={2}
                             >
-                                <DeckCard {...card} />
+                                <DeckCard
+                                    onClick={() => console.log("picking a deck to review")}
+                                    {...card} />
                             </Grid>
 
                         ))}

@@ -11,10 +11,10 @@ import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
 import Link from '@mui/material/Link'
 
-export default function DeckCard({ title, numOfCards }) {
+export default function DeckCard({ title, numOfCards, onClick }) {
     return (
         <Card
-            onClick={() => console.log("hello, I'm ", title)}
+            onClick={onClick}
             sx={{
                 height:'100%',
                 whiteSpace:'nowrap',
