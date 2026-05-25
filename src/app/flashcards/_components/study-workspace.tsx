@@ -32,7 +32,7 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
     // rescheduled for the next time and won't be available today nonetheless ?
     const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
     const setCards = useStudyStore((s: StudyStore) => s.setCards)
-    const cards = useStudyStore((s: StudyStore) => s.cards)
+
 
     useEffect(() => {
         if (activeStudySession) {
@@ -145,28 +145,19 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                                     <Grid container>
                                         <Grid size={10}>
                                             <Typography variant="h6">
-                                                {cards
-                                                    ? decks.get(selectedDeckId).title
-                                                    : <Skeleton />
-                                                }
+                                                {decks.get(selectedDeckId).title}
                                             </Typography>
                                         </Grid>
                                         <Grid size={2}>
                                             <Typography variant="h6">
-                                                {cards
-                                                    ? `${reviewedCount}/${cards.length}`
-                                                    : <Skeleton />
-                                                }
+                                                {`${reviewedCount}/${decks.get(selectedDeckId).numOfCards}`}
                                             </Typography>
                                         </Grid>
                                     </Grid>
-                                    {cards
-                                        ? <LinearProgress
+                                        <LinearProgress
                                             variant="determinate"
-                                            value={Number(18/42 * 100)}
-                                          />
-                                        : <Skeleton />
-                                    }
+                                            value={reviewedCount/decks.get(selectedDeckId).numOfCards * 100}
+                                        />
                                 </Stack>
                             </Grid>
                             <Grid size={3}>
