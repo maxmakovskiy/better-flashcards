@@ -20,6 +20,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  decks         Deck[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,4 +66,118 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// #### `Tag`
+//
+// tag(**name**, description)
+model Tag {
+  name String @id
+  description String?
+
+  decks DeckTag[]
+}
+
+// #### `Deck`
+//
+// deck(**deckId**, title, description, createdAt, updatedAt, userId)
+//
+// deck.userId NOT NULL <br />
+// deck.userId references user.id
+model Deck {
+  deckId String @id @default(cuid())
+  title String
+  description String?
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tags DeckTag[]
+  flashcards Flashcard[]
+  studySessions StudySession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// #### `DeckTag`
+//
+// deckTag(**deckId, tagName**)
+//
+// deckTag.deckId references deck.deckId <br/>
+// deckTag.tagName references tag.name
+model DeckTag {
+  deckId String
+  tagName String
+  // TODO: add onDelete
+  deck Deck @relation(fields: [deckId], references: [deckId])
+  tag Tag @relation(fields: [tagName], references: [name], onUpdate: Cascade)
+
+  @@id([deckId, tagName])
+}
+
+// #### `Flashcard`
+//
+// flashcard(**flashcardNum, deckId**, frontText, backText, easeFactor, intervalDays, repetitionCount, nextReviewAt, lastReviewedAt, memoryStrength, createdAt, updatedAt)
+//
+// flashcard.deckId references deck.deckId
+model Flashcard {
+  flashcardNum Int
+  deckId String
+  deck Deck @relation(fields: [deckId], references: [deckId])
+
+  reviews ReviewHistory[]
+
+  @@id([flashcardNum, deckId])
+}
+
+// #### `StudySession`
+//
+// studySession(**sessionId**, startedAt, endedAt, totalReviews, correctAnswers, avgResponseTimeMs, deckId)
+//
+// studySession.deckId NOT NULL <br />
+// studySession.deckId references deck.deckId
+model StudySession {
+  sessionId String @id @default(cuid())
+  startedAt DateTime @default(now())
+  endedAt DateTime
+  totalReviews Int @default(0)
+  correctAnswers Int @default(0)
+  avgResponseTimeMs Int
+  deckId String
+  deck Deck @relation(fields: [deckId], references: [deckId])
+
+  reviewedCards ReviewHistory[]
+}
+
+// #### `ReviewHistory`
+//
+// reviewHistory(**sessionId, flashcardNum, deckId,** difficultyRating, responseTimeMs, isCorrect, reviewedAt)
+//
+// reviewHistory.sessionId refences studySession.sessionId <br/>
+// reviewHistory.flashcardNum refences flashcard.flashcardNum <br/>
+// reviewHistory.deckId refences flashcard.deckId
+
+enum DifficultyRatingEnum {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+model ReviewHistory {
+  sessionId String
+  flashcardNum Int
+  deckId String
+
+  session StudySession @relation(fields: [sessionId], references: [sessionId])
+  flashcard Flashcard @relation(fields: [flashcardNum, deckId], references: [flashcardNum, deckId])
+
+  difficultyRating DifficultyRatingEnum
+  responseTimeMs Int
+  isCorrect Boolean
+  reviewedAt DateTime
+
+  @@id([sessionId, flashcardNum, deckId])
+}
+
 

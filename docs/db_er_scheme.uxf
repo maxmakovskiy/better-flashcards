@@ -1,68 +1,103 @@
-<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>6</x><y>150</y><w>130</w><h>130</h></coordinates><panel_attributes>User
+<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><element><id>UMLClass</id><coordinates><x>315</x><y>315</y><w>117</w><h>144</h></coordinates><panel_attributes>User
 --
-_- email_
-- first_name
-- last_name
-- created_at
-- updated_at
+_id_
+name
+email
+emailVerified
+image
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>326</x><y>150</y><w>130</w><h>130</h></coordinates><panel_attributes>Deck
+createdAt
+updatedAt
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>603</x><y>315</y><w>117</w><h>117</h></coordinates><panel_attributes>Deck
 --
-_- deck_id_
-- title
-- description
-- created_at
-- updated_at
+_deckId_
+title
+description
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>316</x><y>400</y><w>180</w><h>260</h></coordinates><panel_attributes>Flashcard
+createdAt
+updatedAt
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>594</x><y>540</y><w>162</w><h>198</h></coordinates><panel_attributes>Flashcard
 --
-- front_side_text
-- front_side_img_url
-- back_side_text
-- back_side_img_url
+frontText
+backText
+easeFactor
+intervalDays
+repetitionCount
+nextReviewAt
+lastReviewedAt
+memoryStrength
 
-- ease_factor
-- interval_days
-- repetition_count
-- next_review_at
-- last_reviewed_at
-- memory_strength
-
-- created_at
-- updated_at
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>346</x><y>270</y><w>140</w><h>150</h></coordinates><panel_attributes>lt=[flashcard_no]-
+createdAt
+updatedAt
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>621</x><y>423</y><w>99</w><h>135</h></coordinates><panel_attributes>lt=[flashcardNum]-
 m1=1..1
-m2=0..*
-belongs to ^</panel_attributes><additional_attributes>50;10;50;130</additional_attributes></element><element><id>Relation</id><coordinates><x>126</x><y>180</y><w>220</w><h>50</h></coordinates><panel_attributes>lt=-
+m2=0..*</panel_attributes><additional_attributes>50;10;50;130</additional_attributes></element><element><id>Relation</id><coordinates><x>423</x><y>342</y><w>198</w><h>45</h></coordinates><panel_attributes>lt=-
 m1=0..*
 m2=1..1
 has &gt;
-</panel_attributes><additional_attributes>200;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>616</x><y>150</y><w>150</w><h>140</h></coordinates><panel_attributes>Study Session
+</panel_attributes><additional_attributes>200;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>315</y><w>135</w><h>126</h></coordinates><panel_attributes>Study Session
 --
-_- 	session_id_
-- started_at
-- ended_at
-- total_reviews
-- correct_answers
-- avg_response_time
+_sessionId_
+startedAt
+endedAt
+totalReviews
+correctAnswers
+avgResponseTimeMs
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>626</x><y>530</y><w>150</w><h>100</h></coordinates><panel_attributes>Review History
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>873</x><y>657</y><w>135</w><h>90</h></coordinates><panel_attributes>Review History
 --
-	- difficulty_rating
-- response_time_ms
-- is_correct
-- reviewed_at
+difficultyRating
+responseTimeMs
+isCorrect
+reviewedAt
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>446</x><y>190</y><w>190</w><h>40</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>711</x><y>351</y><w>171</w><h>36</h></coordinates><panel_attributes>lt=-
 m1=0..*
-m2=1..1</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>486</x><y>280</y><w>250</w><h>250</h></coordinates><panel_attributes>lt=-
+m2=1..1</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>747</x><y>432</y><w>225</w><h>225</h></coordinates><panel_attributes>lt=-
 m1=0..*
-m2=0..*</panel_attributes><additional_attributes>10;220;210;220;210;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>326</x><y>0</y><w>130</w><h>70</h></coordinates><panel_attributes>Tag
+m2=0..*</panel_attributes><additional_attributes>10;220;210;220;210;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>603</x><y>180</y><w>117</w><h>63</h></coordinates><panel_attributes>Tag
 --
-_- name_
-- description</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>376</x><y>60</y><w>50</w><h>110</h></coordinates><panel_attributes>lt=-
+_name_
+description</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>648</x><y>234</y><w>45</w><h>99</h></coordinates><panel_attributes>lt=-
 m1=0..*
-m2=0..*</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>686</x><y>490</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element></diagram>
+m2=0..*</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>927</x><y>621</y><w>27</w><h>54</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>315</x><y>27</y><w>171</w><h>198</h></coordinates><panel_attributes>Account
+--
+_id_
+userId
+type
+provider
+providerAccountId
+refresh_token
+access_token
+expires_at
+token_type
+scope
+id_token
+session_state
+
+createdAt
+updatedAt</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>369</x><y>216</y><w>45</w><h>117</h></coordinates><panel_attributes>lt=-
+m1=1..*
+m2=1..1</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>81</x><y>315</y><w>135</w><h>144</h></coordinates><panel_attributes>Session
+--
+_id_
+sessionToken
+userId
+expires
+
+createdAt
+updatedAt
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>81</x><y>198</y><w>135</w><h>72</h></coordinates><panel_attributes>VerificationToken
+--
+_identifier_
+token
+expires
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>207</x><y>351</y><w>126</w><h>36</h></coordinates><panel_attributes>lt=-
+m1=1..1
+m2=0..*</panel_attributes><additional_attributes>120;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>0</y><w>495</w><h>495</h></coordinates><panel_attributes></panel_attributes><additional_attributes></additional_attributes></element><element><id>Text</id><coordinates><x>9</x><y>18</y><w>90</w><h>63</h></coordinates><panel_attributes>NextAuth.js
+style=wordwrap</panel_attributes><additional_attributes></additional_attributes></element></diagram>
