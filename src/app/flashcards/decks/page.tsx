@@ -1,20 +1,14 @@
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import Paper from '@mui/material/Paper'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import Button from '@mui/material/Button'
-import Input from '@mui/material/Input'
-import InputLabel from '@mui/material/InputLabel'
 import InputAdornment from '@mui/material/InputAdornment'
-import FormControl from '@mui/material/FormControl'
 import TextField from '@mui/material/TextField'
 import SearchIcon from '@mui/icons-material/Search'
 import DeckCard from '@/app/flashcards/_components/deck-card'
+import NextLink from '@/app/_components/Link'
+import {Deck} from "@/app/flashcards/stores/study-store";
 
 const mockDecks: Map<string, Deck> = new Map([
     ['1', {id: '1', title:'Spanish Vocabulary', numOfCards: 150}],
@@ -54,7 +48,8 @@ export default function DecksPage() {
                         key={deck.id}
                         size={3}
                         spacing={2}
-                        // onClick={() => pickDeckHandler(deck.id)}
+                        component={NextLink}
+                        href={`/flashcards/decks/${deck.id}`}
                     >
                         <DeckCard
                             {...deck} />
