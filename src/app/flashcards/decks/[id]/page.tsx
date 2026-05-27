@@ -2,7 +2,6 @@
 import { use } from 'react'
 
 import Fab from '@mui/material/Fab'
-import AddIcon from '@mui/icons-material/Add'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
@@ -20,73 +19,83 @@ import DeckCard from '@/app/flashcards/_components/deck-card'
 import NextLink from '@/app/_components/Link'
 import {Deck} from "@/app/flashcards/stores/study-store"
 import EditIcon from '@mui/icons-material/Edit'
-import Card, { CardProps } from '@/app/flashcards/decks/_components/Card'
-
-const content = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import AddIcon from '@mui/icons-material/Add';
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
+import DeckStatGadget from "@/app/flashcards/decks/_components/DeckStatGadget";
+import CardsTable from '@/app/flashcards/decks/_components/CardsTable'
 
 export default function DeckPage({params}: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
 
     return (
-        <Grid container spacing={3} sx={{ p:'3em'}}>
-            <Grid size={9}>
-                <Stack spacing={2}>
-                    <Grid container>
-                        <Grid size={8}>
-                            <Typography variant="h5">Deck management English Vocabulary</Typography>
-                        </Grid>
-                        <Grid size={4}>
-                            <TextField
-                                sx={{ width:'100%'}}
-                                // id={`${textFieldId}-input`}
-                                label="Search"
-                                slotProps={{
-                                    input: {
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <SearchIcon />
-                                            </InputAdornment>
-                                        ),
-                                    },
-                                }}
-                                variant="filled"
-                            />
-                        </Grid>
-                    </Grid>
-                    <Card frontContent={content} backContent={content} />
-                </Stack>
-            </Grid>
-            <Grid size={3}>
-                <Paper elevation={3} sx={{ p:'1em'}}>
-                    <Stack spacing={1}>
-                        <Typography variant="body1">Total cards</Typography>
-                        <Typography variant="h6">250 cards</Typography>
-                        <Divider />
-                        <Grid container spacing={1}>
-                            <Grid size={1} sx={{ bgcolor: 'success.light'}}/>
-                            <Grid size={8}>Learned</Grid>
-                            <Grid size={3}>128</Grid>
-                            <Grid size={1} sx={{ bgcolor: 'warning.light'}} />
-                            <Grid size={8}>In progress</Grid>
-                            <Grid size={3}>64</Grid>
-                            <Grid size={1} sx={{ bgcolor: 'info.light'}} />
-                            <Grid size={8}>New</Grid>
-                            <Grid size={3}>32</Grid>
-                        </Grid>
+        <Stack sx={{ p:'3em' }} spacing={2}>
+            <Grid container sx={{alignItems:'center'}}>
+                <Grid size={9}>
+                    <Stack>
+                        <Typography gutterBottom variant='h5'>Deck management English Vocabulary</Typography>
+                        <Typography gutterBottom variant='body2'>Decription</Typography>
                     </Stack>
-                </Paper>
+                </Grid>
+                <Grid size={1}>
+                    <Button>
+                        <MoreHorizIcon />
+                    </Button>
+                </Grid>
+                <Grid size={2}>
+                    <Button variant='contained' startIcon={<AddIcon />}>Add Card</Button>
+                </Grid>
             </Grid>
-            <Fab
-                color="primary"
-                aria-label="add"
-                sx={{
-                    position: 'absolute',
-                    bottom: 32,
-                    right: 32
+            <Grid container spacing={2} columns={10}>
+                <Grid size={2}>
+                    <DeckStatGadget
+                        icon={<ViewAgendaIcon sx={{fontSize:'32px'}}/>}
+                        title='150'
+                        description='Total cards' />
+                </Grid>
+                <Grid size={2}>
+                    <DeckStatGadget
+                        icon={<ViewAgendaIcon sx={{fontSize:'32px'}}/>}
+                        title='150'
+                        description='Total cards' />
+                </Grid>
+                <Grid size={2}>
+                    <DeckStatGadget
+                        icon={<ViewAgendaIcon sx={{fontSize:'32px'}}/>}
+                        title='150'
+                        description='Total cards' />
+                </Grid>
+                <Grid size={2}>
+                    <DeckStatGadget
+                        icon={<ViewAgendaIcon sx={{fontSize:'32px'}}/>}
+                        title='150'
+                        description='Total cards' />
+                </Grid>
+                <Grid size={2}>
+                    <DeckStatGadget
+                        icon={<ViewAgendaIcon sx={{fontSize:'32px'}}/>}
+                        title='150'
+                        description='Total cards' />
+                </Grid>
+            </Grid>
+            <TextField
+                sx={{ width:'60%'}}
+                // id={`${textFieldId}-input`}
+                label="Search"
+                slotProps={{
+                    input: {
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    },
                 }}
-            >
-                <AddIcon />
-            </Fab>
-        </Grid>
+                variant="filled"
+            />
+
+            <CardsTable />
+
+        </Stack>
     )
 }
