@@ -109,10 +109,7 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                         </Grid>
                     </Grid>
 
-                    <Stack direction="row" sx={{ justifyContent:'space-between', alignItems:'center'}}>
-                        <Typography variant="h6">Your Decks to review today</Typography>
-                        <Button variant="contained" startIcon={<AddIcon />}>Create New Deck</Button>
-                    </Stack>
+                    <Typography variant="h6">Your Decks to review today</Typography>
 
                     <Grid container spacing={2}>
                         {[...decks].map(([_, deck]) => (
