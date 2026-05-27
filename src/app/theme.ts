@@ -6,6 +6,10 @@ const theme = createTheme({
         fontFamily: 'var(--font-noto-sans)',
     },
     palette: {
+        mode: 'light',
+        background:{
+            default: '#F8F9FA',
+        },
         primary: {
             main: '#474973',
             light: '#A69CAC',

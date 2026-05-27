@@ -20,8 +20,8 @@ export default function RootLayout({
     <html lang="en" className={`${notoSans.variable}`}>
       <body>
         <AppRouterCacheProvider>
-          <CssBaseline />
           <ThemeProvider theme={theme}>
+            <CssBaseline enableColorScheme />
             {children}
           </ThemeProvider>
         </AppRouterCacheProvider>

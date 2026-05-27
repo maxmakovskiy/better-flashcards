@@ -17,6 +17,7 @@ import { DrawerHeader } from '@/app/flashcards/_components/drawer-header'
 import HomeIcon from '@mui/icons-material/Home'
 import BackupTableIcon from '@mui/icons-material/BackupTable';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import NextLink from '@/app/_components/Link'
 
 const drawerWidth: number = 240
@@ -25,6 +26,7 @@ const menuItems = new Map<string, object>([
     ["Home", {icon: <HomeIcon color='primary' />, url: "/flashcards"}],
     ["Dashboard", {icon: <DashboardIcon color='primary' />, url: "/flashcards/dashboard"}],
     ["Decks", {icon: <BackupTableIcon color='primary' />, url: "/flashcards/decks"}],
+    ["Profile", {icon: <ManageAccountsIcon color='primary' />, url: "/flashcards/profile"}],
 ])
 
 export default function FlashcardsLayout({children}: {children: ReactNode}) {
@@ -105,7 +107,7 @@ export default function FlashcardsLayout({children}: {children: ReactNode}) {
                     ))}
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1}}>
+            <Box component="main" sx={{ bgcolor:'secondary.light', flexGrow: 1}}>
                 {children}
             </Box>
         </Box>

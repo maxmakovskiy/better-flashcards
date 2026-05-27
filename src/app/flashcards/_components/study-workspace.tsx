@@ -57,7 +57,7 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
     }
 
     return (
-        <Grid container sx={{ bgcolor:'secondary.light' }}>
+        <Grid container>
             <Grid size={7}
                   sx={{
                       borderRight:4,
