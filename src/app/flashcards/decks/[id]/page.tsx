@@ -20,6 +20,10 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Skeleton from '@mui/material/Skeleton'
 import useSWR from 'swr'
+import Breadcrumbs from '@mui/material/Breadcrumbs'
+import Link from '@mui/material/Link'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import NextLink from '@/app/_components/Link'
 
 export default function DeckPage({params}: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
@@ -28,6 +32,20 @@ export default function DeckPage({params}: { params: Promise<{ id: string }> }) 
 
     return (
         <Stack sx={{ p:'3em' }} spacing={2}>
+            <Breadcrumbs
+                separator={<NavigateNextIcon fontSize="small" />}
+                aria-label="breadcrumb"
+            >
+                <Link
+                    component={NextLink}
+                    href="/flashcards/decks"
+                    color="inherit"
+                    underline="hover"
+                >
+                    <Typography variant="body2">Decks</Typography>
+                </Link>
+                <Typography variant="body2">DecknameHere</Typography>
+            </Breadcrumbs>
             <Grid container sx={{alignItems:'center'}}>
                 <Grid size={9}>
                     <Stack>
