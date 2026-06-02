@@ -13,6 +13,11 @@ import NextLink from '@/app/_components/Link'
 import Button from '@mui/material/Button'
 import NewDeckDialog from '@/app/flashcards/decks/_components/NewDeckDialog'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
+import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
+
+interface DecksWorkspaceProps {
+    initDecks: Array<DeckModel & { flashcards: FlashcardModel[]}>;
+}
 
 export default function DecksWorkspace({ initDecks }: { initDecks: DeckModel[] }) {
     const [isDialogOpen, setDialogOpen] = useState(false)
@@ -27,7 +32,7 @@ export default function DecksWorkspace({ initDecks }: { initDecks: DeckModel[] }
                 body: JSON.stringify(body),
             });
             const newDeck = await newDeckJSON.json();
-            console.log(`DecksWorkspace updating decks collection on client: ${newDeck}`)
+            console.log(`DecksWorkspace updating decks collection on client: ${JSON.stringify(newDeck)}`)
             setDecks([...decks, newDeck])
         } catch (error) {
             console.error(error);
@@ -82,8 +87,7 @@ export default function DecksWorkspace({ initDecks }: { initDecks: DeckModel[] }
                         component={NextLink}
                         href={`/flashcards/decks/${deck.deckId}`}
                     >
-                        <DeckCard
-                            deck={deck} />
+                        <DeckCard deck={deck} />
                     </Grid>
                 ))}
             </Grid>

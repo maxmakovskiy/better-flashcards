@@ -11,7 +11,10 @@ export default async function DecksPage() {
     }
 
     const decks = await prisma.deck.findMany({
-        where: { userId: session.user?.id }
+        where: { userId: session.user?.id },
+        include: {
+            flashcards: true
+        }
     })
 
     return <DecksWorkspace initDecks={decks} />

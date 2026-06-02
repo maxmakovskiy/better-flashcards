@@ -22,7 +22,7 @@ export const POST = auth(async function POST(req) {
                 userId: req.auth.user?.id as string
             }
         })
-        return NextResponse.json({ data: newDeck })
+        return NextResponse.json(newDeck)
     } catch (e) {
         console.error(e)
         return NextResponse.json(

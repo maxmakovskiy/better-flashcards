@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -11,9 +12,19 @@ import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
 import Link from '@mui/material/Link'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
+import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 
 
-export default function DeckCard({ deck }: { deck: DeckModel }) {
+export default function DeckCard({ deck }: { deck: DeckModel &  { flashcards: FlashcardModel[] }}) {
+    const [progress, _] = useState<number>(() => {
+        const now = new Date()
+        return (
+            (deck.flashcards.length === 0)
+                ? 0
+                : deck.flashcards.filter(card => now < card.nextReviewAt).length / deck.flashcards.length
+        )
+    })
+
     return (
         <Card
             sx={{
@@ -28,7 +39,13 @@ export default function DeckCard({ deck }: { deck: DeckModel }) {
             }}
         >
             <CardContent>
-                <Stack direction="row" sx={{ alignItems:'center', justifyContent:'space-between' }}>
+                <Stack
+                    direction="row"
+                    sx={{
+                        alignItems:'center',
+                        justifyContent:'space-between'
+                    }}
+                >
                     <FolderIcon fontSize="small" />
                     <DeckCardMenu fontSize="small" />
                 </Stack>
@@ -44,14 +61,16 @@ export default function DeckCard({ deck }: { deck: DeckModel }) {
                     {deck.title}
                 </Typography>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems:'center' }}>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>'200' cards</Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {`${Number(50)}%`}
+                        {deck.flashcards.length} cards
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {progress}%
                     </Typography>
                 </Stack>
                 <LinearProgress
                     variant="determinate"
-                    value={50}
+                    value={progress}
                 />
             </CardContent>
         </Card>
