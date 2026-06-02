@@ -123,6 +123,17 @@ model DeckTag {
 model Flashcard {
   flashcardNum Int
   deckId String
+  frontText String
+  backText String
+  easeFactor Float
+  intervalDays Int
+  repetitionCount Int
+  nextReviewAt DateTime
+  lastReviewedAt DateTime
+  memoryStrength Int
+  createdAt DateTime
+  updatedAt DateTime
+
   deck Deck @relation(fields: [deckId], references: [deckId])
 
   reviews ReviewHistory[]

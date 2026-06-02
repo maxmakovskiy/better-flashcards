@@ -1,32 +1,30 @@
 'use client'
-import { use } from 'react'
+import { use, useEffect, useState } from 'react'
 
-import Fab from '@mui/material/Fab'
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import Paper from '@mui/material/Paper'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Button from '@mui/material/Button'
-import Input from '@mui/material/Input'
-import InputLabel from '@mui/material/InputLabel'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import SearchIcon from '@mui/icons-material/Search'
-import DeckCard from '@/app/flashcards/_components/deck-card'
-import NextLink from '@/app/_components/Link'
-import {Deck} from "@/app/flashcards/stores/study-store"
-import EditIcon from '@mui/icons-material/Edit'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import AddIcon from '@mui/icons-material/Add';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 import DeckStatGadget from "@/app/flashcards/decks/_components/DeckStatGadget";
 import CardsTable from '@/app/flashcards/decks/_components/CardsTable'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Skeleton from '@mui/material/Skeleton'
+import useSWR from 'swr'
 
 export default function DeckPage({params}: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
+    const fetcher = (...args: any[]) => fetch(...args).then(res => res.json()).then(data => data.data)
+    const { data, error, isLoading } = useSWR(`/flashcards/decks/${id}/cards`, fetcher)
 
     return (
         <Stack sx={{ p:'3em' }} spacing={2}>
@@ -78,23 +76,50 @@ export default function DeckPage({params}: { params: Promise<{ id: string }> }) 
                         description='Total cards' />
                 </Grid>
             </Grid>
-            <TextField
-                sx={{ width:'60%'}}
-                // id={`${textFieldId}-input`}
-                label="Search"
-                slotProps={{
-                    input: {
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    },
-                }}
-                variant="filled"
-            />
+            <Grid container>
+                <Grid size={6} spacing={3}>
+                    <TextField fullWidth
+                        // sx={{ width:'60%'}}
+                        // id={`${textFieldId}-input`}
+                        label="Search"
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                        variant="filled"
+                    />
+                </Grid>
+                <Grid size={3}>
+                    {/* TODO: filter cards based on tags chosen via multiselect */}
+                </Grid>
+                <Grid size={3}>
+                    <FormControl fullWidth>
+                        <InputLabel id="select-sort-label">Sort by</InputLabel>
+                        <Select
+                            labelId="select-sort-label"
+                            id="select-sort"
+                            // value={"Newest"}
+                            label="Sort by"
+                            onChange={() => console.log("Changing sorting order")}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+            </Grid>
 
-            <CardsTable />
+            {error && !isLoading && <Box><Typography variant="body1">Something went wrong...</Typography></Box>}
+            {(!error && isLoading)
+                ? <Skeleton variant="rectangular" height={200} />
+                : <CardsTable cards={data}/>
+            }
 
         </Stack>
     )

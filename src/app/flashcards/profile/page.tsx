@@ -9,7 +9,24 @@ import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Button from '@mui/material/Button'
 
-export default function ProfilePage() {
+import { signOut, auth } from "@/auth"
+
+function SignOut() {
+    return (
+        <form
+            action={async () => {
+                "use server"
+                await signOut()
+            }}
+        >
+            <button type="submit">SignOut</button>
+        </form>
+    )
+}
+
+export default async function ProfilePage() {
+    const session = await auth()
+
     return (
         <Stack sx={{ p:'3em', alignItems:'flex-start' }} spacing={2}>
             <Typography variant="h5">Account & Application Settings</Typography>
@@ -20,14 +37,15 @@ export default function ProfilePage() {
                         <Grid size={3}>
                             <Stack spacing={1} sx={{alignItems:'center'}}>
                                 <AccountCircleIcon sx={{ fontSize:'64px'}}/>
-                                <Typography variant="body1">Name</Typography>
+                                <Typography variant="body1">{session.user.name}</Typography>
                             </Stack>
                         </Grid>
                         <Grid size={9}>
                             <Stack spacing={1}>
-                                <Typography variant="body1">Identified with IdentityProviderName</Typography>
-                                <TextField disabled defaultValue="username@mail.ee" />
-                                <Button variant="contained" sx={{ alignSelf:'flex-end'}}>Log-out</Button>
+                                <Typography variant="body1">Identified with {session.user.accounts[0].provider}</Typography>
+                                <TextField disabled defaultValue={session.user.email} />
+                                {/*<Button variant="contained" sx={{ alignSelf:'flex-end'}}>Log-out</Button>*/}
+                                <SignOut />
                             </Stack>
                         </Grid>
                     </Grid>
