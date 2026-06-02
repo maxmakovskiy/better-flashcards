@@ -10,8 +10,10 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
 import Link from '@mui/material/Link'
+import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
 
-export default function DeckCard({ title, numOfCards }) {
+
+export default function DeckCard({ deck }: { deck: DeckModel }) {
     return (
         <Card
             sx={{
@@ -39,10 +41,10 @@ export default function DeckCard({ title, numOfCards }) {
                     }}
                     gutterBottom
                 >
-                    {title}
+                    {deck.title}
                 </Typography>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems:'center' }}>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>{numOfCards} cards</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>'200' cards</Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {`${Number(50)}%`}
                     </Typography>

@@ -18,9 +18,10 @@ import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
 import {Deck, Card, StudySession, StudyStore} from "../stores/study-store"
 import { useStudyStore } from "../providers/study-store-provider"
+import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
 
-interface StudyWorkspaceProps {
-    decks: Map<string, Deck>;
+export interface StudyWorkspaceProps {
+    decks: DeckModel[]
     activeStudySession?: StudySession;
 }
 
@@ -112,15 +113,14 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                     <Typography variant="h6">Your Decks to review today</Typography>
 
                     <Grid container spacing={2}>
-                        {[...decks].map(([_, deck]) => (
+                        {decks.map(deck => (
                             <Grid
-                                key={deck.id}
+                                key={deck.deckId}
                                 size={4}
                                 spacing={2}
-                                onClick={() => pickDeckHandler(deck.id)}
+                                onClick={() => pickDeckHandler(deck.deckId)}
                             >
-                                <DeckCard
-                                    {...deck} />
+                                <DeckCard deck={deck} />
                             </Grid>
 
                         ))}

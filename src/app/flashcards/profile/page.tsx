@@ -8,24 +8,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Button from '@mui/material/Button'
-
+import { redirect } from 'next/navigation'
 import { signOut, auth } from "@/auth"
-
-function SignOut() {
-    return (
-        <form
-            action={async () => {
-                "use server"
-                await signOut()
-            }}
-        >
-            <button type="submit">SignOut</button>
-        </form>
-    )
-}
 
 export default async function ProfilePage() {
     const session = await auth()
+
+    if (!session) {
+        return redirect("/")
+    }
 
     return (
         <Stack sx={{ p:'3em', alignItems:'flex-start' }} spacing={2}>
@@ -44,8 +35,14 @@ export default async function ProfilePage() {
                             <Stack spacing={1}>
                                 <Typography variant="body1">Identified with IndentityProvider</Typography>
                                 <TextField disabled defaultValue={session?.user?.email} />
-                                {/*<Button variant="contained" sx={{ alignSelf:'flex-end'}}>Log-out</Button>*/}
-                                <SignOut />
+                                {/*<SignOut />*/}
+                                <Button
+                                    onClick={async () => { 'use server'; await signOut();}}
+                                    variant="contained"
+                                    sx={{ alignSelf:'flex-end'}}
+                                >
+                                    Log-out
+                                </Button>
                             </Stack>
                         </Grid>
                     </Grid>

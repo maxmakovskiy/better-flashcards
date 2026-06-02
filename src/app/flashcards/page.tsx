@@ -1,21 +1,24 @@
-import { Deck, Card } from "./stores/study-store"
 import StudyWorkspace from "@/app/flashcards/_components/study-workspace"
 import { StudyStoreProvider } from "@/app/flashcards/providers/study-store-provider";
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
+import { prisma } from '@/prisma'
 
-const mockDecks: Map<string, Deck> = new Map([
-    ['1', {id: '1', title:'Spanish Vocabulary', numOfCards: 150}],
-    ['2', {id: '2', title:'React Basics', numOfCards: 250}],
-    ['3', {id: '3', title:'Networks exam', numOfCards: 200}],
-    ['4', {id: '4', title:'Data Structures', numOfCards: 300}],
-])
+export default async function HomePage() {
+    const session = await auth()
 
-export default function HomePage() {
+    if (!session) {
+        return redirect('/')
+    }
+
+    // const decks = await prisma.deck.findMany({
+    //     where: { userId: session.user?.id }
+    // })
+
     return (
         <StudyStoreProvider>
             <StudyWorkspace
-                decks={mockDecks}
-                activeSession={null}
-            />
+                decks={[]} />
         </StudyStoreProvider>
     )
 }
