@@ -6,17 +6,15 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 
 const itemHeight = 48;
 
-interface DeckCardMenuProps {
-    fontSize: string;
-}
-
-export default function DeckCardMenu({ fontSize }: DeckCardMenuProps) {
+export default function DeckCardMenu() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLElement>) => {
+        event.preventDefault();
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {
+    const handleClose = (event: MouseEvent<HTMLElement>) => {
+        event.preventDefault();
         setAnchorEl(null);
     };
 
@@ -30,7 +28,7 @@ export default function DeckCardMenu({ fontSize }: DeckCardMenuProps) {
                 aria-haspopup="true"
                 onClick={handleClick}
             >
-                <MoreHorizIcon fontSize={fontSize}/>
+                <MoreHorizIcon fontSize="small" />
             </IconButton>
             <Menu
                 id="long-menu"
@@ -49,7 +47,7 @@ export default function DeckCardMenu({ fontSize }: DeckCardMenuProps) {
                     },
                 }}
             >
-                <MenuItem onClick={handleClose}>Play</MenuItem>
+                <MenuItem onClick={handleClose}>Review</MenuItem>
                 <MenuItem onClick={handleClose}>Explore</MenuItem>
                 <MenuItem onClick={handleClose}>Edit</MenuItem>
             </Menu>

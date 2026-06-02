@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react'
 import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import FolderIcon from '@mui/icons-material/Folder'
 import LinearProgress from '@mui/material/LinearProgress'
 import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
-import Link from '@mui/material/Link'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 
+export interface DeckCardProps {
+    deck: DeckModel & { flashcards: FlashcardModel[] };
+}
 
-export default function DeckCard({ deck }: { deck: DeckModel &  { flashcards: FlashcardModel[] }}) {
+export default function DeckCard({ deck }: DeckCardProps) {
     const [progress, _] = useState<number>(() => {
         const now = new Date()
         return (
@@ -47,7 +47,7 @@ export default function DeckCard({ deck }: { deck: DeckModel &  { flashcards: Fl
                     }}
                 >
                     <FolderIcon fontSize="small" />
-                    <DeckCardMenu fontSize="small" />
+                    <DeckCardMenu />
                 </Stack>
                 <Typography
                     variant="body1"
@@ -60,7 +60,10 @@ export default function DeckCard({ deck }: { deck: DeckModel &  { flashcards: Fl
                 >
                     {deck.title}
                 </Typography>
-                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems:'center' }}>
+                <Stack
+                    direction="row"
+                    sx={{ justifyContent: 'space-between', alignItems:'center' }}
+                >
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {deck.flashcards.length} cards
                     </Typography>
