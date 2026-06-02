@@ -37,13 +37,13 @@ export default async function ProfilePage() {
                         <Grid size={3}>
                             <Stack spacing={1} sx={{alignItems:'center'}}>
                                 <AccountCircleIcon sx={{ fontSize:'64px'}}/>
-                                <Typography variant="body1">{session.user.name}</Typography>
+                                <Typography variant="body1">{session?.user?.name}</Typography>
                             </Stack>
                         </Grid>
                         <Grid size={9}>
                             <Stack spacing={1}>
-                                <Typography variant="body1">Identified with {session.user.accounts[0].provider}</Typography>
-                                <TextField disabled defaultValue={session.user.email} />
+                                <Typography variant="body1">Identified with IndentityProvider</Typography>
+                                <TextField disabled defaultValue={session?.user?.email} />
                                 {/*<Button variant="contained" sx={{ alignSelf:'flex-end'}}>Log-out</Button>*/}
                                 <SignOut />
                             </Stack>

@@ -18,7 +18,6 @@
     "@mui/material-nextjs": "^9.0.1",
     "@prisma/adapter-better-sqlite3": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "@prisma/extension-accelerate": "^3.0.1",
     "dayjs": "^1.11.21",
     "dotenv": "^17.4.2",
     "motion": "^12.40.0",
