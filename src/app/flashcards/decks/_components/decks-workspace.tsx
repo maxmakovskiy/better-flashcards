@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import NextLink from '@/app/_components/Link'
 import Button from '@mui/material/Button'
-import NewDeckDialog from '@/app/flashcards/decks/_components/NewDeckDialog'
+import NewDeckDialog from './new-deck-dialog'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import FolderIcon from '@mui/icons-material/Folder'
@@ -27,7 +27,7 @@ export interface DecksWorkspaceProps {
 }
 
 interface StatChip {
-    icon: any;
+    icon: unknown;
     title: number;
     description: string;
 }
@@ -87,7 +87,7 @@ export default function DecksWorkspace({ initDecks }: DecksWorkspaceProps) {
                                          alignItems:'center'
                                      }}
                                >
-                                   {chip.icon}
+                                   {chip.icon as ReactNode}
                                </Grid>
                                <Grid size={9}>
                                    <Stack>

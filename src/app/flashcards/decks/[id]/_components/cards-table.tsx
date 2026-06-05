@@ -1,0 +1,194 @@
+'use client'
+
+import * as dayjs from 'dayjs'
+import { useRef, useState, MouseEvent } from 'react'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import InputAdornment from '@mui/material/InputAdornment'
+import TextField from '@mui/material/TextField'
+import SearchIcon from '@mui/icons-material/Search'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
+import CardDialog from './card-dialog'
+import { useCards } from '../_hooks/use-cards'
+
+
+export default function CardsTable({ deckId }: { deckId: string }) {
+    const { cards, cardsMutate } = useCards(deckId)
+
+    const [isModifyCardDialogOpen, setModifyCardDialogOpen] = useState<boolean>(false)
+    const [cardToMod, setCardToMod] = useState<FlashcardModel | null>(null)
+
+    // const now = useRef<Date>(new Date())
+
+    const defineStatus = (card: FlashcardModel): string => {
+        const now = new Date();
+        if (!card.lastReviewedAt) {
+            return 'New'
+        }
+        // if (card.nextReviewAt > now.current) {
+        if (card.nextReviewAt > now) {
+            return 'Learned'
+        }
+        return 'In progress'
+    }
+
+    const lastReview = (card: FlashcardModel): string => {
+        if (!card.lastReviewedAt) {
+            return '-'
+        }
+        // const daysJsNow = dayjs(now.current)
+        const daysJsNow = dayjs(new Date())
+        const diff = dayjs(daysJsNow.diff(card!.lastReviewedAt))
+        return `${diff.get('day')} days ago`
+    }
+
+    const handleCardModification = async (newFront: string, newBack: string) => {
+        try {
+            const body = { frontText: newFront, backText: newBack };
+            await fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            })
+            cardsMutate() // refresh data
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const handleCardDeletion = async (flashcardNum: number) => {
+        try {
+            await fetch(`/api/cards/${deckId}/${flashcardNum}`, {
+                method: "DELETE"
+            });
+            console.log(`Removing card with id=${flashcardNum} from cards collection`)
+            cardsMutate() // refresh data
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    return (
+        <Stack spacing={2}>
+            <Grid container>
+                <Grid size={6} spacing={3}>
+                    <TextField fullWidth
+                        // sx={{ width:'60%'}}
+                        // id={`${textFieldId}-input`}
+                               label="Search"
+                               slotProps={{
+                                   input: {
+                                       startAdornment: (
+                                           <InputAdornment position="start">
+                                               <SearchIcon />
+                                           </InputAdornment>
+                                       ),
+                                   },
+                               }}
+                               variant="filled"
+                    />
+                </Grid>
+                <Grid size={3}>
+                    {/* TODO: filter cards based on tags chosen via multiselect */}
+                </Grid>
+                <Grid size={3}>
+                    {/*<FormControl fullWidth>*/}
+                    {/*    <InputLabel id="select-sort-label">Sort by</InputLabel>*/}
+                    {/*    <Select*/}
+                    {/*        labelId="select-sort-label"*/}
+                    {/*        id="select-sort"*/}
+                    {/*        // value={"Newest"}*/}
+                    {/*        label="Sort by"*/}
+                    {/*        onChange={() => console.log("Changing sorting order")}*/}
+                    {/*    >*/}
+                    {/*        <MenuItem value={10}>Ten</MenuItem>*/}
+                    {/*        <MenuItem value={20}>Twenty</MenuItem>*/}
+                    {/*        <MenuItem value={30}>Thirty</MenuItem>*/}
+                    {/*    </Select>*/}
+                    {/*</FormControl>*/}
+                </Grid>
+            </Grid>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><Typography variant="h6">#</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Front</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Back</Typography></TableCell>
+                            <TableCell align="center"><Typography variant="h6">Status</Typography></TableCell>
+                            <TableCell align="center"><Typography variant="h6">Last review</Typography></TableCell>
+                            <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {cards?.map((c: FlashcardModel) => (
+                            <TableRow
+                                hover
+                                key={c.flashcardNum}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    setCardToMod(c)
+                                    setModifyCardDialogOpen(true)
+                                }}
+                                sx={{ cursor:'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    <Typography variant="body2">{c.flashcardNum}</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body1">{c.frontText}</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body1">{c.backText}</Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    {/* TODO: replace with actual status */}
+                                    <Typography variant="body2">
+                                        {defineStatus(c)}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Typography variant="body2">
+                                        {lastReview(c)}
+                                        {/*{!c.lastReviewedAt ? '-' : new dayjs.Dayjs(c.lastReviewedAt).format('DD/MM/YYYY')}*/}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Button onClick={(e: MouseEvent<HTMLElement>) => {
+                                        e.stopPropagation()
+                                        // e.preventDefault()
+                                        handleCardDeletion(c.flashcardNum)
+                                    }}>
+                                        <DeleteForeverIcon />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <CardDialog
+                dialogTitle='Modify card'
+                isOpen={isModifyCardDialogOpen}
+                setClose={() => setModifyCardDialogOpen(false)}
+                backTextInit={cardToMod?.backText}
+                frontTextInit={cardToMod?.frontText}
+                handleData={handleCardModification}
+            />
+        </Stack>
+    );
+}

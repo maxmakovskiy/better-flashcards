@@ -1,21 +1,23 @@
+import { ReactNode } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
-import SvgIcon from '@mui/material/SvgIcon'
 
 export interface DeckStatGadgetProps {
-    icon: any;
-    title: string;
+    icon: ReactNode;
+    title: string | number;
     description: string;
 }
 
 export default function DeckStatGadget({ icon, title, description }: DeckStatGadgetProps) {
     return (
-        <Paper sx={{ px:'1em', py:'0.5em'}}>
-            <Grid container sx={{ alignItems:'center'}}>
+        <Paper sx={{ px:'1em', py:'0.5em', height:'100%'}}>
+            <Grid container sx={{ alignItems:'center'}} spacing={1}>
                 <Grid size={4}>
-                    {icon}
+                    <Stack sx={{alignItems:'center', justifyContent:'center'}}>
+                        {icon}
+                    </Stack>
                 </Grid>
                 <Grid size={8}>
                     <Stack>

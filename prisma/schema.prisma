@@ -125,14 +125,14 @@ model Flashcard {
   deckId String
   frontText String
   backText String
-  easeFactor Float
-  intervalDays Int
-  repetitionCount Int
-  nextReviewAt DateTime
-  lastReviewedAt DateTime
-  memoryStrength Int
-  createdAt DateTime
-  updatedAt DateTime
+  easeFactor Float @default(2.5)
+  intervalDays Int @default(0)
+  repetitionCount Int @default(0)
+  nextReviewAt DateTime @default(now())
+  lastReviewedAt DateTime?
+  memoryStrength Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   deck Deck @relation(fields: [deckId], references: [deckId])
 
@@ -156,6 +156,8 @@ model StudySession {
   avgResponseTimeMs Int
   deckId String
   deck Deck @relation(fields: [deckId], references: [deckId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   reviewedCards ReviewHistory[]
 }
