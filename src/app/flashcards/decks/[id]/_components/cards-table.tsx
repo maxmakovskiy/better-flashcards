@@ -24,10 +24,11 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import CardDialog from './card-dialog'
 import { useCards } from '../_hooks/use-cards'
+import Skeleton from '@mui/material/Skeleton'
 
 
 export default function CardsTable({ deckId }: { deckId: string }) {
-    const { cards, cardsMutate } = useCards(deckId)
+    const { cards, isCardsLoading, cardsMutate } = useCards(deckId)
 
     const [isModifyCardDialogOpen, setModifyCardDialogOpen] = useState<boolean>(false)
     const [cardToMod, setCardToMod] = useState<FlashcardModel | null>(null)
@@ -59,12 +60,23 @@ export default function CardsTable({ deckId }: { deckId: string }) {
     const handleCardModification = async (newFront: string, newBack: string) => {
         try {
             const body = { frontText: newFront, backText: newBack };
-            await fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
+            const updatedCard = await fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body),
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`Failed update the flashcard with url=${`/api/cards/${deckId}/${cardToMod!.flashcardNum}`}`)
+                }
+                return res.json()
             })
-            cardsMutate() // refresh data
+            // cardsMutate() // refresh data
+            const cardsWithUpdated: FlashcardModel[] = cards!.map((card: FlashcardModel) => (
+                    card.flashcardNum === updatedCard.flashcardNum
+                        ? updatedCard
+                        : card
+            ))
+            cardsMutate(cardsWithUpdated, { revalidate: false })
         } catch (error) {
             console.error(error)
         }
@@ -135,6 +147,45 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
+                        {isCardsLoading &&
+                            <TableRow
+                                hover
+                                sx={{ cursor:'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    <Typography variant="body2">
+                                        <Skeleton animation="wave" />
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body1">
+                                        <Skeleton animation="wave" />
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body1">
+                                        <Skeleton animation="wave" />
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Typography variant="body2">
+                                        <Skeleton animation="wave" />
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Typography variant="body2">
+                                        <Skeleton animation="wave" />
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Button>
+                                        <DeleteForeverIcon />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        }
+
+
                         {cards?.map((c: FlashcardModel) => (
                             <TableRow
                                 hover
