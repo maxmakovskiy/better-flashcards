@@ -26,9 +26,7 @@ export type StudyStoreAction = {
     setDecks: (decks: EnhancedDeckModel[]) => void
     selectDeck: (deckId: string) => void
     answerCard: (grade: SuperMemoGrade) => void
-    // nextCard: () => void
-    // pauseSession: () => void
-    // resumeSession: () => void
+    revealCard: () => void
     completeSession: () => void
 }
 
@@ -140,7 +138,8 @@ export const createStudyStore = (
                 }).catch(e => console.log(e))
 
             set({
-                cards: cards?.splice(1)
+                cards: cards?.splice(1),
+                isCurrentCardAnswered: false
             })
 
             if (cards?.length === 0) {
@@ -167,6 +166,12 @@ export const createStudyStore = (
                 console.log(e)
             }
             console.log('Successfully finishing session')
+        },
+        revealCard: () => {
+            const { isCurrentCardAnswered } = get()
+            set({
+                isCurrentCardAnswered: !isCurrentCardAnswered,
+            })
         }
 
         // startSession: (sessionId, cards) => {

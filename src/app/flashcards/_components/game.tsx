@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack'
 import Paper from '@mui/material/Paper'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
-import AnswerGameCard from './answer-game-card'
 import QuestionGameCard, { QuestionGameCardProps } from "./question-game-card"
 import { EnhancedDeckModel } from '@/app/flashcards/types'
 import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
@@ -22,10 +21,15 @@ export default function Game() {
     const isCurrentCardAnswered = useStudyStore((s: StudyStore) => s.isCurrentCardAnswered)
     const cards = useStudyStore((s: StudyStore) => s.cards)
     const answerCard = useStudyStore((s: StudyStore) => s.answerCard)
+    const revealCard = useStudyStore((s: StudyStore) => s.revealCard)
 
     const answer = (event: MouseEvent<HTMLElement>, grade: SuperMemoGrade) => {
         event.stopPropagation()
-        answerCard(grade)
+        if (isCurrentCardAnswered) {
+            answerCard(grade)
+        } else {
+            throw new Error('Card should be revealed first')
+        }
     }
 
     return (
@@ -47,6 +51,8 @@ export default function Game() {
                     {cards?.at(0)?.backText}
                 </Typography>
             </QuestionGameCard>
+
+            <Button onClick={revealCard}>Reveal</Button>
 
             <Grid container spacing={1}>
                 <Grid size={2} onClick={e => answer(e, 0)}>
