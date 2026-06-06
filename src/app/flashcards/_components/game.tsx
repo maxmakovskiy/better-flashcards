@@ -10,12 +10,15 @@ import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 import AnswerGameCard from './answer-game-card'
 import QuestionGameCard, { QuestionGameCardProps } from "./question-game-card"
+import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
+import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
+import { StudyStore } from "@/app/flashcards/stores/study-store"
 
-import {Deck, Card, StudySession, StudyStore} from "../stores/study-store"
-import { useStudyStore } from "../providers/study-store-provider"
 
 export default function Game() {
-    const cards = useStudyStore((s: StudyStore) => s.cards)
+    const deck = useStudyStore((s: StudyStore) => s.selectedDeck)
+    const studySession = useStudyStore((s: StudyStore) => s.session)
 
     return (
         <Stack sx={{ alignItems:'center', pt:'2em'}} spacing={3}>

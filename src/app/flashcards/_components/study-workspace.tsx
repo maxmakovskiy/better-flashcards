@@ -6,24 +6,22 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import Paper from '@mui/material/Paper'
 import BrainIcon from '@/app/_components/BrainIcon'
 import Divider from '@mui/material/Divider'
-import CircularProgress from '@mui/material/CircularProgress'
 import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
 import Skeleton from '@mui/material/Skeleton';
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import ExtensionIcon from '@mui/icons-material/Extension'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
-import {StudySession, StudyStore} from "../stores/study-store"
-import { useStudyStore } from "../providers/study-store-provider"
+import { StudyStore } from "@/app/flashcards/stores/study-store"
+import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
 import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
 import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
 
 
 export default function StudyWorkspace() {
@@ -33,6 +31,7 @@ export default function StudyWorkspace() {
     const decks = useStudyStore((s: StudyStore) => s.decks)
     const selectedDeck = useStudyStore((s: StudyStore) => s.selectedDeck)
     const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
+    const initializeSession = useStudyStore((s: StudyStore) => s.initializeSession)
 
     useEffect(() => {
         if (session?.user) {
@@ -48,6 +47,17 @@ export default function StudyWorkspace() {
         }
     }, [session])
 
+    const startSession = () => {
+        fetch(`/api/session/start/${selectedDeck?.deckId}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Failed to create new session for deck with id=${id}`)
+                }
+                return res.json()
+            }).then((session: StudySessionModel) => {
+                initializeSession(session)
+            }).catch(e => console.error(e))
+    }
 
     return (
         <Grid container>
@@ -104,7 +114,7 @@ export default function StudyWorkspace() {
                             </Grid>
                         ))}
 
-                        {(decks !==null) && decks.map(deck => (
+                        {(decks !== null) && decks.map(deck => (
                             <Grid
                                 key={deck.deckId}
                                 size={4}
@@ -153,6 +163,7 @@ export default function StudyWorkspace() {
                             </Grid>
                         </Grid>
                         <Divider />
+
                         <Game />
                     </Stack>
                 }

@@ -150,10 +150,10 @@ model Flashcard {
 model StudySession {
   sessionId String @id @default(cuid())
   startedAt DateTime @default(now())
-  endedAt DateTime
+  endedAt DateTime?
   totalReviews Int @default(0)
   correctAnswers Int @default(0)
-  avgResponseTimeMs Int
+  avgResponseTimeMs Int?
   deckId String
   deck Deck @relation(fields: [deckId], references: [deckId])
   createdAt DateTime @default(now())
