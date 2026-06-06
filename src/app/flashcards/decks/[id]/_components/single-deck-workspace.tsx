@@ -42,7 +42,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 "new": 0
             }
         }
-        const newNumber = cards?.filter(c => !c.lastReviewedAt).length
+        const newNumber = cards?.filter(c => !c.lastReviewAt).length
         const learnedNumber = cards?.filter(c => c.nextReviewAt > now).length
 
         return {

@@ -24,7 +24,7 @@ export const POST = auth(async function POST(
             intervalDays,
             repetitionCount,
             nextReviewAt,
-            lastReviewedAt,
+            lastReviewAt,
             difficultyRating,
             responseTimeMs,
             isCorrect,
@@ -53,7 +53,7 @@ export const POST = auth(async function POST(
                 intervalDays: intervalDays,
                 repetitionCount: repetitionCount,
                 nextReviewAt: nextReviewAt,
-                lastReviewedAt: lastReviewedAt
+                lastReviewAt: lastReviewAt
             }
         })
 

@@ -1,19 +1,13 @@
 "use client"
 
-import { useState, MouseEvent } from 'react'
-import Box from '@mui/material/Box'
+import { MouseEvent } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import Paper from '@mui/material/Paper'
-import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
-import QuestionGameCard, { QuestionGameCardProps } from "./question-game-card"
-import { EnhancedDeckModel } from '@/app/flashcards/types'
-import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
+import QuestionGameCard from "./question-game-card"
 import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
 import { StudyStore } from "@/app/flashcards/stores/study-store"
-import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
 import { SuperMemoGrade } from 'supermemo'
 
 

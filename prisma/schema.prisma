@@ -129,7 +129,7 @@ model Flashcard {
   intervalDays Int @default(0)
   repetitionCount Int @default(0)
   nextReviewAt DateTime @default(now())
-  lastReviewedAt DateTime?
+  lastReviewAt DateTime?
   memoryStrength Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -192,8 +192,8 @@ model ReviewHistory {
   flashcardNum Int
   deckId String
 
-  session StudySession @relation(fields: [sessionId], references: [sessionId])
-  flashcard Flashcard @relation(fields: [flashcardNum, deckId], references: [flashcardNum, deckId])
+  session StudySession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+  flashcard Flashcard @relation(fields: [flashcardNum, deckId], references: [flashcardNum, deckId], onDelete: Cascade)
 
   difficultyRating DifficultyRatingEnum
   responseTimeMs Int

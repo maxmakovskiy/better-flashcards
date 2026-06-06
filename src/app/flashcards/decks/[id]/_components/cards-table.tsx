@@ -40,7 +40,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
 
     const defineStatus = (card: FlashcardModel): string => {
         const now = new Date();
-        if (!card.lastReviewedAt) {
+        if (!card.lastReviewAt) {
             return 'New'
         }
         // if (card.nextReviewAt > now.current) {
@@ -51,7 +51,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
     }
 
     const lastReview = (card: FlashcardModel): string => {
-        if (!card.lastReviewedAt) {
+        if (!card.lastReviewAt) {
             return '-'
         }
         // const daysJsNow = dayjs(now.current)
@@ -59,7 +59,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         // @ts-ignore
         const daysJsNow = dayjs(new Date())
         // @ts-ignore
-        const diff = dayjs(daysJsNow.diff(card!.lastReviewedAt))
+        const diff = dayjs(daysJsNow.diff(card!.lastReviewAt))
         return `${diff.get('day')} days ago`
     }
 
@@ -226,7 +226,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                 <TableCell align="center">
                                     <Typography variant="body2">
                                         {lastReview(c)}
-                                        {/*{!c.lastReviewedAt ? '-' : new dayjs.Dayjs(c.lastReviewedAt).format('DD/MM/YYYY')}*/}
+                                        {/*{!c.lastReviewAt ? '-' : new dayjs.Dayjs(c.lastReviewAt).format('DD/MM/YYYY')}*/}
                                     </Typography>
                                 </TableCell>
                                 <TableCell align="center">

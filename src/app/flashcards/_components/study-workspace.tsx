@@ -20,7 +20,7 @@ import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
 import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
-import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { EnhancedDeckModel, EnhancedDeckArraySchema } from '@/app/flashcards/types'
 import GamePlaceholder from '@/app/flashcards/_components/game-placeholder'
 
 export default function StudyWorkspace() {
@@ -42,8 +42,10 @@ export default function StudyWorkspace() {
                         throw new Error('Failed to fetch the decks to review')
                     }
                     return res.json()
-                }).then((decks: EnhancedDeckModel[]) => {
-                    setDecks(decks)
+                }).then(decks => {
+                    return EnhancedDeckArraySchema.parse(decks)
+                }).then((decks: object[]) => {
+                    setDecks(decks as EnhancedDeckModel[])
                 }).catch(e => console.error(e))
         }
     }, [session])

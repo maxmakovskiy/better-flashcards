@@ -25,7 +25,7 @@ export const GET = auth(async function GET(req) {
 
         const now = new Date();
         const isCardToReview = (card: FlashcardModel) => (
-            !card.lastReviewedAt || !(card.nextReviewAt > now))
+            !card.lastReviewAt || !(card.nextReviewAt > now))
 
         const decksToReview = allDecks.filter((deck: EnhancedDeckModel) => {
             return deck.flashcards.find(isCardToReview) !== undefined
