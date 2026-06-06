@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, MouseEvent } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
@@ -14,42 +14,65 @@ import { EnhancedDeckModel } from '@/app/flashcards/types'
 import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
 import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
 import { StudyStore } from "@/app/flashcards/stores/study-store"
+import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
+import { SuperMemoGrade } from 'supermemo'
 
 
 export default function Game() {
-    const deck = useStudyStore((s: StudyStore) => s.selectedDeck)
-    const studySession = useStudyStore((s: StudyStore) => s.session)
+    const isCurrentCardAnswered = useStudyStore((s: StudyStore) => s.isCurrentCardAnswered)
+    const cards = useStudyStore((s: StudyStore) => s.cards)
+    const answerCard = useStudyStore((s: StudyStore) => s.answerCard)
+
+    const answer = (event: MouseEvent<HTMLElement>, grade: SuperMemoGrade) => {
+        event.stopPropagation()
+        answerCard(grade)
+    }
 
     return (
-        <Stack sx={{ alignItems:'center', pt:'2em'}} spacing={3}>
+        <Stack sx={{ alignItems:'center', pt:'2em', px:'1em'}} spacing={3}>
             <QuestionGameCard
                 height='13em'
                 width='20em'
             >
                 <Typography variant="body1">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
-                    blanditiis tenetur unde suscipit ?
+                    {cards?.at(0)?.frontText}
                 </Typography>
             </QuestionGameCard>
-            <AnswerGameCard
+            <QuestionGameCard
                 height='13em'
                 width='20em'
-                answerRevealedHandler={() => console.log("card is revealed")}
+                isBlurred={!isCurrentCardAnswered}
             >
                 <Typography variant="body1">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
-                    blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur,
-                    neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum
-                    quasi quidem quibusdam.
+                    {cards?.at(0)?.backText}
                 </Typography>
-            </AnswerGameCard>
-            <Grid container spacing={2}>
-                <Grid size={3}>
-                    <Button variant="contained" color="error">Again</Button>
+            </QuestionGameCard>
+
+            <Grid container spacing={1}>
+                <Grid size={2} onClick={e => answer(e, 0)}>
+                    {/*<Button variant="contained" color="error">I have no ideas at all</Button>*/}
+                    <Button variant="contained" color="error">0</Button>
                 </Grid>
-                <Grid size={3}><Button variant="contained" sx={{bgcolor:'#f48c06' }}>Hard</Button></Grid>
-                <Grid size={3}><Button variant="contained" color="success">Good</Button></Grid>
-                <Grid size={3}><Button variant="contained" sx={{bgcolor:'#00afb9'}}>Easy</Button></Grid>
+                <Grid size={2} onClick={e => answer(e, 1)}>
+                    {/*<Button variant="contained" sx={{bgcolor:'#f48c06' }}>Incorrect, but I&#39;ll remember</Button>*/}
+                    <Button variant="contained" sx={{bgcolor:'#f48c06' }}>1</Button>
+                </Grid>
+                <Grid size={2} onClick={e => answer(e, 2)}>
+                    {/*<Button variant="contained" color="success">Incorrect, but easy to recall</Button>*/}
+                    <Button variant="contained" color="success">2</Button>
+                </Grid>
+                <Grid size={2} onClick={e => answer(e, 3)}>
+                    {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>Serious hesitation</Button>*/}
+                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>3</Button>
+                </Grid>
+                <Grid size={2} onClick={e => answer(e, 4)}>
+                    {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>A little hesitation</Button>*/}
+                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>4</Button>
+                </Grid>
+                <Grid size={2} onClick={e => answer(e, 5)}>
+                    {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>Perfect</Button>*/}
+                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>5</Button>
+                </Grid>
             </Grid>
         </Stack>
     );

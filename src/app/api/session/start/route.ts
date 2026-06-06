@@ -1,14 +1,11 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
-import { auth } from "@/auth"
+import { auth } from '@/auth'
 import { prisma } from '@/prisma'
-import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
+import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 
 // end point to create new study session connected to specific deck
-export const POST = auth(async function POST(
-    req: NextAuthRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
+export const POST = auth(async function POST(req: NextAuthRequest) {
     if (!req.auth) {
         return NextResponse.json(
             { message: "Not authenticated" },
@@ -16,10 +13,10 @@ export const POST = auth(async function POST(
         )
     }
     try {
-        const { id } = await params
+        const { deckId } = await req.json()
         const session: StudySessionModel = await prisma.studySession.create({
             data: {
-                deckId: id
+                deckId: deckId
             },
         })
         return NextResponse.json(session)

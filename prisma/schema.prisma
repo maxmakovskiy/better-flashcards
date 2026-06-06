@@ -170,11 +170,21 @@ model StudySession {
 // reviewHistory.flashcardNum refences flashcard.flashcardNum <br/>
 // reviewHistory.deckId refences flashcard.deckId
 
+// Taken from: https://www.npmjs.com/package/supermemo
+// Grade description:
+// 5: perfect response.
+// 4: correct response after a hesitation.
+// 3: correct response recalled with serious difficulty.
+// 2: incorrect response; where the correct one seemed easy to recall.
+// 1: incorrect response; the correct one remembered.
+// 0: complete blackout.
 enum DifficultyRatingEnum {
   AGAIN
-  HARD
-  GOOD
-  EASY
+  INCORRECT_REMEMBERED
+  INCORRECT_EASY_RECALL
+  CORRECT_BIG_HESITATION
+  CORRECT_LITTLE_HESITATION
+  PERFECT
 }
 
 model ReviewHistory {

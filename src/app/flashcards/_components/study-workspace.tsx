@@ -21,8 +21,7 @@ import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
-import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
-
+import GamePlaceholder from '@/app/flashcards/_components/game-placeholder'
 
 export default function StudyWorkspace() {
     const { data: session } = useSession()
@@ -31,7 +30,9 @@ export default function StudyWorkspace() {
     const decks = useStudyStore((s: StudyStore) => s.decks)
     const selectedDeck = useStudyStore((s: StudyStore) => s.selectedDeck)
     const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
-    const initializeSession = useStudyStore((s: StudyStore) => s.initializeSession)
+    const startSession = useStudyStore((s: StudyStore) => s.startSession)
+    const completeSession = useStudyStore((s: StudyStore) => s.completeSession)
+    const sessionStatus = useStudyStore((s: StudyStore) => s.status)
 
     useEffect(() => {
         if (session?.user) {
@@ -46,18 +47,6 @@ export default function StudyWorkspace() {
                 }).catch(e => console.error(e))
         }
     }, [session])
-
-    const startSession = () => {
-        fetch(`/api/session/start/${selectedDeck?.deckId}`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Failed to create new session for deck with id=${selectedDeck?.deckId}`)
-                }
-                return res.json()
-            }).then((session: StudySessionModel) => {
-                initializeSession(session)
-            }).catch(e => console.error(e))
-    }
 
     return (
         <Grid container>
@@ -131,10 +120,7 @@ export default function StudyWorkspace() {
                 </Stack>
             </Grid>
             <Grid size={5}>
-                {(selectedDeck === null) ?
-                    <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                        <ExtensionIcon sx={{ color: 'secondary.main', fontSize: '164px'}}/>
-                    </Stack>
+                {(selectedDeck === null) ? <GamePlaceholder />
                     :
                     <Stack sx={{height: '100%'}}>
                         <Grid spacing={2} container sx={{p:'1em'}}>
@@ -159,12 +145,20 @@ export default function StudyWorkspace() {
                                 </Stack>
                             </Grid>
                             <Grid size={3}>
-                                <Button variant="contained">Start Session</Button>
+                                {(sessionStatus === 'uninitialized' || sessionStatus === 'finished') &&
+                                    <Button onClick={startSession} variant="contained">Start Session</Button>
+                                }
+                                {sessionStatus === 'started' &&
+                                    <Button onClick={completeSession} variant="contained">Stop Session</Button>
+                                }
                             </Grid>
                         </Grid>
                         <Divider />
 
-                        <Game />
+                        {(sessionStatus === 'started')
+                            ? <Game />
+                            : <GamePlaceholder />
+                        }
                     </Stack>
                 }
             </Grid>
