@@ -51,7 +51,7 @@ export default function StudyWorkspace() {
         fetch(`/api/session/start/${selectedDeck?.deckId}`)
             .then(res => {
                 if (!res.ok) {
-                    throw new Error(`Failed to create new session for deck with id=${id}`)
+                    throw new Error(`Failed to create new session for deck with id=${selectedDeck?.deckId}`)
                 }
                 return res.json()
             }).then((session: StudySessionModel) => {

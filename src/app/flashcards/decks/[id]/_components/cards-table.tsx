@@ -55,7 +55,10 @@ export default function CardsTable({ deckId }: { deckId: string }) {
             return '-'
         }
         // const daysJsNow = dayjs(now.current)
+        // TODO: why types don't get resolved here ?
+        // @ts-ignore
         const daysJsNow = dayjs(new Date())
+        // @ts-ignore
         const diff = dayjs(daysJsNow.diff(card!.lastReviewedAt))
         return `${diff.get('day')} days ago`
     }
