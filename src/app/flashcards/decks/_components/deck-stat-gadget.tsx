@@ -13,13 +13,17 @@ export interface DeckStatGadgetProps {
 export default function DeckStatGadget({ icon, title, description }: DeckStatGadgetProps) {
     return (
         <Paper sx={{ px:'1em', py:'0.5em', height:'100%'}}>
-            <Grid container sx={{ alignItems:'center'}} spacing={1}>
-                <Grid size={4}>
-                    <Stack sx={{alignItems:'center', justifyContent:'center'}}>
+            <Grid container sx={{ alignItems:'center'}} spacing={2}>
+                <Grid size={3}
+                      sx={{
+                          display:'flex',
+                          justifyContent:'center',
+                          alignItems:'center'
+                      }}
+                >
                         {icon}
-                    </Stack>
                 </Grid>
-                <Grid size={8}>
+                <Grid size={9}>
                     <Stack>
                         <Typography variant="h6">{title}</Typography>
                         <Typography variant="body2">{description}</Typography>

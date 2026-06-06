@@ -24,7 +24,8 @@ import { EnhancedDeckModel } from "@/app/flashcards/types"
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
-import Skeleton from "@mui/material/Skeleton";
+import Skeleton from '@mui/material/Skeleton'
+import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
 
 type StatChip = {
     icon: ReactNode;
@@ -39,7 +40,7 @@ const statChips: StatChip[] = [
     {icon: <TrendingUpIcon />, title: 15, description: 'Day Study Streak'},
 ]
 
-export default function DecksWorkspace() {
+export default function AllDecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
     const { allDecks, isAllDecksLoading, isAllDecksError, isAllDecksValidating, mutateAllDecks } = useAllDecks()
 
@@ -75,28 +76,12 @@ export default function DecksWorkspace() {
                 </Stack>
             </Stack>
             <Grid container spacing={3} sx={{ alignItems:'stretch' }}>
-                {/* TODO: should use the same deck-stat-gadget */}
                 {statChips.map(chip =>
                     <Grid key={chip.title} size={3}>
-                        <Paper sx={{ p:'1em', height:'100%' }}>
-                           <Grid container spacing={2}>
-                               <Grid size={3}
-                                     sx={{
-                                         display:'flex',
-                                         justifyContent:'center',
-                                         alignItems:'center'
-                                     }}
-                               >
-                                   {chip.icon as ReactNode}
-                               </Grid>
-                               <Grid size={9}>
-                                   <Stack>
-                                       <Typography variant="h6">{chip.title}</Typography>
-                                       <Typography variant="body2">{chip.description}</Typography>
-                                   </Stack>
-                               </Grid>
-                           </Grid>
-                        </Paper>
+                        <DeckStatGadget
+                            icon={chip.icon}
+                            title={chip.title}
+                            description={chip.description} />
                     </Grid>
                 )}
             </Grid>

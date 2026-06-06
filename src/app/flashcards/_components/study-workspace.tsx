@@ -19,6 +19,10 @@ import LinearProgress from '@mui/material/LinearProgress'
 import {Deck, Card, StudySession, StudyStore} from "../stores/study-store"
 import { useStudyStore } from "../providers/study-store-provider"
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
+import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
+import SchoolIcon from '@mui/icons-material/School'
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
+import DoneAllIcon from '@mui/icons-material/DoneAll'
 
 export interface StudyWorkspaceProps {
     decks: DeckModel[]
@@ -78,35 +82,22 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
 
                     <Grid container spacing={1}  sx={{ alignItems:'stretch'}}>
                         <Grid size={4}>
-                            <Paper elevation={3} sx={{py:'0.5em', px:'1em', height:'100%'}}>
-                                <Stack >
-                                    <Typography variant="body1">Cards to review today</Typography>
-                                    <Stack direction="row" sx={{ justifyContent: 'space-between', mt:'0.5em' }}>
-                                        <Typography variant="h4">42</Typography>
-                                        <CircularProgress
-                                            enableTrackSlot
-                                            variant="determinate"
-                                            value={70}
-                                        />
-                                    </Stack>
-                                </Stack>
-                            </Paper>
+
+                            <DeckStatGadget
+                                icon={<SchoolIcon />}
+                                title={'42 Cards'} description='To review today' />
                         </Grid>
                         <Grid size={4}>
-                            <Paper size={3} elevation={3} sx={{py:'0.5em', px:'1em', height:'100%'}}>
-                                <Stack>
-                                    <Typography variant="body1">Study streak</Typography>
-                                    <Typography variant="h4">15 Days</Typography>
-                                </Stack>
-                            </Paper>
+                            <DeckStatGadget
+                                icon={<LocalFireDepartmentIcon />}
+                                title='15 Days'
+                                description='Study streak' />
                         </Grid>
                         <Grid size={4}>
-                            <Paper size={3} elevation={3} sx={{py:'0.5em', px:'1em', height:'100%'}}>
-                                <Stack>
-                                    <Typography variant="body1">New Cards Learned</Typography>
-                                    <Typography variant="h4">118</Typography>
-                                </Stack>
-                            </Paper>
+                            <DeckStatGadget
+                                icon={<DoneAllIcon />}
+                                title={'118 Cards'}
+                                description={'Learned'} />
                         </Grid>
                     </Grid>
 

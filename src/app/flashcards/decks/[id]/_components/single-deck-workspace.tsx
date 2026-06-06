@@ -14,7 +14,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NextLink from '@/app/_components/Link'
-import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import Box from "@mui/material/Box"
 import Divider from '@mui/material/Divider'

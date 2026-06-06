@@ -1,4 +1,4 @@
-import DecksWorkspace from '@/app/flashcards/decks/_components/decks-workspace'
+import AllDecksWorkspace from './_components/all-decks-workspace'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/prisma'
@@ -28,7 +28,7 @@ export default async function DecksPage() {
                 },
             }}
         >
-            <DecksWorkspace />
+            <AllDecksWorkspace />
         </SWRConfig>
     )
 }
