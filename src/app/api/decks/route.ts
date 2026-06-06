@@ -21,7 +21,8 @@ export const POST = auth(async function POST(req) {
                 title: title as string,
                 description: description as string,
                 userId: req.auth.user?.id as string
-            }
+            },
+            include: { flashcards: true }
         })
         return NextResponse.json(newDeck)
     } catch (e) {

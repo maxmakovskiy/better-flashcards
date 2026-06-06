@@ -11,7 +11,7 @@ import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
 
 export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
-    const [progress, _] = useState<number>(() => {
+    const [progress] = useState<number>(() => {
         const now = new Date()
         return (
             (deck.flashcards.length === 0)
