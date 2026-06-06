@@ -20,6 +20,11 @@ import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
+import { EnhancedDeckModel } from "@/app/flashcards/types"
+import { TransitionGroup } from 'react-transition-group'
+import Fade from '@mui/material/Fade'
+import LinearProgress from '@mui/material/LinearProgress'
+import Skeleton from "@mui/material/Skeleton";
 
 type StatChip = {
     icon: ReactNode;
@@ -36,22 +41,21 @@ const statChips: StatChip[] = [
 
 export default function DecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
-    const { allDecks, isAllDecksLoading, isAllDecksError, isAllDecksValidating } = useAllDecks()
+    const { allDecks, isAllDecksLoading, isAllDecksError, isAllDecksValidating, mutateAllDecks } = useAllDecks()
 
-    const createNewDeck = async (title: string, description: string) => {
-        // try {
-        //     const body = { title, description };
-        //     const newDeckJSON = await fetch(`/api/decks`, {
-        //         method: "POST",
-        //         headers: { "Content-Type": "application/json" },
-        //         body: JSON.stringify(body),
-        //     });
-        //     const newDeck = await newDeckJSON.json();
-        //     console.log(`DecksWorkspace updating decks collection on client: ${JSON.stringify(newDeck)}`)
-        //     setDecks([...decks, newDeck])
-        // } catch (error) {
-        //     console.error(error);
-        // }
+    const createNewDeck = (title: string, description: string) => {
+        fetch(`/api/decks`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, description }),
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed to create new deck with title=${title}`)
+            }
+            return res.json()
+        }).then((newDeck: EnhancedDeckModel) => {
+            mutateAllDecks([...allDecks || [], newDeck])
+        }).catch(e => console.log(e))
     }
 
     return (
@@ -111,13 +115,15 @@ export default function DecksWorkspace() {
                 }}
                 variant="filled"
             />
-            <NewDeckDialog
-                isOpen={isDialogOpen}
-                setClose={() => setDialogOpen(false)}
-                handleSubmit={createNewDeck}
-            />
+
+            <TransitionGroup>
+                {isAllDecksValidating && <Fade>
+                    <LinearProgress aria-label="Loading…" variant="query" />
+                </Fade>}
+            </TransitionGroup>
+
             <Grid container spacing={2}>
-                {!(isAllDecksError || isAllDecksLoading) && allDecks?.map(deck => (
+                {!(isAllDecksError || isAllDecksLoading) ? allDecks?.map(deck => (
                     <Grid
                         key={deck.deckId}
                         size={3}
@@ -127,8 +133,14 @@ export default function DecksWorkspace() {
                     >
                         <DeckCard deck={deck} />
                     </Grid>
-                ))}
+                )) : <Skeleton animation="wave" />}
             </Grid>
+
+            <NewDeckDialog
+                isOpen={isDialogOpen}
+                setClose={() => setDialogOpen(false)}
+                handleSubmit={createNewDeck}
+            />
         </Stack>
     );
 }
