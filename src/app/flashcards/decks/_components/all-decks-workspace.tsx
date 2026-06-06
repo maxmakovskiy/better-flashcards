@@ -27,18 +27,6 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
 
-type StatChip = {
-    icon: ReactNode;
-    title: number;
-    description: string;
-}
-
-const statChips: StatChip[] = [
-    {icon: <FolderIcon />, title: 18, description: 'Total Decks'},
-    {icon: <DoneAllIcon />, title: 6, description: 'Decks Studied Today'},
-    {icon: <ViewDayIcon />, title: 2540, description: 'Total Cards'},
-    {icon: <TrendingUpIcon />, title: 15, description: 'Day Study Streak'},
-]
 
 export default function AllDecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
@@ -76,14 +64,35 @@ export default function AllDecksWorkspace() {
                 </Stack>
             </Stack>
             <Grid container spacing={3} sx={{ alignItems:'stretch' }}>
-                {statChips.map(chip =>
-                    <Grid key={chip.title} size={3}>
-                        <DeckStatGadget
-                            icon={chip.icon}
-                            title={chip.title}
-                            description={chip.description} />
-                    </Grid>
-                )}
+                <Grid size={3}>
+                    <DeckStatGadget
+                        icon={<FolderIcon fontSize="large" />}
+                        title={isAllDecksLoading ? <Skeleton animation="wave" /> : allDecks?.length}
+                        description='Total Decks' />
+                </Grid>
+                <Grid size={3}>
+                    {/* TODO: compute from study session how many decks have been studied today */}
+                    <DeckStatGadget
+                        icon={<DoneAllIcon fontSize="large" />}
+                        title={isAllDecksLoading ? <Skeleton animation="wave" /> : 0}
+                        description='Decks Studied Today' />
+                </Grid>
+                <Grid size={3}>
+                    <DeckStatGadget
+                        icon={<ViewDayIcon fontSize="large" />}
+                        title={
+                            isAllDecksLoading
+                                ? <Skeleton animation="wave" />
+                                : allDecks?.map(d => d.flashcards.length).reduce((curr, acc) => curr + acc, 0)}
+                        description='Total Cards' />
+                </Grid>
+                <Grid size={3}>
+                    {/* TODO: compute study streak */}
+                    <DeckStatGadget
+                        icon={<TrendingUpIcon fontSize="large" />}
+                        title={isAllDecksLoading ? <Skeleton animation="wave" /> : 0}
+                        description='Day Study Streak' />
+                </Grid>
             </Grid>
             <TextField
                 sx={{ width:'40%'}}
@@ -108,7 +117,7 @@ export default function AllDecksWorkspace() {
             </TransitionGroup>
 
             <Grid container spacing={2}>
-                {!(isAllDecksError || isAllDecksLoading) ? allDecks?.map(deck => (
+                {!(isAllDecksError || isAllDecksLoading) && allDecks?.map(deck => (
                     <Grid
                         key={deck.deckId}
                         size={3}
@@ -118,7 +127,17 @@ export default function AllDecksWorkspace() {
                     >
                         <DeckCard deck={deck} />
                     </Grid>
-                )) : <Skeleton animation="wave" />}
+                ))}
+
+                {(isAllDecksLoading && !isAllDecksError) && [1,2,3,4].map(k => (
+                    <Grid
+                        key={k}
+                        size={3}
+                        spacing={2}
+                    >
+                        <Skeleton animation="wave" sx={{ height: '120px' }} />
+                    </Grid>
+                ))}
             </Grid>
 
             <NewDeckDialog

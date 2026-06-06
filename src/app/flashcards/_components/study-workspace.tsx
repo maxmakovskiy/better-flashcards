@@ -84,18 +84,18 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                         <Grid size={4}>
 
                             <DeckStatGadget
-                                icon={<SchoolIcon />}
+                                icon={<SchoolIcon fontSize="large" />}
                                 title={'42 Cards'} description='To review today' />
                         </Grid>
                         <Grid size={4}>
                             <DeckStatGadget
-                                icon={<LocalFireDepartmentIcon />}
+                                icon={<LocalFireDepartmentIcon fontSize="large" />}
                                 title='15 Days'
                                 description='Study streak' />
                         </Grid>
                         <Grid size={4}>
                             <DeckStatGadget
-                                icon={<DoneAllIcon />}
+                                icon={<DoneAllIcon fontSize="large" />}
                                 title={'118 Cards'}
                                 description={'Learned'} />
                         </Grid>

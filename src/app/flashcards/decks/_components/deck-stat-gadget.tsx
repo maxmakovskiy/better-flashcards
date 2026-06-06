@@ -6,14 +6,14 @@ import Paper from '@mui/material/Paper'
 
 export interface DeckStatGadgetProps {
     icon: ReactNode;
-    title: string | number;
+    title: string | number | ReactNode;
     description: string;
 }
 
 export default function DeckStatGadget({ icon, title, description }: DeckStatGadgetProps) {
     return (
         <Paper sx={{ px:'1em', py:'0.5em', height:'100%'}}>
-            <Grid container sx={{ alignItems:'center'}} spacing={2}>
+            <Grid container sx={{ height:'100%', alignItems:'center'}} spacing={2}>
                 <Grid size={3}
                       sx={{
                           display:'flex',
