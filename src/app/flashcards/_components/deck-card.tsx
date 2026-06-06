@@ -9,6 +9,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
 
 export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
     const [progress] = useState<number>(() => {
@@ -19,6 +20,25 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                 : deck.flashcards.filter(card => now < card.nextReviewAt).length / deck.flashcards.length
         )
     })
+
+    const {
+        allDecks,
+        mutateAllDecks
+    } = useAllDecks()
+
+    const deleteDeck = () => {
+        fetch(`/api/decks/${deck.deckId}`, {
+            method: "DELETE",
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed to delete the deck with id=${deck.deckId}`)
+            }
+        }).then(() => {
+            mutateAllDecks(allDecks?.filter(d => {
+                return d.deckId !== deck.deckId
+            }))
+        }).catch(e => console.log(e))
+    }
 
     return (
         <Card
@@ -42,7 +62,7 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                     }}
                 >
                     <FolderIcon fontSize="small" />
-                    <DeckCardMenu />
+                    <DeckCardMenu handleDeckDeletion={deleteDeck} />
                 </Stack>
                 <Typography
                     variant="body1"

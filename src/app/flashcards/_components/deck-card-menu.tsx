@@ -6,15 +6,18 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 
 const itemHeight = 48;
 
-export default function DeckCardMenu() {
+export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletion: () => void }) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event: MouseEvent<HTMLElement>) => {
         event.preventDefault();
+        event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
     const handleClose = (event: MouseEvent<HTMLElement>) => {
         event.preventDefault();
+        event.stopPropagation();
         setAnchorEl(null);
     };
 
@@ -47,9 +50,14 @@ export default function DeckCardMenu() {
                     },
                 }}
             >
-                <MenuItem onClick={handleClose}>Review</MenuItem>
-                <MenuItem onClick={handleClose}>Explore</MenuItem>
                 <MenuItem onClick={handleClose}>Edit</MenuItem>
+                <MenuItem onClick={e => {
+                        handleClose(e)
+                        handleDeckDeletion()
+                    }}
+                >
+                    Delete
+                </MenuItem>
             </Menu>
         </div>
     );

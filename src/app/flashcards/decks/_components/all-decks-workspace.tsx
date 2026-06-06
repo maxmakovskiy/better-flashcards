@@ -30,7 +30,13 @@ import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
 
 export default function AllDecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
-    const { allDecks, isAllDecksLoading, isAllDecksError, isAllDecksValidating, mutateAllDecks } = useAllDecks()
+    const {
+        allDecks,
+        isAllDecksLoading,
+        isAllDecksError,
+        isAllDecksValidating,
+        mutateAllDecks
+    } = useAllDecks()
 
     const createNewDeck = (title: string, description: string) => {
         fetch(`/api/decks`, {
