@@ -8,14 +8,9 @@ import FolderIcon from '@mui/icons-material/Folder'
 import LinearProgress from '@mui/material/LinearProgress'
 import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
-import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
-import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
+import { EnhancedDeckModel } from '@/app/flashcards/types'
 
-export interface DeckCardProps {
-    deck: DeckModel & { flashcards: FlashcardModel[] };
-}
-
-export default function DeckCard({ deck }: DeckCardProps) {
+export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
     const [progress, _] = useState<number>(() => {
         const now = new Date()
         return (

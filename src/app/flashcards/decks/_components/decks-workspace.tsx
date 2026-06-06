@@ -19,15 +19,10 @@ import Paper from '@mui/material/Paper'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
+import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
 
-type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[]}
-
-export interface DecksWorkspaceProps {
-    initDecks: EnhancedDeckModel[];
-}
-
-interface StatChip {
-    icon: unknown;
+type StatChip = {
+    icon: ReactNode;
     title: number;
     description: string;
 }
@@ -39,24 +34,24 @@ const statChips: StatChip[] = [
     {icon: <TrendingUpIcon />, title: 15, description: 'Day Study Streak'},
 ]
 
-export default function DecksWorkspace({ initDecks }: DecksWorkspaceProps) {
+export default function DecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
-    const [decks, setDecks] = useState<EnhancedDeckModel[]>(initDecks)
+    const { allDecks, isAllDecksLoading, isAllDecksError, isAllDecksValidating } = useAllDecks()
 
     const createNewDeck = async (title: string, description: string) => {
-        try {
-            const body = { title, description };
-            const newDeckJSON = await fetch(`/api/decks`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-            });
-            const newDeck = await newDeckJSON.json();
-            console.log(`DecksWorkspace updating decks collection on client: ${JSON.stringify(newDeck)}`)
-            setDecks([...decks, newDeck])
-        } catch (error) {
-            console.error(error);
-        }
+        // try {
+        //     const body = { title, description };
+        //     const newDeckJSON = await fetch(`/api/decks`, {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify(body),
+        //     });
+        //     const newDeck = await newDeckJSON.json();
+        //     console.log(`DecksWorkspace updating decks collection on client: ${JSON.stringify(newDeck)}`)
+        //     setDecks([...decks, newDeck])
+        // } catch (error) {
+        //     console.error(error);
+        // }
     }
 
     return (
@@ -76,6 +71,7 @@ export default function DecksWorkspace({ initDecks }: DecksWorkspaceProps) {
                 </Stack>
             </Stack>
             <Grid container spacing={3} sx={{ alignItems:'stretch' }}>
+                {/* TODO: should use the same deck-stat-gadget */}
                 {statChips.map(chip =>
                     <Grid key={chip.title} size={3}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
@@ -121,7 +117,7 @@ export default function DecksWorkspace({ initDecks }: DecksWorkspaceProps) {
                 handleSubmit={createNewDeck}
             />
             <Grid container spacing={2}>
-                {decks.map(deck => (
+                {!(isAllDecksError || isAllDecksLoading) && allDecks?.map(deck => (
                     <Grid
                         key={deck.deckId}
                         size={3}

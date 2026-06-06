@@ -1,6 +1,6 @@
 import useSWR  from 'swr'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import { fetcher } from "@/app/flashcards/decks/[id]/_hooks/use-deck"
+import { fetcher } from '@/app/flashcards/decks/_hooks/gen-fetcher'
 
 export const useCards = (deckId: string) => {
     const { data, error, isLoading, isValidating, mutate } = useSWR<FlashcardModel[], Error>(
