@@ -83,15 +83,9 @@ export const createStudyStore = (
             const now = new Date()
             set({
                 selectedDeck: deck,
-                reviewedCount: deck?.flashcards.filter((c: FlashcardModel) => {
-                    // console.log(`Counting already reviewed cards. (typeof ${typeof c.nextReviewAt})c.nextReviewAt(${c.nextReviewAt}) > (typeof ${typeof now}) now(${now}): ${(c.nextReviewAt > now)}`)
-                    console.log(JSON.stringify(c))
-                    return c.nextReviewAt > now
-                }).length,
+                reviewedCount: deck?.flashcards.filter((c: FlashcardModel) => c.nextReviewAt > now).length,
                 cards: deck?.flashcards.filter(c => !(c.nextReviewAt > now) || !c.lastReviewAt)
             })
-            const { reviewedCount } = get()
-            console.log(`revieweCount: ${reviewedCount}`)
         },
         answerCard: (grade: SuperMemoGrade) => {
             const { session, selectedDeck, cards, completeSession, timerTimestamp } = get()

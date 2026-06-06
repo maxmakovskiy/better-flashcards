@@ -36,6 +36,9 @@ export default function Game() {
                     {cards?.at(0)?.frontText}
                 </Typography>
             </QuestionGameCard>
+
+            <Button variant="contained" onClick={revealCard}>Reveal</Button>
+
             <QuestionGameCard
                 height='13em'
                 width='20em'
@@ -46,7 +49,6 @@ export default function Game() {
                 </Typography>
             </QuestionGameCard>
 
-            <Button onClick={revealCard}>Reveal</Button>
 
             <Grid container spacing={1}>
                 <Grid size={2} onClick={e => answer(e, 0)}>

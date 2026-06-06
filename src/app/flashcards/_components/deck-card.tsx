@@ -14,12 +14,11 @@ import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
 export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
     const [progress] = useState<number>(() => {
         const now = new Date()
-        const cardReviewed = deck.flashcards.filter(card => (now > card.nextReviewAt) && !!card.lastReviewAt)
-        console.log(`Reviewed cards (deck length is ${deck.flashcards.length}): ` + JSON.stringify(cardReviewed))
+        const cardReviewed = deck.flashcards.filter(card => (now < card.nextReviewAt) && (card.lastReviewAt !== null))
         return (
             (deck.flashcards.length === 0)
                 ? 0
-                : Math.max(Math.ceil(cardReviewed.length / deck.flashcards.length), 100)
+                : Math.min(Math.ceil(cardReviewed.length / deck.flashcards.length * 100), 100)
         )
     })
 
