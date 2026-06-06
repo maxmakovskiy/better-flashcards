@@ -25,10 +25,13 @@ import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import CardDialog from './card-dialog'
 import { useCards } from '../_hooks/use-cards'
 import Skeleton from '@mui/material/Skeleton'
+import LinearProgress from '@mui/material/LinearProgress'
+import { TransitionGroup } from 'react-transition-group'
+import Fade from '@mui/material/Fade'
 
 
 export default function CardsTable({ deckId }: { deckId: string }) {
-    const { cards, isCardsLoading, cardsMutate } = useCards(deckId)
+    const { cards, isCardsLoading, isCardsValidating, cardsMutate } = useCards(deckId)
 
     const [isModifyCardDialogOpen, setModifyCardDialogOpen] = useState<boolean>(false)
     const [cardToMod, setCardToMod] = useState<FlashcardModel | null>(null)
@@ -57,41 +60,41 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         return `${diff.get('day')} days ago`
     }
 
-    const handleCardModification = async (newFront: string, newBack: string) => {
-        try {
-            const body = { frontText: newFront, backText: newBack };
-            const updatedCard = await fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-            }).then(res => {
-                if (!res.ok) {
-                    throw new Error(`Failed update the flashcard with url=${`/api/cards/${deckId}/${cardToMod!.flashcardNum}`}`)
-                }
-                return res.json()
-            })
-            // cardsMutate() // refresh data
-            const cardsWithUpdated: FlashcardModel[] = cards!.map((card: FlashcardModel) => (
-                    card.flashcardNum === updatedCard.flashcardNum
-                        ? updatedCard
-                        : card
+    const handleCardModification = (newFront: string, newBack: string) => {
+        const body = { frontText: newFront, backText: newBack };
+        fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed update the flashcard with url=${`/api/cards/${deckId}/${cardToMod!.flashcardNum}`}`)
+            }
+            return res.json()
+        }).then((updatedCard: FlashcardModel) => {
+            return cards!.map((card: FlashcardModel) => (
+                card.flashcardNum === updatedCard.flashcardNum
+                    ? updatedCard
+                    : card
             ))
+        }).then((cardsWithUpdated: FlashcardModel[]) => {
             cardsMutate(cardsWithUpdated, { revalidate: false })
-        } catch (error) {
-            console.error(error)
-        }
+        }).catch(e => console.log(e))
     }
 
-    const handleCardDeletion = async (flashcardNum: number) => {
-        try {
-            await fetch(`/api/cards/${deckId}/${flashcardNum}`, {
-                method: "DELETE"
-            });
-            console.log(`Removing card with id=${flashcardNum} from cards collection`)
-            cardsMutate() // refresh data
-        } catch (error) {
-            console.error(error);
-        }
+    const handleCardDeletion = (flashcardNum: number) => {
+        fetch(`/api/cards/${deckId}/${flashcardNum}`, {
+            method: "DELETE"
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed deleting card with flashcardNum=${flashcardNum} in deck with id=${deckId}`)
+            }
+            return res.json()
+        }).then(() => {
+            return cards!.filter((card: FlashcardModel) => card.flashcardNum !== flashcardNum)
+        }).then(filteredCards => {
+            return cardsMutate(filteredCards)
+        }).catch(e => console.error(e))
     }
 
     return (
@@ -134,6 +137,11 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     {/*</FormControl>*/}
                 </Grid>
             </Grid>
+            <TransitionGroup>
+                {isCardsValidating && <Fade>
+                    <LinearProgress aria-label="Loading…" variant="query" />
+                </Fade>}
+            </TransitionGroup>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>

@@ -53,20 +53,18 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
         }
     }, [cards]);
 
-    const handleCardCreation = async (frontText: string, backText: string) => {
-        try {
-            const body = { frontText, backText };
-            const newCardJSON = await fetch(`/api/cards/${deckId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-            });
-            const newCard = await newCardJSON.json();
-            console.log(`Updating cards collection with new a card on client: ${JSON.stringify(newCard)}`)
-            cardsMutate([...cards!, newCard], { }) // TODO: add await here ?
-        } catch (error) {
-            console.error(error);
-        }
+    const handleCardCreation = (frontText: string, backText: string) => {
+        const body = { frontText, backText };
+        fetch(`/api/cards/${deckId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed to create new flashcard (front=${frontText}; back=${backText}) in deck with id=${deckId}`)
+            }
+            return res.json()
+        }).then((newCard: FlashcardModel) => cardsMutate([...cards!, newCard]))
     }
 
     return (
