@@ -1,8 +1,9 @@
-import { useState, MouseEvent } from 'react';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import { useState, MouseEvent } from 'react'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import Box from '@mui/material/Box'
 
 const itemHeight = 48;
 
@@ -22,7 +23,7 @@ export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletio
     };
 
     return (
-        <div>
+        <Box>
             <IconButton
                 aria-label="more"
                 id="long-button"
@@ -59,6 +60,6 @@ export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletio
                     Delete
                 </MenuItem>
             </Menu>
-        </div>
+        </Box>
     );
 }
