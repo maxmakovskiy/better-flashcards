@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from "next-auth/react"
 import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -16,50 +17,37 @@ import DeckCard from '@/app/flashcards/_components/deck-card'
 import ExtensionIcon from '@mui/icons-material/Extension'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
-import {Deck, Card, StudySession, StudyStore} from "../stores/study-store"
+import {StudySession, StudyStore} from "../stores/study-store"
 import { useStudyStore } from "../providers/study-store-provider"
-import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
 import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
 import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
+import { EnhancedDeckModel } from '@/app/flashcards/types'
 
-export interface StudyWorkspaceProps {
-    decks: DeckModel[]
-    activeStudySession?: StudySession;
-}
 
-export default function StudyWorkspace({ decks, activeStudySession }: StudyWorkspaceProps) {
-    const initializeSession = useStudyStore((s: StudyStore) => s.initializeSession)
+export default function StudyWorkspace() {
+    const { data: session } = useSession()
+    const setDecks = useStudyStore((s: StudyStore) => s.setDecks)
     const selectDeck = useStudyStore((s: StudyStore) => s.selectDeck)
-    const selectedDeckId = useStudyStore((s: StudyStore) => s.selectedDeckId)
-    //TODO: Is reviewedCount the number of card inside the deck that were
-    // rescheduled for the next time and won't be available today nonetheless ?
+    const decks = useStudyStore((s: StudyStore) => s.decks)
+    const selectedDeck = useStudyStore((s: StudyStore) => s.selectedDeck)
     const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
-    const setCards = useStudyStore((s: StudyStore) => s.setCards)
-
 
     useEffect(() => {
-        if (activeStudySession) {
-            initializeSession(activeStudySession)
+        if (session?.user) {
+            fetch('/api/session/decks')
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch the decks to review')
+                    }
+                    return res.json()
+                }).then((decks: EnhancedDeckModel[]) => {
+                    setDecks(decks)
+                }).catch(e => console.error(e))
         }
-    }, [])
+    }, [session])
 
-    const pickDeckHandler = (id: string) => {
-        console.log('selecting the deck with ', id)
-        selectDeck(id)
-        fetch(`/flashcards/decks/${id}/cards`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Cannot fetch deck with id ${id}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                setCards(data.data)
-            })
-            // .catch(_ => setError(true));
-    }
 
     return (
         <Grid container>
@@ -73,11 +61,17 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                 <Stack spacing={2} sx={{ py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
                     <Box sx={{ display:'flex', alignItems:'center'}}>
                         <BrainIcon color="primary" fontSize="large" />
-                        <Typography variant="h5">BrainPulse</Typography>
+                        <Typography variant="h5">Better Flashcards</Typography>
                     </Box>
                     <Divider />
 
-                    <Typography variant="h5">Welcome back, "name" !</Typography>
+                    {/*<Typography variant="h5">Welcome back, {session ? `${session?.user?.name} !` : <Skeleton animation="wave" />}</Typography>*/}
+                    <Stack direction="row">
+                        <Typography variant="h5">
+                            Welcome back, {session && `${session?.user?.name} !`}
+                        </Typography>
+                        {!session && <Skeleton sx={{width:'200px'}} animation="wave" />}
+                    </Stack>
                     <Divider />
 
                     <Grid container spacing={1}  sx={{ alignItems:'stretch'}}>
@@ -104,12 +98,18 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                     <Typography variant="h6">Your Decks to review today</Typography>
 
                     <Grid container spacing={2}>
-                        {decks.map(deck => (
+                        {!decks && [1,2,3].map(key => (
+                            <Grid key={key} size={4} spacing={2}>
+                                <Skeleton animation="wave" sx={{ height: '120px'}} />
+                            </Grid>
+                        ))}
+
+                        {(decks !==null) && decks.map(deck => (
                             <Grid
                                 key={deck.deckId}
                                 size={4}
                                 spacing={2}
-                                onClick={() => pickDeckHandler(deck.deckId)}
+                                onClick={() => selectDeck(deck.deckId)}
                             >
                                 <DeckCard deck={deck} />
                             </Grid>
@@ -121,7 +121,7 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                 </Stack>
             </Grid>
             <Grid size={5}>
-                {(selectedDeckId === null) ?
+                {(selectedDeck === null) ?
                     <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
                         <ExtensionIcon sx={{ color: 'secondary.main', fontSize: '164px'}}/>
                     </Stack>
@@ -133,23 +133,23 @@ export default function StudyWorkspace({ decks, activeStudySession }: StudyWorks
                                     <Grid container>
                                         <Grid size={10}>
                                             <Typography variant="h6">
-                                                {decks.get(selectedDeckId).title}
+                                                {selectedDeck.title}
                                             </Typography>
                                         </Grid>
                                         <Grid size={2}>
                                             <Typography variant="h6">
-                                                {`${reviewedCount}/${decks.get(selectedDeckId).numOfCards}`}
+                                                {`${reviewedCount}/${selectedDeck.flashcards.length}`}
                                             </Typography>
                                         </Grid>
                                     </Grid>
                                         <LinearProgress
                                             variant="determinate"
-                                            value={reviewedCount/decks.get(selectedDeckId).numOfCards * 100}
+                                            value={reviewedCount/selectedDeck.flashcards.length * 100}
                                         />
                                 </Stack>
                             </Grid>
                             <Grid size={3}>
-                                <Button variant="contained">Pause Session</Button>
+                                <Button variant="contained">Start Session</Button>
                             </Grid>
                         </Grid>
                         <Divider />

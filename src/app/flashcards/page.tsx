@@ -1,8 +1,9 @@
-import StudyWorkspace from "@/app/flashcards/_components/study-workspace"
+import { SessionProvider } from "next-auth/react"
 import { StudyStoreProvider } from "@/app/flashcards/providers/study-store-provider";
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/prisma'
+import StudyWorkspace from "@/app/flashcards/_components/study-workspace"
 
 export default async function HomePage() {
     const session = await auth()
@@ -16,9 +17,11 @@ export default async function HomePage() {
     // })
 
     return (
-        <StudyStoreProvider>
-            <StudyWorkspace
-                decks={[]} />
-        </StudyStoreProvider>
+        <SessionProvider>
+            <StudyStoreProvider>
+                <StudyWorkspace />
+            </StudyStoreProvider>
+        </SessionProvider>
+
     )
 }
