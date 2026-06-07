@@ -3,6 +3,7 @@ import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { LearningStateEnum, StudySessionStatusEnum, DifficultyRatingEnum } from '@/../prisma/generated/prisma/enums'
 import * as z from 'zod'
+import { createEmptyCard, Card, fsrs, FSRS, Rating, State } from 'ts-fsrs'
 
 export type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[] }
 export type EnhancedStudyDeckModel = DeckModel & { flashcards: FlashcardModel[], studySessions: StudySessionModel[] }
@@ -24,6 +25,7 @@ export const FlashcardSchema = z.object({
     stability: z.number(),
     difficulty: z.number(),
     scheduledDays: z.number(),
+    elapsedDays: z.number(),
     learningSteps: z.number(),
     reps: z.number(),
     lapses: z.number(),
@@ -107,4 +109,47 @@ export const EnhancedStudyDeckSchema = z.object({
 })
 
 export const EnhancedStudyDeckArraySchema = z.array(EnhancedStudyDeckSchema)
+
+const fsrsLearningStateSchema = z.enum(LearningStateEnum).transform(state => {
+    switch(state) {
+        case LearningStateEnum.NEW:
+            return State.New
+        case LearningStateEnum.LEARNING:
+            return State.Learning
+        case LearningStateEnum.REVIEW:
+            return State.Review
+        case LearningStateEnum.RELEARNING:
+            return State.Relearning
+    }
+})
+
+export function mapFlashcardToFsrs(
+    flashcard: FlashcardModel
+): Card {
+    return {
+        due: flashcard.nextReviewAt,
+        stability: flashcard.stability,
+        difficulty: flashcard.difficulty,
+        scheduled_days: flashcard.scheduledDays,
+        learning_steps: flashcard.learningSteps,
+        elapsed_days: flashcard.elapsedDays,
+        reps: flashcard.reps,
+        lapses: flashcard.lapses,
+        state: fsrsLearningStateSchema.parse(flashcard.learningState)
+    }
+}
+
+export function mapFsrsToFlashcard(card: Card) {
+    return {
+        nextReviewAt: card.due,
+        stability: card.stability,
+        difficulty: card.difficulty,
+        elapsedDays: card.elapsed_days,
+        scheduledDays: card.scheduled_days,
+        learningSteps: card.learning_steps,
+        reps: card.reps,
+        lapses: card.lapses,
+        state: card.state
+    }
+}
 

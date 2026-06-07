@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import QuestionGameCard from "./question-game-card"
 import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
 import { StudyStore } from "@/app/flashcards/stores/study-store"
-import { SuperMemoGrade } from 'supermemo'
+import { Rating, Grade } from 'ts-fsrs'
 
 
 export default function Game() {
@@ -17,7 +17,7 @@ export default function Game() {
     const answerCard = useStudyStore((s: StudyStore) => s.answerCard)
     const revealCard = useStudyStore((s: StudyStore) => s.revealCard)
 
-    const answer = (event: MouseEvent<HTMLElement>, grade: SuperMemoGrade) => {
+    const answer = (event: MouseEvent<HTMLElement>, grade: Grade) => {
         event.stopPropagation()
         if (isCurrentCardAnswered) {
             answerCard(grade)
@@ -51,19 +51,19 @@ export default function Game() {
 
 
             <Grid container spacing={2} columns={8}>
-                <Grid size={2} onClick={e => answer(e, 0)}>
+                <Grid size={2} onClick={e => answer(e, Rating.Again)}>
                     {/*<Button variant="contained" color="error">I have no ideas at all</Button>*/}
                     <Button variant="contained" color="error">AGAIN</Button>
                 </Grid>
-                <Grid size={2} onClick={e => answer(e, 1)}>
+                <Grid size={2} onClick={e => answer(e, Rating.Hard)}>
                     {/*<Button variant="contained" sx={{bgcolor:'#f48c06' }}>Incorrect, but I&#39;ll remember</Button>*/}
                     <Button variant="contained" sx={{bgcolor:'#f48c06' }}>HARD</Button>
                 </Grid>
-                <Grid size={2} onClick={e => answer(e, 2)}>
+                <Grid size={2} onClick={e => answer(e, Rating.Good)}>
                     {/*<Button variant="contained" color="success">Incorrect, but easy to recall</Button>*/}
                     <Button variant="contained" color="success">GOOD</Button>
                 </Grid>
-                <Grid size={2} onClick={e => answer(e, 3)}>
+                <Grid size={2} onClick={e => answer(e, Rating.Easy)}>
                     {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>Serious hesitation</Button>*/}
                     <Button variant="contained" sx={{bgcolor:'#00afb9'}}>EASY</Button>
                 </Grid>

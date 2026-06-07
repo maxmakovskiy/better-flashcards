@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
 import { auth } from '@/auth'
 import { prisma } from '@/prisma'
+import * as z from 'zod'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 
 // end point to create new study session connected to specific deck
@@ -16,15 +17,22 @@ export const POST = auth(async function POST(
         )
     }
     try {
-        const { id: sessionId } = await params
+        const sessionId = await params.then(({ id }) => z.cuid2().parse(id))
+
         const {
             deckId,
             flashcardNum,
-            easeFactor,
-            intervalDays,
-            repetitionCount,
+            stability,
+            difficulty,
+            elapsedDays,
+            scheduledDays,
+            learningSteps,
+            reps,
+            lapses,
+            learningState,
             nextReviewAt,
             lastReviewAt,
+            lastDueData,
             difficultyRating,
             responseTimeMs,
             isCorrect,
@@ -49,11 +57,16 @@ export const POST = auth(async function POST(
                 }
             },
             data: {
-                easeFactor: easeFactor,
-                intervalDays: intervalDays,
-                repetitionCount: repetitionCount,
                 nextReviewAt: nextReviewAt,
-                lastReviewAt: lastReviewAt
+                lastReviewAt: lastReviewAt,
+                stability: stability,
+                difficulty: difficulty,
+                elapsedDays: elapsedDays,
+                scheduledDays: scheduledDays,
+                learningSteps: learningSteps,
+                reps: reps,
+                lapses: lapses,
+                learningState: learningState
             }
         })
 
@@ -63,9 +76,15 @@ export const POST = auth(async function POST(
                 flashcardNum: flashcardNum,
                 deckId: deckId,
                 difficultyRating: difficultyRating,
+                learningState: learningState,
+                dueData: lastDueData,
+                stability: stability,
+                difficulty: difficulty,
                 responseTimeMs: responseTimeMs,
                 isCorrect: isCorrect,
                 reviewedAt: reviewedAt,
+                scheduledDays: scheduledDays,
+                learningSteps: learningSteps
             }
         })
 

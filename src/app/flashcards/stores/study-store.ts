@@ -3,15 +3,19 @@ import {
     EnhancedStudyDeckModel,
     EnhancedStudyDeckArraySchema,
     StudySessionSchema,
-    StudySessionActionsSchema
+    StudySessionActionsSchema,
+    mapFlashcardToFsrs,
+    mapFsrsToFlashcard
 } from '@/app/flashcards/types'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
 import { DifficultyRatingEnum } from "@/../prisma/generated/prisma/enums"
 import dayjs from 'dayjs'
+import { Grade, Card, fsrs, FSRS, Rating, State } from 'ts-fsrs'
 
 export type StudySession = {
     session: StudySessionModel | null
+    scheduler: FSRS
     decks: EnhancedStudyDeckModel[] | null
     cards: FlashcardModel[] | null
     selectedDeck: EnhancedStudyDeckModel | null
@@ -30,7 +34,7 @@ export type StudyStoreAction = {
     manageSession: (desiredStatus: StudySessionActionsSchema) => Promise<StudySessionModel | undefined>
     selectDeck: (deckId: string) => void
     loadDecks: () => void
-    answerCard: (grade: SuperMemoGrade) => void
+    answerCard: (grade: Grade) => void
     revealCard: () => void
 }
 
@@ -40,6 +44,7 @@ export const defaultInitState: StudySession = {
     session: null,
     decks: null,
     cards: null,
+    scheduler: fsrs(),
     selectedDeck: null,
     isCurrentCardAnswered: false,
     reviewedCount: 0,
@@ -95,52 +100,48 @@ export const createStudyStore = (
                 cards: deck?.flashcards.filter(c => !(c.nextReviewAt > now) || !c.lastReviewAt)
             })
         },
-        answerCard: (grade: SuperMemoGrade) => {
+        answerCard: (grade: Grade) => {
             const {
                 session,
                 selectedDeck,
                 cards,
                 completeSession,
                 timerTimestamp,
-                reviewedCount
+                reviewedCount,
+                scheduler
             } = get()
-            const topCard = cards?.at(0)
+
+            if (!cards || cards.length === 0) {
+                return
+            }
+
+            const topCard = cards[0]
             console.log(`answering card (flashcardNum=${topCard?.flashcardNum}; deckId=${selectedDeck?.deckId}): ${grade}`)
 
-            const { interval, repetition, efactor } = supermemo(
-                {
-                    interval: topCard!.intervalDays,
-                    repetition: topCard!.repetitionCount,
-                    efactor: topCard!.easeFactor
-                }, grade);
-
             const now = new Date()
+            const updatedFsrsCard = scheduler.next(
+                mapFlashcardToFsrs(topCard), now, grade)
+
             const diffMs: number = now.getTime() - timerTimestamp!.getTime()
             set({
                 timerTimestamp: now
             })
 
-            const dueDate = dayjs(now).add(interval, 'day');
-
-            const defineDifficulty = (grade: SuperMemoGrade) => (
-                (grade > 4) ? DifficultyRatingEnum.PERFECT
-                    : ((grade > 3) ? DifficultyRatingEnum.CORRECT_LITTLE_HESITATION
-                        : ((grade > 2) ? DifficultyRatingEnum.CORRECT_BIG_HESITATION
-                            : ((grade > 1) ? DifficultyRatingEnum.INCORRECT_EASY_RECALL
-                                : ((grade > 0) ? DifficultyRatingEnum.INCORRECT_REMEMBERED
-                                    : DifficultyRatingEnum.AGAIN)))))
-
             const body = {
                 deckId: selectedDeck!.deckId,
                 flashcardNum: topCard!.flashcardNum,
-                easeFactor: efactor,
-                intervalDays: interval,
-                repetitionCount: repetition,
-                nextReviewAt: dueDate,
+                stability: updatedFsrsCard.card.stability,
+                difficulty: updatedFsrsCard.card.difficulty,
+                elapsedDays: updatedFsrsCard.card.elapsed_days,
+                scheduledDays: updatedFsrsCard.card.scheduled_days,
+                learningSteps: updatedFsrsCard.card.learning_steps,
+                reps: updatedFsrsCard.card.reps,
+                lapses: updatedFsrsCard.card.lapses,
+                learningState: updatedFsrsCard.card.state,
+                lastDueData: updatedFsrsCard.log.due,
                 lastReviewAt: now,
-                difficultyRating: defineDifficulty(grade),
                 responseTimeMs: diffMs,
-                isCorrect: grade >= 3,
+                isCorrect: (grade === Rating.Good) || (grade === Rating.Easy),
                 reviewedAt: now,
             }
 
