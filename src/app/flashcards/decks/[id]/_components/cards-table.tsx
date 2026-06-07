@@ -1,7 +1,6 @@
 'use client'
 
-import * as dayjs from 'dayjs'
-import { useRef, useState, MouseEvent } from 'react'
+import { useState, MouseEvent } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -29,6 +28,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import { FlashcardSchema } from '@/app/flashcards/types'
+import { formatDistanceToNow } from 'date-fns'
 
 
 export default function CardsTable({ deckId }: { deckId: string }) {
@@ -55,13 +55,9 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         if (!card.lastReviewAt) {
             return '-'
         }
-        // const daysJsNow = dayjs(now.current)
-        // TODO: why types don't get resolved here ?
-        // @ts-ignore
-        const daysJsNow = dayjs(new Date())
-        // @ts-ignore
-        const diff = dayjs(daysJsNow.diff(card!.lastReviewAt))
-        return `${diff.get('day')} days ago`
+        return formatDistanceToNow(card.lastReviewAt, {
+            addSuffix: true,
+        });
     }
 
     const handleCardModification = (newFront: string, newBack: string) => {
@@ -229,7 +225,6 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                 <TableCell align="center">
                                     <Typography variant="body2">
                                         {lastReview(c)}
-                                        {/*{!c.lastReviewAt ? '-' : new dayjs.Dayjs(c.lastReviewAt).format('DD/MM/YYYY')}*/}
                                     </Typography>
                                 </TableCell>
                                 <TableCell align="center">

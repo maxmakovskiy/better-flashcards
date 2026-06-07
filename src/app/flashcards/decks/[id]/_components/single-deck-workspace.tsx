@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -20,13 +20,13 @@ import Divider from '@mui/material/Divider'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import CachedIcon from '@mui/icons-material/Cached'
 import Skeleton from '@mui/material/Skeleton'
-import dayjs from 'dayjs'
 import NewReleasesIcon from '@mui/icons-material/NewReleases'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import CardDialog from '@/app/flashcards/decks/[id]/_components/card-dialog'
 import { useDeck } from '../_hooks/use-deck'
 import { useCards } from '../_hooks/use-cards'
 import { FlashcardSchema } from '@/app/flashcards/types'
+import { format } from 'date-fns'
 
 
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
@@ -163,7 +163,11 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                         : <DeckStatGadget
                             icon={<CalendarMonthIcon fontSize="large" />}
                             title='Created'
-                            description={dayjs(deck?.createdAt).format('MMM DD, YYYY')} />
+                            description={
+                                (isDeckLoading
+                                    ? <Skeleton animation="wave" />
+                                    : format(deck!.createdAt, 'MMM d, Y'))
+                        } />
                     }
                 </Grid>
             </Grid>

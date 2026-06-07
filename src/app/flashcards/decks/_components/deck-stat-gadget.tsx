@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper'
 export interface DeckStatGadgetProps {
     icon: ReactNode;
     title: string | number | ReactNode;
-    description: string;
+    description: string | ReactNode;
 }
 
 export default function DeckStatGadget({ icon, title, description }: DeckStatGadgetProps) {

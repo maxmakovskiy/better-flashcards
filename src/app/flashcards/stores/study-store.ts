@@ -9,7 +9,7 @@ import {
 } from '@/app/flashcards/types'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
-import { Grade, Card, fsrs, FSRS, Rating, State } from 'ts-fsrs'
+import { Grade, fsrs, FSRS, Rating } from 'ts-fsrs'
 
 export type StudySession = {
     session: StudySessionModel | null
@@ -22,6 +22,9 @@ export type StudySession = {
     reviewedCount: number
     correctCount: number
     timerTimestamp: Date | null
+    numOfCardsToReview: number
+    numOfCardsLearned: number
+    daysStreak?: number
 }
 
 export type StudyStoreAction = {
@@ -47,7 +50,9 @@ export const defaultInitState: StudySession = {
     isCurrentCardAnswered: false,
     reviewedCount: 0,
     correctCount: 0,
-    timerTimestamp: null
+    timerTimestamp: null,
+    numOfCardsToReview: 0,
+    numOfCardsLearned: 0
 }
 
 export const createStudyStore = (
@@ -183,8 +188,35 @@ export const createStudyStore = (
                     }).then(decks => {
                     return EnhancedStudyDeckArraySchema.parse(decks)
                 })
+
+                // We don't need to wait for it
+                // as it is supplementory information
+                fetch('/api/session/streak')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Failed to fetch the streak')
+                        }
+                        return res.json()
+                    }).then(({streak}) => {
+                        set({
+                            daysStreak: streak
+                        })
+                    }).catch(e => console.error(e))
+
+                const now = new Date()
+                let learned = 0
+                const numOfCardsToReview = decks
+                    .map(d => {
+                        const toLearn = d.flashcards.filter(card => !(card.nextReviewAt > now)).length
+                        learned += d.flashcards.length - toLearn
+                        return toLearn
+                    })
+                    .reduce((a, b) => a + b, 0)
+
                 set({
-                    decks: decks
+                    decks: decks,
+                    numOfCardsToReview: numOfCardsToReview,
+                    numOfCardsLearned: learned
                 })
             } catch(e) {
                 console.error(e)

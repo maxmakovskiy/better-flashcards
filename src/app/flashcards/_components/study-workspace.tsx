@@ -37,6 +37,9 @@ export default function StudyWorkspace() {
     const pauseSession = useStudyStore((s: StudyStore) => s.pauseSession)
     const resumeSession = useStudyStore((s: StudyStore) => s.resumeSession)
     const completeSession = useStudyStore((s: StudyStore) => s.completeSession)
+    const numOfCardsToReview = useStudyStore((s: StudyStore) => s.numOfCardsToReview)
+    const numOfCardsLearned = useStudyStore((s: StudyStore) => s.numOfCardsLearned)
+    const daysStreak = useStudyStore((s: StudyStore) => s.daysStreak)
 
     useEffect(() => {
         loadDecks()
@@ -71,18 +74,34 @@ export default function StudyWorkspace() {
                         <Grid size={4}>
                             <DeckStatGadget
                                 icon={<SchoolIcon fontSize="large" />}
-                                title={'42 Cards'} description='To review today' />
+                                title={
+                                    (!decks
+                                        ? <Skeleton animation="wave" />
+                                        : `${numOfCardsToReview} Card(s)`
+                                    )
+                                }
+                                description='To review' />
                         </Grid>
                         <Grid size={4}>
                             <DeckStatGadget
                                 icon={<LocalFireDepartmentIcon fontSize="large" />}
-                                title='15 Days'
+                                title={
+                                    (!daysStreak
+                                            ? <Skeleton animation="wave" />
+                                            : `${daysStreak} Day(s)`
+                                    )
+                                }
                                 description='Study streak' />
                         </Grid>
                         <Grid size={4}>
                             <DeckStatGadget
                                 icon={<DoneAllIcon fontSize="large" />}
-                                title={'118 Cards'}
+                                title={
+                                    (!decks
+                                            ? <Skeleton animation="wave" />
+                                            : `${numOfCardsLearned} Card(s)`
+                                    )
+                                }
                                 description={'Learned'} />
                         </Grid>
                     </Grid>
