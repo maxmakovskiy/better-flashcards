@@ -28,6 +28,7 @@ import Skeleton from '@mui/material/Skeleton'
 import LinearProgress from '@mui/material/LinearProgress'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
+import { FlashcardSchema } from '@/app/flashcards/types'
 
 
 export default function CardsTable({ deckId }: { deckId: string }) {
@@ -74,6 +75,8 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                 throw new Error(`Failed update the flashcard with url=${`/api/cards/${deckId}/${cardToMod!.flashcardNum}`}`)
             }
             return res.json()
+        }).then(card => {
+            return FlashcardSchema.parse(card)
         }).then((updatedCard: FlashcardModel) => {
             return cards!.map((card: FlashcardModel) => (
                 card.flashcardNum === updatedCard.flashcardNum

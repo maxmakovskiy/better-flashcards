@@ -26,6 +26,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import CardDialog from '@/app/flashcards/decks/[id]/_components/card-dialog'
 import { useDeck } from '../_hooks/use-deck'
 import { useCards } from '../_hooks/use-cards'
+import { FlashcardSchema } from '@/app/flashcards/types'
 
 
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
@@ -63,7 +64,9 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 throw new Error(`Failed to create new flashcard (front=${frontText}; back=${backText}) in deck with id=${deckId}`)
             }
             return res.json()
-        }).then((newCard: FlashcardModel) => cardsMutate([...cards!, newCard]))
+        }).then(card => {
+            return FlashcardSchema.parse(card)
+        }).then((c: FlashcardModel) => cardsMutate([...cards!, c]))
     }
 
     return (
