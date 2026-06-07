@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  decks         Deck[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Tag {
+  name String @id
+  description String?
+
+  decks DeckTag[]
+}
+
+model Deck {
+  deckId String @id @default(cuid())
+  title String
+  description String?
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tags DeckTag[]
+  flashcards Flashcard[]
+  studySessions StudySession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DeckTag {
+  deckId String
+  tagName String
+  // TODO: add onDelete
+  deck Deck @relation(fields: [deckId], references: [deckId], onDelete: Cascade)
+  tag Tag @relation(fields: [tagName], references: [name], onUpdate: Cascade)
+
+  @@id([deckId, tagName])
+}
+
+
+enum LearningStateEnum {
+  NEW
+  LEARNING
+  REVIEW
+  RELEARNING
+}
+
+model Flashcard {
+  // card fields
+  flashcardNum Int
+  deckId String
+  frontText String
+  backText String
+
+  // Free Space Repetition Algorithm
+  nextReviewAt DateTime @default(now()) // NOTE: `due` in FSRS
+  stability Float @default(0)
+  difficulty Float @default(0)
+  elapsedDays Int @default(0)
+  scheduledDays Int @default(0)
+  learningSteps Int @default(0)
+  reps Int @default(0)
+  lapses Int @default(0)
+  learningState LearningStateEnum @default(NEW)
+  lastReviewAt DateTime?
+
+  // statistics fields
+  memoryStrength Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deck Deck @relation(fields: [deckId], references: [deckId])
+
+  reviews ReviewHistory[]
+
+  @@id([flashcardNum, deckId])
+}
+
+enum StudySessionStatusEnum {
+  STARTED
+  PAUSED
+  FINISHED
+}
+
+model StudySession {
+  sessionId String @id @default(cuid())
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  status StudySessionStatusEnum
+  totalReviews Int @default(0)
+  correctAnswers Int @default(0)
+  avgResponseTimeMs Int?
+  deckId String
+  deck Deck @relation(fields: [deckId], references: [deckId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviewedCards ReviewHistory[]
+}
+
+enum DifficultyRatingEnum {
+  MANUAL
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+model ReviewHistory {
+  sessionId String
+  flashcardNum Int
+  deckId String
+
+  session StudySession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+  flashcard Flashcard @relation(fields: [flashcardNum, deckId], references: [flashcardNum, deckId], onDelete: Cascade)
+
+  learningState LearningStateEnum
+  dueData DateTime
+  stability Float
+  difficulty Float
+  responseTimeMs Int
+  isCorrect Boolean
+  reviewedAt DateTime
+
+  // Number of days until the next review
+  scheduledDays Int
+  // Keeps track of the current step during the (re)learning stages
+  learningSteps Int
+
+  @@id([sessionId, flashcardNum, deckId])
+}
+
+
