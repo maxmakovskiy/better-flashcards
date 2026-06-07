@@ -3,6 +3,8 @@ import { NextAuthRequest } from 'next-auth'
 import { auth } from '@/auth'
 import { prisma } from '@/prisma'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
+import { StudySessionStatusEnum } from '@/../prisma/generated/prisma/enums'
+import * as z from 'zod'
 
 // end point to create new study session connected to specific deck
 export const POST = auth(async function POST(req: NextAuthRequest) {
@@ -16,7 +18,8 @@ export const POST = auth(async function POST(req: NextAuthRequest) {
         const { deckId } = await req.json()
         const session: StudySessionModel = await prisma.studySession.create({
             data: {
-                deckId: deckId
+                deckId: z.cuid2().parse(deckId),
+                status: StudySessionStatusEnum.STARTED
             },
         })
         return NextResponse.json(session)

@@ -5,12 +5,15 @@ import { LearningStateEnum, StudySessionStatusEnum, DifficultyRatingEnum } from 
 import * as z from 'zod'
 
 export type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[] }
+export type EnhancedStudyDeckModel = DeckModel & { flashcards: FlashcardModel[], studySessions: StudySessionModel[] }
 export type EnhancedStudySessionModel = StudySessionModel & { deck: EnhancedDeckModel }
 
 // export const LearningStateSchema = z.custom<LearningStateEnum>((val: unknown) => z.enum(LearningStateEnum).parse(val))
 export const LearningStateSchema = z.enum(LearningStateEnum)
 export const StudySessionStatusSchema = z.enum(StudySessionStatusEnum)
 export const DifficultyRatingSchema = z.enum(DifficultyRatingEnum)
+export const StudySessionActionsSchema = z.enum(['PAUSE', 'RESUME', 'FINISH'])
+export type StudySessionActionsSchema = z.infer<typeof StudySessionActionsSchema>
 
 export const FlashcardSchema = z.object({
     flashcardNum: z.number(),
@@ -65,6 +68,8 @@ export const StudySessionSchema = z.object({
     updatedAt: z.coerce.date()
 })
 
+export const StudySessionArraySchema = z.array(StudySessionSchema)
+
 const ReviewHistory = z.object({
     sessionId: z.string(),
     flashcardNum: z.number(),
@@ -90,4 +95,16 @@ export const DeckSchema = z.object({
     updatedAt: z.coerce.date()
 })
 
+export const EnhancedStudyDeckSchema = z.object({
+    deckId: z.string(),
+    title: z.string(),
+    description: z.string(),
+    userId: z.string(),
+    flashcards: FlashcardArraySchema,
+    studySessions: StudySessionArraySchema,
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date()
+})
+
+export const EnhancedStudyDeckArraySchema = z.array(EnhancedStudyDeckSchema)
 

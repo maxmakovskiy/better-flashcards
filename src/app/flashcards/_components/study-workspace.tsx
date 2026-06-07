@@ -30,7 +30,6 @@ export default function StudyWorkspace() {
     const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
     const startSession = useStudyStore((s: StudyStore) => s.startSession)
     const completeSession = useStudyStore((s: StudyStore) => s.completeSession)
-    const sessionStatus = useStudyStore((s: StudyStore) => s.status)
 
     useEffect(() => {
         loadDecks()
