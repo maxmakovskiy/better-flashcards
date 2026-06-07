@@ -219,7 +219,6 @@ model ReviewHistory {
   session StudySession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
   flashcard Flashcard @relation(fields: [flashcardNum, deckId], references: [flashcardNum, deckId], onDelete: Cascade)
 
-  difficultyRating DifficultyRatingEnum
   learningState LearningStateEnum
   dueData DateTime
   stability Float

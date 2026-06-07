@@ -21,6 +21,9 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import GamePlaceholder from '@/app/flashcards/_components/game-placeholder'
 import { StudySessionStatusEnum } from '@/../prisma/generated/prisma/enums'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import PauseIcon from '@mui/icons-material/Pause'
+import StopIcon from '@mui/icons-material/Stop'
 
 export default function StudyWorkspace() {
     const { data: session } = useSession()
@@ -41,7 +44,7 @@ export default function StudyWorkspace() {
 
     return (
         <Grid container>
-            <Grid size={7}
+            <Grid size={6}
                   sx={{
                       borderRight:4,
                       borderRightColor: 'secondary.main',
@@ -108,12 +111,12 @@ export default function StudyWorkspace() {
                 </Stack>
             </Grid>
 
-            <Grid size={5}>
+            <Grid size={6}>
                 {(selectedDeck === null) ? <GamePlaceholder />
                     :
                     <Stack sx={{height: '100%'}}>
                         <Grid spacing={2} container sx={{p:'1em'}}>
-                            <Grid size={9}>
+                            <Grid size={8}>
                                 <Stack spacing={1}>
                                     <Grid container>
                                         <Grid size={10}>
@@ -133,17 +136,32 @@ export default function StudyWorkspace() {
                                         />
                                 </Stack>
                             </Grid>
-                            <Grid size={3}>
+                            <Grid size={4} sx={{ display:'flex', justifyContent:'center', alignItems:'center' }}>
                                 {(!studySession || studySession.status === StudySessionStatusEnum.FINISHED) &&
-                                    <Button onClick={startSession} variant="contained">Start Session</Button>
+                                    <Button onClick={startSession} variant="contained">
+                                        <PlayArrowIcon />
+                                    </Button>
                                 }
                                 {(studySession && studySession.status === StudySessionStatusEnum.PAUSED) &&
-                                    <Button onClick={resumeSession} variant="contained">Resume Session</Button>
+                                    <Button
+                                        onClick={resumeSession}
+                                        variant="contained">
+                                        <PlayArrowIcon />
+                                    </Button>
                                 }
                                 {(studySession && studySession.status === StudySessionStatusEnum.STARTED) &&
-                                    <Stack spacing={1}>
-                                        <Button onClick={pauseSession} variant="contained">Pause Session</Button>
-                                        <Button onClick={completeSession} variant="contained">Finish Session</Button>
+                                    <Stack spacing={1} direction="row" >
+                                        <Button
+                                            onClick={pauseSession}
+                                            variant="contained">
+                                            <PauseIcon />
+                                        </Button>
+
+                                        <Button
+                                            onClick={completeSession}
+                                            variant="contained">
+                                            <StopIcon />
+                                        </Button>
                                     </Stack>
                                 }
                             </Grid>

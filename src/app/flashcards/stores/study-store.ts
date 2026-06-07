@@ -5,12 +5,10 @@ import {
     StudySessionSchema,
     StudySessionActionsSchema,
     mapFlashcardToFsrs,
-    mapFsrsToFlashcard
+    LearningStateFromFsrsSchema
 } from '@/app/flashcards/types'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
-import { DifficultyRatingEnum } from "@/../prisma/generated/prisma/enums"
-import dayjs from 'dayjs'
 import { Grade, Card, fsrs, FSRS, Rating, State } from 'ts-fsrs'
 
 export type StudySession = {
@@ -137,12 +135,12 @@ export const createStudyStore = (
                 learningSteps: updatedFsrsCard.card.learning_steps,
                 reps: updatedFsrsCard.card.reps,
                 lapses: updatedFsrsCard.card.lapses,
-                learningState: updatedFsrsCard.card.state,
-                lastDueData: updatedFsrsCard.log.due,
+                learningState: LearningStateFromFsrsSchema.parse(updatedFsrsCard.card.state),
+                nextReviewAt: updatedFsrsCard.card.due,
                 lastReviewAt: now,
+                lastDueData: updatedFsrsCard.log.due,
                 responseTimeMs: diffMs,
                 isCorrect: (grade === Rating.Good) || (grade === Rating.Easy),
-                reviewedAt: now,
             }
 
             fetch(`/api/session/${session?.sessionId}/add-review`,
@@ -151,12 +149,15 @@ export const createStudyStore = (
                     if (!res.ok) {
                         throw new Error(`Failed to create review-history for flashcard (flashcardNum=${topCard?.flashcardNum}; deckId=${selectedDeck?.deckId}`)
                     }
+                }).then(() => {
+                    set({
+                        reviewedCount: reviewedCount + 1
+                    })
                 }).catch(e => console.log(e))
 
             set({
                 cards: cards?.splice(1),
                 isCurrentCardAnswered: false,
-                reviewedCount: reviewedCount + 1
             })
 
             if (cards?.length === 0) {

@@ -3,7 +3,7 @@ import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { LearningStateEnum, StudySessionStatusEnum, DifficultyRatingEnum } from '@/../prisma/generated/prisma/enums'
 import * as z from 'zod'
-import { createEmptyCard, Card, fsrs, FSRS, Rating, State } from 'ts-fsrs'
+import { Card, State } from 'ts-fsrs'
 
 export type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[] }
 export type EnhancedStudyDeckModel = DeckModel & { flashcards: FlashcardModel[], studySessions: StudySessionModel[] }
@@ -153,3 +153,15 @@ export function mapFsrsToFlashcard(card: Card) {
     }
 }
 
+export const LearningStateFromFsrsSchema = z.enum(State).transform(state => {
+    switch(state) {
+        case State.New:
+            return LearningStateEnum.NEW
+        case State.Learning:
+            return LearningStateEnum.LEARNING
+        case State.Review:
+            return LearningStateEnum.REVIEW
+        case State.Relearning:
+            return LearningStateEnum.RELEARNING
+    }
+})

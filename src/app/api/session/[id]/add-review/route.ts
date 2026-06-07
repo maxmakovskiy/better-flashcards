@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/prisma'
 import * as z from 'zod'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
+import { LearningStateSchema } from '@/app/flashcards/types'
 
 // end point to create new study session connected to specific deck
 export const POST = auth(async function POST(
@@ -33,10 +34,8 @@ export const POST = auth(async function POST(
             nextReviewAt,
             lastReviewAt,
             lastDueData,
-            difficultyRating,
             responseTimeMs,
-            isCorrect,
-            reviewedAt
+            isCorrect
         } = await req.json()
 
         // check if session exist and haven't been ended
@@ -66,7 +65,7 @@ export const POST = auth(async function POST(
                 learningSteps: learningSteps,
                 reps: reps,
                 lapses: lapses,
-                learningState: learningState
+                learningState: LearningStateSchema.parse(learningState)
             }
         })
 
@@ -75,14 +74,13 @@ export const POST = auth(async function POST(
                 sessionId: sessionId,
                 flashcardNum: flashcardNum,
                 deckId: deckId,
-                difficultyRating: difficultyRating,
-                learningState: learningState,
+                learningState: LearningStateSchema.parse(learningState),
                 dueData: lastDueData,
                 stability: stability,
                 difficulty: difficulty,
                 responseTimeMs: responseTimeMs,
                 isCorrect: isCorrect,
-                reviewedAt: reviewedAt,
+                reviewedAt: lastReviewAt,
                 scheduledDays: scheduledDays,
                 learningSteps: learningSteps
             }
