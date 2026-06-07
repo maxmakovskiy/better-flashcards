@@ -6,11 +6,8 @@ import { DifficultyRatingEnum } from "@/../prisma/generated/prisma/enums"
 import { SuperMemoGrade, supermemo } from 'supermemo'
 import dayjs from 'dayjs'
 
-export type StudySessionStatus = 'uninitialized' | 'started' | 'paused' | 'finished'
-
 export type StudySession = {
     session: StudySessionModel | null
-    status: StudySessionStatus
     decks: EnhancedDeckModel[] | null
     cards: FlashcardModel[] | null
     selectedDeck: EnhancedDeckModel | null
@@ -35,7 +32,6 @@ export type StudyStore = StudySession & StudyStoreAction
 
 export const defaultInitState: StudySession = {
     session: null,
-    status: 'uninitialized',
     decks: null,
     cards: null,
     selectedDeck: null,
@@ -66,7 +62,6 @@ export const createStudyStore = (
                     })
                 set({
                     session: session,
-                    status: 'started',
                     timerTimestamp: new Date()
                 })
             } catch (e) {
@@ -169,7 +164,6 @@ export const createStudyStore = (
 
                 set({
                     session: session,
-                    status: 'finished'
                 })
                 loadDecks()
             } catch (e) {

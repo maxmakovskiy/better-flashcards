@@ -11,9 +11,15 @@ export const FlashcardSchema = z.object({
     deckId: z.string(),
     frontText: z.string(),
     backText: z.string(),
-    easeFactor: z.number(),
-    intervalDays: z.number(),
-    repetitionCount: z.number(),
+
+    stability: z.number(),
+    difficulty: z.number(),
+    scheduledDays: z.number(),
+    learningSteps: z.number(),
+    reps: z.number(),
+    lapses: z.number(),
+    learningState: z.string(),
+
     nextReviewAt: z.coerce.date(),
     lastReviewAt: z.coerce.date().nullable(),
     memoryStrength: z.number(),
@@ -34,4 +40,40 @@ export const EnhancedDeckSchema = z.object({
 })
 
 export const EnhancedDeckArraySchema = z.array(EnhancedDeckSchema)
+
+export const TagSchema = z.object({
+    name: z.string(),
+    description: z.string().nullable()
+})
+
+export const StudySessionSchema = z.object({
+    sessionId: z.string(),
+    startedAt: z.coerce.date(),
+    endedAt: z.coerce.date().nullable(),
+    totalReviews: z.number(),
+    correctAnswers: z.number(),
+    avgResponseTimeMs: z.number().nullable(),
+    deckId: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date()
+})
+
+const ReviewHistory = z.object({
+    sessionId: z.string(),
+    flashcardNum: z.number(),
+    deckId: z.string(),
+    difficultyRating: z.string(),
+    learningState: z.string(),
+    dueData: z.coerce.date(),
+    stability: z.number(),
+    difficulty: z.number(),
+    responseTimeMs: z.number(),
+    isCorrect: z.boolean(),
+    reviewedAt: z.coerce.date(),
+    scheduledDays: z.number(),
+    learningSteps: z.number()
+})
+
+
+
 
