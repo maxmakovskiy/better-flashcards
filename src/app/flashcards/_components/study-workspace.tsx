@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack'
 import BrainIcon from '@/app/_components/BrainIcon'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from '@mui/material/Skeleton'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -20,15 +20,19 @@ import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import GamePlaceholder from '@/app/flashcards/_components/game-placeholder'
+import { StudySessionStatusEnum } from '@/../prisma/generated/prisma/enums'
 
 export default function StudyWorkspace() {
     const { data: session } = useSession()
     const loadDecks = useStudyStore((s: StudyStore) => s.loadDecks)
     const selectDeck = useStudyStore((s: StudyStore) => s.selectDeck)
     const decks = useStudyStore((s: StudyStore) => s.decks)
+    const studySession = useStudyStore((s: StudyStore) => s.session)
     const selectedDeck = useStudyStore((s: StudyStore) => s.selectedDeck)
     const reviewedCount = useStudyStore((s: StudyStore) => s.reviewedCount)
     const startSession = useStudyStore((s: StudyStore) => s.startSession)
+    const pauseSession = useStudyStore((s: StudyStore) => s.pauseSession)
+    const resumeSession = useStudyStore((s: StudyStore) => s.resumeSession)
     const completeSession = useStudyStore((s: StudyStore) => s.completeSession)
 
     useEffect(() => {
@@ -99,13 +103,11 @@ export default function StudyWorkspace() {
                             >
                                 <DeckCard deck={deck} />
                             </Grid>
-
                         ))}
                     </Grid>
-
-
                 </Stack>
             </Grid>
+
             <Grid size={5}>
                 {(selectedDeck === null) ? <GamePlaceholder />
                     :
@@ -132,17 +134,23 @@ export default function StudyWorkspace() {
                                 </Stack>
                             </Grid>
                             <Grid size={3}>
-                                {(sessionStatus === 'uninitialized' || sessionStatus === 'finished') &&
+                                {(!studySession || studySession.status === StudySessionStatusEnum.FINISHED) &&
                                     <Button onClick={startSession} variant="contained">Start Session</Button>
                                 }
-                                {sessionStatus === 'started' &&
-                                    <Button onClick={completeSession} variant="contained">Stop Session</Button>
+                                {(studySession && studySession.status === StudySessionStatusEnum.PAUSED) &&
+                                    <Button onClick={resumeSession} variant="contained">Resume Session</Button>
+                                }
+                                {(studySession && studySession.status === StudySessionStatusEnum.STARTED) &&
+                                    <Stack spacing={1}>
+                                        <Button onClick={pauseSession} variant="contained">Pause Session</Button>
+                                        <Button onClick={completeSession} variant="contained">Finish Session</Button>
+                                    </Stack>
                                 }
                             </Grid>
                         </Grid>
                         <Divider />
 
-                        {(sessionStatus === 'started')
+                        {(studySession && studySession.status === StudySessionStatusEnum.STARTED)
                             ? <Game />
                             : <GamePlaceholder />
                         }

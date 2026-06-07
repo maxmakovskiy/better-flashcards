@@ -24,8 +24,9 @@ export type StudySession = {
 
 export type StudyStoreAction = {
     startSession: () => void
-    completeSession: () => void
+    pauseSession: () => void
     resumeSession: () => void
+    completeSession: () => void
     manageSession: (desiredStatus: StudySessionActionsSchema) => Promise<StudySessionModel | undefined>
     selectDeck: (deckId: string) => void
     loadDecks: () => void

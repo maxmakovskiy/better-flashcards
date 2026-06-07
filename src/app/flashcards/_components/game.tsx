@@ -50,30 +50,22 @@ export default function Game() {
             </QuestionGameCard>
 
 
-            <Grid container spacing={1}>
+            <Grid container spacing={2} columns={8}>
                 <Grid size={2} onClick={e => answer(e, 0)}>
                     {/*<Button variant="contained" color="error">I have no ideas at all</Button>*/}
-                    <Button variant="contained" color="error">0</Button>
+                    <Button variant="contained" color="error">AGAIN</Button>
                 </Grid>
                 <Grid size={2} onClick={e => answer(e, 1)}>
                     {/*<Button variant="contained" sx={{bgcolor:'#f48c06' }}>Incorrect, but I&#39;ll remember</Button>*/}
-                    <Button variant="contained" sx={{bgcolor:'#f48c06' }}>1</Button>
+                    <Button variant="contained" sx={{bgcolor:'#f48c06' }}>HARD</Button>
                 </Grid>
                 <Grid size={2} onClick={e => answer(e, 2)}>
                     {/*<Button variant="contained" color="success">Incorrect, but easy to recall</Button>*/}
-                    <Button variant="contained" color="success">2</Button>
+                    <Button variant="contained" color="success">GOOD</Button>
                 </Grid>
                 <Grid size={2} onClick={e => answer(e, 3)}>
                     {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>Serious hesitation</Button>*/}
-                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>3</Button>
-                </Grid>
-                <Grid size={2} onClick={e => answer(e, 4)}>
-                    {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>A little hesitation</Button>*/}
-                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>4</Button>
-                </Grid>
-                <Grid size={2} onClick={e => answer(e, 5)}>
-                    {/*<Button variant="contained" sx={{bgcolor:'#00afb9'}}>Perfect</Button>*/}
-                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>5</Button>
+                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>EASY</Button>
                 </Grid>
             </Grid>
         </Stack>
