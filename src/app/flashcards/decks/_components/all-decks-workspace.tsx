@@ -20,7 +20,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
-import { EnhancedDeckModel } from "@/app/flashcards/types"
+import {EnhancedDeckModel, EnhancedDeckSchema} from "@/app/flashcards/types"
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -48,6 +48,8 @@ export default function AllDecksWorkspace() {
                 throw new Error(`Failed to create new deck with title=${title}`)
             }
             return res.json()
+        }).then(newDeck => {
+            return EnhancedDeckSchema.parse(newDeck)
         }).then((newDeck: EnhancedDeckModel) => {
             mutateAllDecks([...allDecks || [], newDeck])
         }).catch(e => console.log(e))
