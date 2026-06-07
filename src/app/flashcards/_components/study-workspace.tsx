@@ -11,7 +11,6 @@ import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton';
 import DeckCard from '@/app/flashcards/_components/deck-card'
-import ExtensionIcon from '@mui/icons-material/Extension'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
 import { StudyStore } from "@/app/flashcards/stores/study-store"
@@ -20,12 +19,11 @@ import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
 import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
-import { EnhancedDeckModel, EnhancedDeckArraySchema } from '@/app/flashcards/types'
 import GamePlaceholder from '@/app/flashcards/_components/game-placeholder'
 
 export default function StudyWorkspace() {
     const { data: session } = useSession()
-    const setDecks = useStudyStore((s: StudyStore) => s.setDecks)
+    const loadDecks = useStudyStore((s: StudyStore) => s.loadDecks)
     const selectDeck = useStudyStore((s: StudyStore) => s.selectDeck)
     const decks = useStudyStore((s: StudyStore) => s.decks)
     const selectedDeck = useStudyStore((s: StudyStore) => s.selectedDeck)
@@ -35,20 +33,8 @@ export default function StudyWorkspace() {
     const sessionStatus = useStudyStore((s: StudyStore) => s.status)
 
     useEffect(() => {
-        if (session?.user) {
-            fetch('/api/session/decks')
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch the decks to review')
-                    }
-                    return res.json()
-                }).then(decks => {
-                    return EnhancedDeckArraySchema.parse(decks)
-                }).then((decks: object[]) => {
-                    setDecks(decks as EnhancedDeckModel[])
-                }).catch(e => console.error(e))
-        }
-    }, [session])
+        loadDecks()
+    }, [])
 
     return (
         <Grid container>
@@ -77,7 +63,6 @@ export default function StudyWorkspace() {
 
                     <Grid container spacing={1}  sx={{ alignItems:'stretch'}}>
                         <Grid size={4}>
-
                             <DeckStatGadget
                                 icon={<SchoolIcon fontSize="large" />}
                                 title={'42 Cards'} description='To review today' />
@@ -97,6 +82,7 @@ export default function StudyWorkspace() {
                     </Grid>
 
                     <Typography variant="h6">Your Decks to review today</Typography>
+                    <Divider />
 
                     <Grid container spacing={2}>
                         {!decks && [1,2,3].map(key => (

@@ -1,5 +1,5 @@
 import { createStore } from 'zustand/vanilla'
-import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { EnhancedDeckModel, EnhancedDeckArraySchema } from '@/app/flashcards/types'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
 import { DifficultyRatingEnum } from "@/../prisma/generated/prisma/enums"
@@ -28,6 +28,7 @@ export type StudyStoreAction = {
     answerCard: (grade: SuperMemoGrade) => void
     revealCard: () => void
     completeSession: () => void
+    loadDecks: () => void
 }
 
 export type StudyStore = StudySession & StudyStoreAction
@@ -88,7 +89,14 @@ export const createStudyStore = (
             })
         },
         answerCard: (grade: SuperMemoGrade) => {
-            const { session, selectedDeck, cards, completeSession, timerTimestamp } = get()
+            const {
+                session,
+                selectedDeck,
+                cards,
+                completeSession,
+                timerTimestamp,
+                reviewedCount
+            } = get()
             const topCard = cards?.at(0)
             console.log(`answering card (flashcardNum=${topCard?.flashcardNum}; deckId=${selectedDeck?.deckId}): ${grade}`)
 
@@ -139,7 +147,8 @@ export const createStudyStore = (
 
             set({
                 cards: cards?.splice(1),
-                isCurrentCardAnswered: false
+                isCurrentCardAnswered: false,
+                reviewedCount: reviewedCount + 1
             })
 
             if (cards?.length === 0) {
@@ -148,7 +157,7 @@ export const createStudyStore = (
             }
         },
         completeSession: async () => {
-            const { session } = get()
+            const { session, loadDecks } = get()
             try {
                 await fetch(`/api/session/${session?.sessionId}/finish`, { method: 'POST' })
                     .then(res => {
@@ -162,6 +171,7 @@ export const createStudyStore = (
                     session: session,
                     status: 'finished'
                 })
+                loadDecks()
             } catch (e) {
                 console.log(e)
             }
@@ -172,44 +182,26 @@ export const createStudyStore = (
             set({
                 isCurrentCardAnswered: !isCurrentCardAnswered,
             })
+        },
+        loadDecks: async () => {
+            try {
+                const decks = await fetch('/api/session/decks')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Failed to fetch the decks to review')
+                        }
+                        return res.json()
+                    }).then(decks => {
+                    return EnhancedDeckArraySchema.parse(decks)
+                })
+                set({
+                    decks: decks as EnhancedDeckModel[]
+                })
+            } catch(e) {
+                console.error(e)
+            }
         }
 
-        // startSession: (sessionId, cards) => {
-        //     set({
-        //         sessionId,
-        //         cards,
-        //         currentCardIndex: 0,
-        //         reviewedCount: 0,
-        //         correctCount: 0,
-        //         sessionStatus: "active",
-        //     })
-        // },
-
-        // answerCard: (wasCorrect) => {
-        //     const state = get()
-        //     set({
-        //         reviewedCount: state.reviewedCount + 1,
-        //         correctCount: wasCorrect
-        //             ? state.correctCount + 1
-        //             : state.correctCount,
-        //     })
-        // },
-        //
-        // nextCard: () => {
-        //     const state = get()
-        //     const nextIndex = state.currentCardIndex + 1
-        //     // End session if done
-        //     if (nextIndex >= state.cards.length) {
-        //         set({
-        //             sessionStatus: "completed",
-        //         })
-        //         return
-        //     }
-        //     set({
-        //         currentCardIndex: nextIndex,
-        //     })
-        // },
-        //
         // pauseSession: () => {
         //     set({
         //         sessionStatus: "paused",
@@ -221,27 +213,7 @@ export const createStudyStore = (
         //         sessionStatus: "active",
         //     })
         // },
-        //
-        // completeSession: () => {
-        //     set({
-        //         sessionStatus: "completed",
-        //     })
-        // },
-        //
-        // resetSession: () => {
-        //     set({
-        //         selectedDeckId: null,
-        //
-        //         sessionId: null,
-        //         sessionStatus: "idle",
-        //
-        //         cards: [],
-        //         currentCardIndex: 0,
-        //
-        //         reviewedCount: 0,
-        //         correctCount: 0,
-        //     })
-        // },
+
     }))
 }
 

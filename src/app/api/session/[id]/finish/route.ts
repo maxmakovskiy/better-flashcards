@@ -17,13 +17,27 @@ export const POST = auth(async function POST(
     }
     try {
         const { id } = await params
-        const session: StudySessionModel = await prisma.studySession.findUniqueOrThrow({
+        const reviews = await prisma.reviewHistory.findMany({
+            where: {
+                sessionId: id
+            }
+        })
+        await prisma.studySession.update({
             where: {
                 sessionId: id
             },
+            data: {
+                endedAt: new Date(),
+                totalReviews: reviews.length,
+                correctAnswers: reviews
+                    .map(r => Number(r.isCorrect))
+                    .reduce((a, b) => (a + b), 0),
+                avgResponseTimeMs: reviews
+                    .map(r => r.responseTimeMs)
+                    .reduce((a, b) => (a + b), 0) / reviews.length
+            }
         })
-        session.endedAt = new Date()
-        return NextResponse.json(session)
+        return new Response('Finished!', { status: 200 })
     } catch (e) {
         console.error(e)
         return NextResponse.json(
