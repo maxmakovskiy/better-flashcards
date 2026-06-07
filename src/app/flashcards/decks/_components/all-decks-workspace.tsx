@@ -102,51 +102,67 @@ export default function AllDecksWorkspace() {
                         description='Day Study Streak' />
                 </Grid>
             </Grid>
-            <TextField
-                sx={{ width:'40%'}}
-                // id={`${textFieldId}-input`}
-                label="Search"
-                slotProps={{
-                    input: {
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    },
-                }}
-                variant="filled"
-            />
+
+
+            {/*<TextField*/}
+            {/*    sx={{ width:'40%'}}*/}
+            {/*    // id={`${textFieldId}-input`}*/}
+            {/*    label="Search"*/}
+            {/*    slotProps={{*/}
+            {/*        input: {*/}
+            {/*            startAdornment: (*/}
+            {/*                <InputAdornment position="start">*/}
+            {/*                    <SearchIcon />*/}
+            {/*                </InputAdornment>*/}
+            {/*            ),*/}
+            {/*        },*/}
+            {/*    }}*/}
+            {/*    variant="filled"*/}
+            {/*/>*/}
 
             <TransitionGroup>
-                {isAllDecksValidating && <Fade>
-                    <LinearProgress aria-label="Loading…" variant="query" />
-                </Fade>}
+                {(!isAllDecksLoading && isAllDecksValidating) &&
+                    <Fade>
+                        <LinearProgress aria-label="Loading…" variant="query" />
+                    </Fade>
+                }
             </TransitionGroup>
 
-            <Grid container spacing={2}>
-                {!(isAllDecksError || isAllDecksLoading) && allDecks?.map(deck => (
-                    <Grid
-                        key={deck.deckId}
-                        size={3}
-                        spacing={2}
-                        component={NextLink}
-                        href={`/flashcards/decks/${deck.deckId}`}
-                    >
-                        <DeckCard deck={deck} />
+            {!isAllDecksLoading
+                ? (
+                    (allDecks.length === 0)
+                        ?
+                            <Typography variant="body2">
+                                You have 0 decks. Please add some
+                            </Typography>
+                        :
+                            <Grid container spacing={2}>
+                                {allDecks?.map(deck => (
+                                    <Grid
+                                        key={deck.deckId}
+                                        size={3}
+                                        spacing={2}
+                                        component={NextLink}
+                                        href={`/flashcards/decks/${deck.deckId}`}
+                                    >
+                                        <DeckCard deck={deck} />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                ) :
+                    <Grid container spacing={2}>
+                        {[1,2,3,4].map(k => (
+                            <Grid
+                                key={k}
+                                size={3}
+                                spacing={2}
+                            >
+                                <Skeleton animation="wave" sx={{ height: '120px' }} />
+                            </Grid>
+                        ))}
                     </Grid>
-                ))}
 
-                {(isAllDecksLoading && !isAllDecksError) && [1,2,3,4].map(k => (
-                    <Grid
-                        key={k}
-                        size={3}
-                        spacing={2}
-                    >
-                        <Skeleton animation="wave" sx={{ height: '120px' }} />
-                    </Grid>
-                ))}
-            </Grid>
+            }
 
             <NewDeckDialog
                 isOpen={isDialogOpen}
