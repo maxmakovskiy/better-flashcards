@@ -166,7 +166,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                             description={
                                 (isDeckLoading
                                     ? <Skeleton animation="wave" />
-                                    : format(deck!.createdAt, 'MMM d, Y'))
+                                    : format(deck!.createdAt, 'MMM d, y'))
                         } />
                     }
                 </Grid>

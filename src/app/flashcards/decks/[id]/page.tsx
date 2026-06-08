@@ -29,8 +29,8 @@ export default async function SingleDeckPage({ params }: { params: Promise<{ id:
             value={{
                 fallback: {
                     // Pass the promises to client components.
-                    deckUrl: deckPromise,
-                    cardsUrl: flashcardsPromise,
+                    [deckUrl]: deckPromise,
+                    [cardsUrl]: flashcardsPromise,
                 },
             }}
         >

@@ -130,7 +130,7 @@ export default function AllDecksWorkspace() {
 
             {!isAllDecksLoading
                 ? (
-                    (allDecks.length === 0)
+                    (isAllDecksError || allDecks?.length === 0)
                         ?
                             <Typography variant="body2">
                                 You have 0 decks. Please add some
