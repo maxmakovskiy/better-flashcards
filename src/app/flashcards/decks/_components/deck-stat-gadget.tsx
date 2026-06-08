@@ -25,8 +25,8 @@ export default function DeckStatGadget({ icon, title, description }: DeckStatGad
                 </Grid>
                 <Grid size={9}>
                     <Stack>
-                        <Typography variant="h6">{title}</Typography>
                         <Typography variant="body2">{description}</Typography>
+                        <Typography variant="h6">{title}</Typography>
                     </Stack>
                 </Grid>
             </Grid>

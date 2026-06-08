@@ -19,12 +19,14 @@ import BackupTableIcon from '@mui/icons-material/BackupTable';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import NextLink from '@/app/_components/Link'
+import AnalyticsIcon from '@mui/icons-material/Analytics'
 
 const drawerWidth: number = 240
 
-const menuItems = new Map<string, object>([
+type MenuItemT = { icon: ReactNode, url: string }
+const menuItems = new Map<string, MenuItemT>([
     ["Home", {icon: <HomeIcon color='primary' />, url: "/flashcards"}],
-    ["Dashboard", {icon: <DashboardIcon color='primary' />, url: "/flashcards/dashboard"}],
+    ["Dashboard", {icon: <AnalyticsIcon color='primary' />, url: "/flashcards/dashboard"}],
     ["Decks", {icon: <BackupTableIcon color='primary' />, url: "/flashcards/decks"}],
     ["Profile", {icon: <ManageAccountsIcon color='primary' />, url: "/flashcards/profile"}],
 ])
