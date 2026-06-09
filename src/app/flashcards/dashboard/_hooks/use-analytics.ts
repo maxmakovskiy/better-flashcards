@@ -8,12 +8,9 @@ const fetcher = async (url: string, date: Date) => {
         body: JSON.stringify({ endDate : date })
     })
     if (!res.ok) {
-        const info = await res.json()
-        const status = res.status
-        throw new Error(`An error occurred while fetching the data. Url: ${url}; Message: ${info}; Status: ${status}`)
+        throw new Error(`An error occurred while fetching the data. Url: ${url}`)
     }
     const obj = await res.json()
-    console.log('Client response: ' + JSON.stringify(obj))
     return ClientAnalyticsSchema.parse(obj) as AnalyticData
 }
 
