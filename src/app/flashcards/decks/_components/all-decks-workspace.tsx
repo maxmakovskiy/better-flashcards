@@ -1,26 +1,20 @@
 'use client'
 
-import { useState, ReactNode } from 'react'
+import { useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import InputAdornment from '@mui/material/InputAdornment'
-import TextField from '@mui/material/TextField'
-import SearchIcon from '@mui/icons-material/Search'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import NextLink from '@/app/_components/Link'
 import Button from '@mui/material/Button'
 import NewDeckDialog from './new-deck-dialog'
-import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
-import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import FolderIcon from '@mui/icons-material/Folder'
-import Paper from '@mui/material/Paper'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
-import {EnhancedDeckModel } from "@/app/flashcards/types"
+import { EnhancedDeckModel } from "@/app/flashcards/types"
 import { EnhancedFlashcardsDeckSchema } from "@/app/flashcards/_schemas/types/deck-schema"
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'

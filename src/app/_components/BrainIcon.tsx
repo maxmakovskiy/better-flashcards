@@ -1,5 +1,4 @@
-import SvgIcon, { SvgIconProps }  from '@mui/material/SvgIcon';
-
+import SvgIcon from '@mui/material/SvgIcon'
 
 // Taken from:
 // https://pictogrammers.com/library/mdi/icon/brain/

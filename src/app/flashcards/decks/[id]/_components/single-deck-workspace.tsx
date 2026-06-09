@@ -25,33 +25,33 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import CardDialog from '@/app/flashcards/decks/[id]/_components/card-dialog'
 import { useDeck } from '../_hooks/use-deck'
 import { useCards } from '../_hooks/use-cards'
-import { FlashcardSchema } from '@/app/flashcards/types'
+import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { format } from 'date-fns'
 
 
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const [isNewCardDialogOpen, setNewCardDialogOpen] = useState(false)
-    const { deck, isDeckLoading, isDeckError, deckMutate } = useDeck(deckId)
+    const { deck, isDeckLoading, isDeckError } = useDeck(deckId)
     const { cards, isCardsLoading, isCardsError, cardsMutate } = useCards(deckId)
 
     const stats = useMemo(() => {
         const now = new Date()
         if (isCardsLoading || isCardsError || !cards) {
             return {
-                "learned": 0,
-                "inprogress": 0,
-                "new": 0
+                learned: 0,
+                inProgress: 0,
+                new: 0
             }
         }
         const newNumber = cards?.filter(c => !c.lastReviewAt).length
         const learnedNumber = cards?.filter(c => c.nextReviewAt > now).length
 
         return {
-            "learned": learnedNumber,
-            "inprogress": cards?.length - (learnedNumber + newNumber),
-            "new": newNumber
+            learned: learnedNumber,
+            inProgress: cards?.length - (learnedNumber + newNumber),
+            new: newNumber
         }
-    }, [cards]);
+    }, [cards, isCardsLoading, isCardsError]);
 
     const handleCardCreation = (frontText: string, backText: string) => {
         const body = { frontText, backText };
@@ -84,7 +84,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                     <Typography variant="body2">Decks</Typography>
                 </Link>
                 <Typography variant="body2">
-                    {isDeckLoading ?
+                    {(isDeckLoading || isDeckError) ?
                         <Skeleton animation="wave" />
                         : deck?.title
                     }
@@ -94,14 +94,14 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 <Stack>
                     <Typography gutterBottom variant='h5'>
                         Deck:
-                        {isDeckLoading ?
+                        {isDeckLoading || isDeckError ?
                             <Skeleton animation="wave" />
                             : " " + deck?.title
                         }
                     </Typography>
                     <Typography gutterBottom variant='body2'>
                         Description:
-                        {isDeckLoading ?
+                        {isDeckLoading || isDeckError ?
                             <Skeleton animation="wave" />
                             : " " + deck?.description
                         }
@@ -122,7 +122,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             </Stack>
             <Grid container spacing={2} columns={10} sx={{ alignItems:'stretch'}}>
                 <Grid size={2}>
-                    {isCardsLoading
+                    {isCardsLoading || isCardsError
                         ? <Skeleton animation="wave" />
                         : <DeckStatGadget
                             icon={<ViewAgendaIcon fontSize="large" />}
@@ -131,55 +131,53 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                     }
                 </Grid>
                 <Grid size={2}>
-                    {isCardsLoading
+                    {isCardsLoading || isCardsError
                         ? <Skeleton animation="wave" />
                         : <DeckStatGadget
                             icon={<DoneAllIcon fontSize="large" />}
-                            title={stats['learned']}
+                            title={stats.learned}
                             description='Learned' />
                     }
                 </Grid>
                 <Grid size={2}>
-                    {isCardsLoading
+                    {isCardsLoading || isCardsError
                         ? <Skeleton animation="wave" />
                         : <DeckStatGadget
                             icon={<CachedIcon fontSize="large" />}
-                            title={stats['inprogress']}
+                            title={stats.inProgress}
                             description='In progress' />
                     }
                 </Grid>
                 <Grid size={2}>
-                    {isCardsLoading
+                    {isCardsLoading || isCardsError
                         ? <Skeleton animation="wave" />
                         : <DeckStatGadget
                             icon={<NewReleasesIcon fontSize="large" />}
-                            title={stats['new']}
+                            title={stats.new}
                             description='New' />
                     }
                 </Grid>
                 <Grid size={2}>
-                    {isDeckLoading
+                    {isDeckLoading || isDeckError
                         ? <Skeleton animation="wave" />
                         : <DeckStatGadget
                             icon={<CalendarMonthIcon fontSize="large" />}
                             title='Created'
-                            description={
-                                (isDeckLoading
-                                    ? <Skeleton animation="wave" />
-                                    : format(deck!.createdAt, 'MMM d, y'))
-                        } />
+                            description={format(deck!.createdAt, 'MMM d, y')} />
                     }
                 </Grid>
             </Grid>
             <Divider />
 
-            {isCardsLoading ? <Skeleton animation="wave" sx={{ height:'10em' }}/>
+            {isCardsLoading || isCardsError 
+                ? <Skeleton animation="wave" sx={{ height:'10em' }}/>
                 : (
                     (cards?.length === 0)
                         ? <Typography variant="body2">
                             You have not added any cards yet
                             </Typography>
-                        : <CardsTable deckId={deckId} />)
+                        : <CardsTable deckId={deckId} />
+                    )
             }
             <CardDialog
                 dialogTitle='New card'

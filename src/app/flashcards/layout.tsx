@@ -16,7 +16,6 @@ import { Drawer } from '@/app/flashcards/_components/drawer'
 import { DrawerHeader } from '@/app/flashcards/_components/drawer-header'
 import HomeIcon from '@mui/icons-material/Home'
 import BackupTableIcon from '@mui/icons-material/BackupTable';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import NextLink from '@/app/_components/Link'
 import AnalyticsIcon from '@mui/icons-material/Analytics'

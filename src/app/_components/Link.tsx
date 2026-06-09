@@ -1,4 +1,4 @@
-'use client';
-import Link, { LinkProps } from 'next/link';
+'use client'
+import Link from 'next/link'
 
-export default Link;
+export default Link
