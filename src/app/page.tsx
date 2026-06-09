@@ -45,16 +45,23 @@ export default async function WelcomePage() {
                               await signIn("github")
                           }}
                       >
-                          <Button type="submit" variant="outlined">Signin with GitHub</Button>
+                          <Link
+                              type="submit"
+                              component={Button}
+                              color="inherit"
+                              underline="always"
+                          >
+                              <Typography variant="h5">Sign-in with GitHub</Typography>
+                          </Link>
                       </form>
                       :
                       <Link
                           href="/flashcards"
                           component={NextLink}
                           color="inherit"
-                          underline="hover"
+                          underline="always"
                       >
-                          <Typography variant="h4">Get started!</Typography>
+                          <Typography variant="h5">Get started!</Typography>
                       </Link>
                   }
               </Stack>
@@ -229,7 +236,7 @@ export default async function WelcomePage() {
                             href="https://github.com/maxmakovskiy"
                             component={NextLink}
                             color="inherit"
-                            underline="hover"
+                            underline="always"
                         >
                             <Typography variant="button">maxmakovskiy</Typography>
                         </Link>
