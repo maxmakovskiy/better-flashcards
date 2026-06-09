@@ -113,7 +113,9 @@ export default function DashboardWorkspace() {
                                 (
                                     (isAnalyticsError || isAnalyticsLoading)
                                         ? <Skeleton animation="wave" />
-                                        : analyticsData?.studySessions.map(s => s.reviewedCards).flat().length
+                                        : (new Set(analyticsData?.studySessions
+                                            .map(s => s.reviewedCards.map(review => `${review.deckId}$${review.flashcardNum}`))
+                                            .flat().flat())).size
                                 )
                             }
                             description={'Card(s) Studied'} />
