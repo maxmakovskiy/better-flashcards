@@ -15,7 +15,7 @@ const fetcher = async (url: string) => {
 
 export const useAllDecks = () => {
     const { data, error, isLoading, isValidating, mutate } = useSWR<EnhancedDeckModel[], Error>(
-        `/api/decks`,
+        '/api/decks',
         fetcher
     )
 

@@ -3,7 +3,6 @@ import { AnalyticData } from '@/app/flashcards/types'
 import { ClientAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-schema'
 
 const fetcher = async (url: string, date: Date) => {
-    console.log('Starting to do the request: ' + url)
     const res = await fetch(url, {
         method: 'POST',
         body: JSON.stringify({ endDate : date })
@@ -21,7 +20,10 @@ const fetcher = async (url: string, date: Date) => {
 export const useAnalytics = (date: Date) => {
     const { data, error, isLoading, isValidating } = useSWR<AnalyticData, Error>(
         '/api/dashboard',
-        (url: string) => fetcher(url, date)
+        (url: string) => fetcher(url, date),
+        {
+            revalidateOnFocus: false
+        }
     )
 
     return {
