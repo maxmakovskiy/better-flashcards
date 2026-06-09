@@ -90,6 +90,26 @@ export default function DashboardWorkspace() {
         }
     }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
 
+    const mostStudiedDecks = useMemo(() => {
+        if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
+            return []
+        }
+
+        const counts = new Map();
+        analyticsData?.studySessions
+            .map(s => ({ title: s.deck.title, numReviews: s.reviewedCards.length }))
+            .forEach(({title, numReviews}) => {
+                if (counts.has(title)) {
+                    counts.set(title, counts.get(title) + numReviews)
+                } else {
+                    counts.set(title, numReviews)
+                }
+            })
+        return [...counts].slice(0, 3).map(([title, times]) => ({ key: title, value: `${times} reviews` }))
+
+    }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
+
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Stack sx={{ p:'3em' }} spacing={3}>
@@ -270,12 +290,12 @@ export default function DashboardWorkspace() {
                                     <Typography variant="overline" gutterBottom>
                                         By amount of reviews:
                                     </Typography>
-
-                                    <HeadlessTable data={[
-                                        { key: 'English dictionnary', value: '33' },
-                                        { key: 'Highest amount of reviews', value: 5 },
-                                        { key: 'Highest accuracy', value: '71%' },
-                                    ]} />
+                                    {(isAnalyticsLoading || isAnalyticsLoading || !analyticsData)
+                                        ?
+                                            <Skeleton animation="wave" />
+                                        :
+                                            <HeadlessTable data={mostStudiedDecks} />
+                                    }
                                 </Stack>
                             </Paper>
 

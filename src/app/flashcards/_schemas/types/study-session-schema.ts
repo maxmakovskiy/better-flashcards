@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { StudySessionStatusEnum } from '@/../prisma/generated/prisma/enums'
 import { ReviewHistorySchema } from './review-history-schema'
+import { DeckSchema } from './basic-deck-schema'
 
 export const StudySessionStatusSchema = z.enum(StudySessionStatusEnum)
 
@@ -20,6 +21,7 @@ export const StudySessionSchema = z.object({
 export const StudySessionArraySchema = z.array(StudySessionSchema)
 
 export const EnhancedStudySessionSchema = StudySessionSchema.extend({
-    reviewedCards: z.array(ReviewHistorySchema)
+    reviewedCards: z.array(ReviewHistorySchema),
+    deck: DeckSchema,
 })
 

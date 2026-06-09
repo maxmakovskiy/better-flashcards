@@ -8,7 +8,7 @@ import { type ClientAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-
 
 export type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[] }
 export type EnhancedStudyDeckModel = DeckModel & { flashcards: FlashcardModel[], studySessions: StudySessionModel[] }
-export type EnhancedStudySessionModel = StudySessionModel & { reviewedCards: ReviewHistoryModel[] }
+export type EnhancedStudySessionModel = StudySessionModel & { reviewedCards: ReviewHistoryModel[], deck: DeckModel }
 
 export function mapFlashcardToFsrs(
     flashcard: FlashcardModel

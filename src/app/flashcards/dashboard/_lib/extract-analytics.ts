@@ -78,7 +78,8 @@ export const extractAnalytics = async (userId: string, endDate: Date,startDate?:
             ...inRangeFilterMixin
         },
         include: {
-            reviewedCards: true
+            reviewedCards: true,
+            deck: true
         },
         orderBy: {
             endedAt: 'desc'

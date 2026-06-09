@@ -1,15 +1,7 @@
 import * as z from 'zod'
 import { FlashcardArraySchema } from './flashcard-schema'
 import { StudySessionArraySchema } from './study-session-schema'
-
-export const DeckSchema = z.object({
-    deckId: z.string(),
-    title: z.string(),
-    description: z.string().nullable(),
-    userId: z.string(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date()
-})
+import { DeckSchema } from './basic-deck-schema'
 
 export const EnhancedFlashcardsDeckSchema = DeckSchema.extend({
     flashcards: FlashcardArraySchema
