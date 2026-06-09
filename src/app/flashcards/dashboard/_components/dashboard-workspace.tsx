@@ -20,6 +20,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LearningStateEnum } from '@/../prisma/generated/prisma/enums'
+import HeadlessTable from './headless-table'
 
 export default function DashboardWorkspace() {
     const { endDate, setEndDate, analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics()
@@ -207,21 +208,39 @@ export default function DashboardWorkspace() {
                     </Grid>
 
                     <Grid size={4}>
+                        <Stack spacing={2}>
                             <Paper sx={{ p:'1em', height:'100%' }}>
-                                <Stack>
+                                <Stack spacing={1}>
                                     <Typography variant="h6">
                                         Session average
                                     </Typography>
-                                    <Grid container>
-                                        <Grid size={6}>
-                                           <Typography variant="body1">
-                                               Response time
-                                           </Typography>
-                                        </Grid>
-                                        <Grid size={6}></Grid>
-                                    </Grid>
+
+                                    <HeadlessTable data={[
+                                        { key: 'Avg response time', value: '12s' },
+                                        { key: 'Avg amount of reviews', value: 5 },
+                                        { key: 'Avg accuracy', value: '71%' },
+                                    ]} />
                                 </Stack>
                             </Paper>
+                            <Paper sx={{ p:'1em', height:'100%' }}>
+                                <Stack>
+                                    <Typography variant="h6">
+                                        Most studied decks
+                                    </Typography>
+                                    <Typography variant="overline" gutterBottom>
+                                        By amount of reviews:
+                                    </Typography>
+
+                                    <HeadlessTable data={[
+                                        { key: 'English dictionnary', value: '33' },
+                                        { key: 'Highest amount of reviews', value: 5 },
+                                        { key: 'Highest accuracy', value: '71%' },
+                                    ]} />
+                                </Stack>
+                            </Paper>
+
+                        </Stack>
+
                     </Grid>
 
                 </Grid>
