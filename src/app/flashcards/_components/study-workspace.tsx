@@ -13,8 +13,8 @@ import Skeleton from '@mui/material/Skeleton'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
-import { StudyStore } from "@/app/flashcards/stores/study-store"
-import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
+import { StudyStore } from "../_stores/study-store"
+import { useStudyStore } from "../_providers/study-store-provider"
 import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
 import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'

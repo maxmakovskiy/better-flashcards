@@ -6,8 +6,8 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import QuestionGameCard from "./question-game-card"
-import { useStudyStore } from "@/app/flashcards/providers/study-store-provider"
-import { StudyStore } from "@/app/flashcards/stores/study-store"
+import { useStudyStore } from "../_providers/study-store-provider"
+import { StudyStore } from "../_stores/study-store"
 import { Rating, Grade } from 'ts-fsrs'
 
 

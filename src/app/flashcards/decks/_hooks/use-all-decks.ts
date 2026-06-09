@@ -1,5 +1,6 @@
 import useSWR from 'swr'
-import { EnhancedDeckModel, EnhancedDeckArraySchema } from '@/app/flashcards/types'
+import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { EnhancedFlashcardsDeckArraySchema } from '@/app/flashcards/_schemas/types/deck-schema'
 
 const fetcher = async (url: string) => {
     const res = await fetch(url)
@@ -9,7 +10,7 @@ const fetcher = async (url: string) => {
         throw new Error(`An error occurred while fetching the data. Url: ${url}; Message: ${info}; Status: ${status}`)
     }
     const obj = await res.json()
-    return EnhancedDeckArraySchema.parse(obj) as EnhancedDeckModel[]
+    return EnhancedFlashcardsDeckArraySchema.parse(obj) as EnhancedDeckModel[]
 }
 
 export const useAllDecks = () => {

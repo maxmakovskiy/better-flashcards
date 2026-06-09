@@ -1,5 +1,5 @@
 import { SessionProvider } from "next-auth/react"
-import { StudyStoreProvider } from "@/app/flashcards/providers/study-store-provider";
+import { StudyStoreProvider } from "./_providers/study-store-provider";
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/prisma'

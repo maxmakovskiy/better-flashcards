@@ -1,12 +1,13 @@
 import { createStore } from 'zustand/vanilla'
 import {
     EnhancedStudyDeckModel,
-    EnhancedStudyDeckArraySchema,
-    StudySessionSchema,
-    StudySessionActionsSchema,
-    mapFlashcardToFsrs,
-    LearningStateFromFsrsSchema
+    mapFlashcardToFsrs
 } from '@/app/flashcards/types'
+import { EnhancedStudyDeckArraySchema } from '@/app/flashcards/_schemas/types/deck-schema'
+import { StudySessionSchema } from '@/app/flashcards/_schemas/types/study-session-schema'
+import { StudySessionActionsSchema } from '@/app/flashcards/_schemas/types/study-sesssion-actions-schema'
+import { LearningStateFromFsrsSchema } from '@/app/flashcards/_schemas/types/flashcards-learning-state-schema'
+import { DifficultyRatingFromFsrsSchema } from '@/app/flashcards/_schemas/types/difficulty-rating-from-fsrs-schema'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
 import { Grade, fsrs, FSRS, Rating } from 'ts-fsrs'
@@ -147,6 +148,7 @@ export const createStudyStore = (
                 lastDueData: updatedFsrsCard.log.due,
                 responseTimeMs: diffMs,
                 isCorrect: (grade === Rating.Good) || (grade === Rating.Easy),
+                difficultyRating: DifficultyRatingFromFsrsSchema.parse(updatedFsrsCard.log.rating)
             }
 
             fetch(`/api/session/${session?.sessionId}/add-review`,

@@ -6,7 +6,7 @@
 import { type ReactNode, createContext, useState, useContext } from 'react'
 import { useStore } from 'zustand'
 
-import { type StudyStore, createStudyStore } from '@/app/flashcards/stores/study-store'
+import { type StudyStore, createStudyStore } from '../_stores/study-store'
 
 export type StudyStoreApi = ReturnType<typeof createStudyStore>
 

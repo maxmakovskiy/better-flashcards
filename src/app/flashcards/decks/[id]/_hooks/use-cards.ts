@@ -1,6 +1,6 @@
 import useSWR  from 'swr'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import { FlashcardArraySchema } from '@/app/flashcards/types'
+import { FlashcardArraySchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 
 const fetcher = async (url: string) => {
     const res = await fetch(url)

@@ -184,6 +184,7 @@ model ReviewHistory {
   responseTimeMs Int
   isCorrect Boolean
   reviewedAt DateTime
+  rating DifficultyRatingEnum @default(AGAIN)
 
   // Number of days until the next review
   scheduledDays Int

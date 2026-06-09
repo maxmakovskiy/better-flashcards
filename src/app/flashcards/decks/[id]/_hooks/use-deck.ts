@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
-import { DeckSchema } from '@/app/flashcards/types'
+import { DeckSchema } from '@/app/flashcards/_schemas/types/deck-schema'
 
 const fetcher = async (url: string) => {
     try {
