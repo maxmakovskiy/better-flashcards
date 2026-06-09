@@ -1,13 +1,13 @@
 'use client'
 
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 
 export interface CardDialogProps {
     frontTextInit?: string;
@@ -35,7 +35,7 @@ export default function CardDialog({
         const formJson = Object.fromEntries((formData as any).entries())
         handleData(formJson.front, formJson.back)
         setClose()
-    };
+    }
 
     return (
         <Dialog open={isOpen} onClose={setClose}>
@@ -44,39 +44,39 @@ export default function CardDialog({
                 <DialogContentText>
                     {dialogDescription}
                 </DialogContentText>
-                <form onSubmit={handleSubmit} id="subscription-form">
+                <form onSubmit={handleSubmit} id='subscription-form'>
                     <TextField
                         autoFocus
                         required
-                        margin="dense"
-                        name="front"
-                        label="Front side of a card"
+                        margin='dense'
+                        name='front'
+                        label='Front side of a card'
                         multiline
                         fullWidth
                         rows={4}
-                        variant="filled"
+                        variant='filled'
                         defaultValue={frontTextInit || ''}
                     />
                     <TextField
                         autoFocus
                         required
-                        margin="dense"
-                        name="back"
-                        label="Back side of a card"
+                        margin='dense'
+                        name='back'
+                        label='Back side of a card'
                         multiline
                         fullWidth
                         rows={4}
-                        variant="filled"
+                        variant='filled'
                         defaultValue={backTextInit || ''}
                     />
                 </form>
             </DialogContent>
             <DialogActions>
                 <Button onClick={setClose}>Cancel</Button>
-                <Button type="submit" form="subscription-form">
+                <Button type='submit' form='subscription-form'>
                     Done
                 </Button>
             </DialogActions>
         </Dialog>
-    );
+    )
 }

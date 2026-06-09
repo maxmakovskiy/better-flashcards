@@ -36,7 +36,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
     // const now = useRef<Date>(new Date())
 
     const defineStatus = (card: FlashcardModel): string => {
-        const now = new Date();
+        const now = new Date()
         if (!card.lastReviewAt) {
             return 'New'
         }
@@ -53,14 +53,14 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         }
         return formatDistanceToNow(card.lastReviewAt, {
             addSuffix: true,
-        });
+        })
     }
 
     const handleCardModification = (newFront: string, newBack: string) => {
-        const body = { frontText: newFront, backText: newBack };
+        const body = { frontText: newFront, backText: newBack }
         fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         }).then(res => {
             if (!res.ok) {
@@ -82,7 +82,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
 
     const handleCardDeletion = (flashcardNum: number) => {
         fetch(`/api/cards/${deckId}/${flashcardNum}`, {
-            method: "DELETE"
+            method: 'DELETE'
         }).then(res => {
             if (!res.ok) {
                 throw new Error(`Failed deleting card with flashcardNum=${flashcardNum} in deck with id=${deckId}`)
@@ -102,17 +102,17 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     <TextField fullWidth
                         // sx={{ width:'60%'}}
                         // id={`${textFieldId}-input`}
-                               label="Search"
+                               label='Search'
                                slotProps={{
                                    input: {
                                        startAdornment: (
-                                           <InputAdornment position="start">
+                                           <InputAdornment position='start'>
                                                <SearchIcon />
                                            </InputAdornment>
                                        ),
                                    },
                                }}
-                               variant="filled"
+                               variant='filled'
                     />
                 </Grid>
                 <Grid size={3}>
@@ -120,13 +120,13 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                 </Grid>
                 <Grid size={3}>
                     {/*<FormControl fullWidth>*/}
-                    {/*    <InputLabel id="select-sort-label">Sort by</InputLabel>*/}
+                    {/*    <InputLabel id='select-sort-label'>Sort by</InputLabel>*/}
                     {/*    <Select*/}
-                    {/*        labelId="select-sort-label"*/}
-                    {/*        id="select-sort"*/}
-                    {/*        // value={"Newest"}*/}
-                    {/*        label="Sort by"*/}
-                    {/*        onChange={() => console.log("Changing sorting order")}*/}
+                    {/*        labelId='select-sort-label'*/}
+                    {/*        id='select-sort'*/}
+                    {/*        // value={'Newest'}*/}
+                    {/*        label='Sort by'*/}
+                    {/*        onChange={() => console.log('Changing sorting order')}*/}
                     {/*    >*/}
                     {/*        <MenuItem value={10}>Ten</MenuItem>*/}
                     {/*        <MenuItem value={20}>Twenty</MenuItem>*/}
@@ -137,19 +137,19 @@ export default function CardsTable({ deckId }: { deckId: string }) {
             </Grid>
             <TransitionGroup>
                 {isCardsValidating && <Fade>
-                    <LinearProgress aria-label="Loading…" variant="query" />
+                    <LinearProgress aria-label='Loading…' variant='query' />
                 </Fade>}
             </TransitionGroup>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                     <TableHead>
                         <TableRow>
-                            <TableCell><Typography variant="h6">#</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Front</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Back</Typography></TableCell>
-                            <TableCell align="center"><Typography variant="h6">Status</Typography></TableCell>
-                            <TableCell align="center"><Typography variant="h6">Last review</Typography></TableCell>
-                            <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
+                            <TableCell><Typography variant='h6'>#</Typography></TableCell>
+                            <TableCell><Typography variant='h6'>Front</Typography></TableCell>
+                            <TableCell><Typography variant='h6'>Back</Typography></TableCell>
+                            <TableCell align='center'><Typography variant='h6'>Status</Typography></TableCell>
+                            <TableCell align='center'><Typography variant='h6'>Last review</Typography></TableCell>
+                            <TableCell align='center'><Typography variant='h6'>Actions</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -158,32 +158,32 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                 hover
                                 sx={{ cursor:'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    <Typography variant="body2">
-                                        <Skeleton animation="wave" />
+                                <TableCell component='th' scope='row'>
+                                    <Typography variant='body2'>
+                                        <Skeleton animation='wave' />
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body1">
-                                        <Skeleton animation="wave" />
+                                    <Typography variant='body1'>
+                                        <Skeleton animation='wave' />
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body1">
-                                        <Skeleton animation="wave" />
+                                    <Typography variant='body1'>
+                                        <Skeleton animation='wave' />
                                     </Typography>
                                 </TableCell>
-                                <TableCell align="center">
-                                    <Typography variant="body2">
-                                        <Skeleton animation="wave" />
+                                <TableCell align='center'>
+                                    <Typography variant='body2'>
+                                        <Skeleton animation='wave' />
                                     </Typography>
                                 </TableCell>
-                                <TableCell align="center">
-                                    <Typography variant="body2">
-                                        <Skeleton animation="wave" />
+                                <TableCell align='center'>
+                                    <Typography variant='body2'>
+                                        <Skeleton animation='wave' />
                                     </Typography>
                                 </TableCell>
-                                <TableCell align="center">
+                                <TableCell align='center'>
                                     <Button>
                                         <DeleteForeverIcon />
                                     </Button>
@@ -203,27 +203,27 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                 }}
                                 sx={{ cursor:'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    <Typography variant="body2">{c.flashcardNum}</Typography>
+                                <TableCell component='th' scope='row'>
+                                    <Typography variant='body2'>{c.flashcardNum}</Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body1">{c.frontText}</Typography>
+                                    <Typography variant='body1'>{c.frontText}</Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body1">{c.backText}</Typography>
+                                    <Typography variant='body1'>{c.backText}</Typography>
                                 </TableCell>
-                                <TableCell align="center">
+                                <TableCell align='center'>
                                     {/* TODO: replace with actual status */}
-                                    <Typography variant="body2">
+                                    <Typography variant='body2'>
                                         {defineStatus(c)}
                                     </Typography>
                                 </TableCell>
-                                <TableCell align="center">
-                                    <Typography variant="body2">
+                                <TableCell align='center'>
+                                    <Typography variant='body2'>
                                         {lastReview(c)}
                                     </Typography>
                                 </TableCell>
-                                <TableCell align="center">
+                                <TableCell align='center'>
                                     <Button onClick={(e: MouseEvent<HTMLElement>) => {
                                         e.stopPropagation()
                                         // e.preventDefault()
@@ -246,5 +246,5 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                 handleData={handleCardModification}
             />
         </Stack>
-    );
+    )
 }

@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
 import * as z from 'zod'
-import { auth } from "@/auth"
+import { auth } from '@/auth'
 import { prisma } from '@/prisma'
-import { StudySessionStatusEnum } from "@/../prisma/generated/prisma/enums"
+import { StudySessionStatusEnum } from '@/../prisma/generated/prisma/enums'
 import { StudySessionActionsSchema } from '@/app/flashcards/_schemas/types/study-sesssion-actions-schema'
 
 // end point to create new study session connected to specific deck
@@ -13,7 +13,7 @@ export const POST = auth(async function POST(
 ) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -61,7 +61,7 @@ export const POST = auth(async function POST(
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }

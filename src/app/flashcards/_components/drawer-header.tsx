@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 
 export const DrawerHeader = styled('div', {
     shouldForwardProp: (prop) => prop !== 'open'
@@ -22,5 +22,5 @@ export const DrawerHeader = styled('div', {
             },
         }
     ]
-}));
+}))
 

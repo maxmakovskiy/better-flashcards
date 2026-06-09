@@ -5,9 +5,9 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import QuestionGameCard from "./question-game-card"
-import { useStudyStore } from "../_providers/study-store-provider"
-import { StudyStore } from "../_stores/study-store"
+import QuestionGameCard from './question-game-card'
+import { useStudyStore } from '../_providers/study-store-provider'
+import { StudyStore } from '../_stores/study-store'
 import { Rating, Grade } from 'ts-fsrs'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
@@ -34,10 +34,10 @@ export default function Game() {
         reason?: SnackbarCloseReason,
     ) => {
         if (reason === 'clickaway') {
-            return;
+            return
         }
-        setAlertOpen(false);
-    };
+        setAlertOpen(false)
+    }
 
     return (
         <Stack sx={{ alignItems:'center', pt:'2em', px:'1em'}} spacing={3}>
@@ -45,19 +45,19 @@ export default function Game() {
                 height='13em'
                 width='20em'
             >
-                <Typography variant="body1">
+                <Typography variant='body1'>
                     {cards?.at(0)?.frontText}
                 </Typography>
             </QuestionGameCard>
 
-            <Button variant="contained" onClick={revealCard}>Reveal</Button>
+            <Button variant='contained' onClick={revealCard}>Reveal</Button>
 
             <QuestionGameCard
                 height='13em'
                 width='20em'
                 isBlurred={!isCurrentCardAnswered}
             >
-                <Typography variant="body1">
+                <Typography variant='body1'>
                     {cards?.at(0)?.backText}
                 </Typography>
             </QuestionGameCard>
@@ -65,16 +65,16 @@ export default function Game() {
 
             <Grid container spacing={2} columns={8}>
                 <Grid size={2} onClick={e => answer(e, Rating.Again)}>
-                    <Button variant="contained" color="error">AGAIN</Button>
+                    <Button variant='contained' color='error'>AGAIN</Button>
                 </Grid>
                 <Grid size={2} onClick={e => answer(e, Rating.Hard)}>
-                    <Button variant="contained" sx={{bgcolor:'#f48c06' }}>HARD</Button>
+                    <Button variant='contained' sx={{bgcolor:'#f48c06' }}>HARD</Button>
                 </Grid>
                 <Grid size={2} onClick={e => answer(e, Rating.Good)}>
-                    <Button variant="contained" color="success">GOOD</Button>
+                    <Button variant='contained' color='success'>GOOD</Button>
                 </Grid>
                 <Grid size={2} onClick={e => answer(e, Rating.Easy)}>
-                    <Button variant="contained" sx={{bgcolor:'#00afb9'}}>EASY</Button>
+                    <Button variant='contained' sx={{bgcolor:'#00afb9'}}>EASY</Button>
                 </Grid>
             </Grid>
 
@@ -84,13 +84,13 @@ export default function Game() {
                 onClose={handleAlertClose}>
                 <Alert
                     onClose={handleAlertClose}
-                    severity="warning"
-                    variant="filled"
+                    severity='warning'
+                    variant='filled'
                     sx={{ width: '100%' }}
                 >
                     Card should be revealed first
                 </Alert>
             </Snackbar>
         </Stack>
-    );
+    )
 }

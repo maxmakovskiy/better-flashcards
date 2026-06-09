@@ -13,9 +13,9 @@ import FolderIcon from '@mui/icons-material/Folder'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
-import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
-import { EnhancedDeckModel } from "@/app/flashcards/types"
-import { EnhancedFlashcardsDeckSchema } from "@/app/flashcards/_schemas/types/deck-schema"
+import { useAllDecks } from '@/app/flashcards/decks/_hooks/use-all-decks'
+import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { EnhancedFlashcardsDeckSchema } from '@/app/flashcards/_schemas/types/deck-schema'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -35,8 +35,8 @@ export default function AllDecksWorkspace() {
 
     const createNewDeck = (title: string, description: string) => {
         fetch(`/api/decks`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title, description }),
         }).then(res => {
             if (!res.ok) {
@@ -53,12 +53,12 @@ export default function AllDecksWorkspace() {
     return (
         <Stack sx={{ p:'3em'}} spacing={3}>
             <Stack>
-                <Typography variant="h5">All Your Decks</Typography>
-                <Stack direction="row" sx={{ justifyContent:'space-between', alignItems:'center'}}>
-                    <Typography variant="body2">Create, organize and study your flashcard decks</Typography>
+                <Typography variant='h5'>All Your Decks</Typography>
+                <Stack direction='row' sx={{ justifyContent:'space-between', alignItems:'center'}}>
+                    <Typography variant='body2'>Create, organize and study your flashcard decks</Typography>
                         <Button
                             sx={{ height:'100%' }}
-                            variant="contained"
+                            variant='contained'
                             startIcon={<AddIcon />}
                             onClick={() => setDialogOpen(true)}
                         >
@@ -69,31 +69,31 @@ export default function AllDecksWorkspace() {
             <Grid container spacing={3} sx={{ alignItems:'stretch' }}>
                 <Grid size={3}>
                     <DeckStatGadget
-                        icon={<FolderIcon fontSize="large" />}
-                        title={isAllDecksLoading ? <Skeleton animation="wave" /> : allDecks?.length}
+                        icon={<FolderIcon fontSize='large' />}
+                        title={isAllDecksLoading ? <Skeleton animation='wave' /> : allDecks?.length}
                         description='Total Decks' />
                 </Grid>
                 <Grid size={3}>
                     {/* TODO: compute from study session how many decks have been studied today */}
                     <DeckStatGadget
-                        icon={<DoneAllIcon fontSize="large" />}
-                        title={isAllDecksLoading ? <Skeleton animation="wave" /> : 0}
+                        icon={<DoneAllIcon fontSize='large' />}
+                        title={isAllDecksLoading ? <Skeleton animation='wave' /> : 0}
                         description='Decks Studied Today' />
                 </Grid>
                 <Grid size={3}>
                     <DeckStatGadget
-                        icon={<ViewDayIcon fontSize="large" />}
+                        icon={<ViewDayIcon fontSize='large' />}
                         title={
                             isAllDecksLoading
-                                ? <Skeleton animation="wave" />
+                                ? <Skeleton animation='wave' />
                                 : allDecks?.map(d => d.flashcards.length).reduce((curr, acc) => curr + acc, 0)}
                         description='Total Cards' />
                 </Grid>
                 <Grid size={3}>
                     {/* TODO: compute study streak */}
                     <DeckStatGadget
-                        icon={<TrendingUpIcon fontSize="large" />}
-                        title={isAllDecksLoading ? <Skeleton animation="wave" /> : 0}
+                        icon={<TrendingUpIcon fontSize='large' />}
+                        title={isAllDecksLoading ? <Skeleton animation='wave' /> : 0}
                         description='Day Study Streak' />
                 </Grid>
             </Grid>
@@ -102,23 +102,23 @@ export default function AllDecksWorkspace() {
             {/*<TextField*/}
             {/*    sx={{ width:'40%'}}*/}
             {/*    // id={`${textFieldId}-input`}*/}
-            {/*    label="Search"*/}
+            {/*    label='Search'*/}
             {/*    slotProps={{*/}
             {/*        input: {*/}
             {/*            startAdornment: (*/}
-            {/*                <InputAdornment position="start">*/}
+            {/*                <InputAdornment position='start'>*/}
             {/*                    <SearchIcon />*/}
             {/*                </InputAdornment>*/}
             {/*            ),*/}
             {/*        },*/}
             {/*    }}*/}
-            {/*    variant="filled"*/}
+            {/*    variant='filled'*/}
             {/*/>*/}
 
             <TransitionGroup>
                 {(!isAllDecksLoading && isAllDecksValidating) &&
                     <Fade>
-                        <LinearProgress aria-label="Loading…" variant="query" />
+                        <LinearProgress aria-label='Loading…' variant='query' />
                     </Fade>
                 }
             </TransitionGroup>
@@ -127,7 +127,7 @@ export default function AllDecksWorkspace() {
                 ? (
                     (isAllDecksError || allDecks?.length === 0)
                         ?
-                            <Typography variant="body2">
+                            <Typography variant='body2'>
                                 You have 0 decks. Please add some
                             </Typography>
                         :
@@ -152,7 +152,7 @@ export default function AllDecksWorkspace() {
                                 size={3}
                                 spacing={2}
                             >
-                                <Skeleton animation="wave" sx={{ height: '120px' }} />
+                                <Skeleton animation='wave' sx={{ height: '120px' }} />
                             </Grid>
                         ))}
                     </Grid>
@@ -165,5 +165,5 @@ export default function AllDecksWorkspace() {
                 handleSubmit={createNewDeck}
             />
         </Stack>
-    );
+    )
 }

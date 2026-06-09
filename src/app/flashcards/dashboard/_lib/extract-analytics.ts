@@ -95,7 +95,7 @@ export const extractAnalytics = async (userId: string, endDate: Date, startDate?
                 in: studySessions.map(s => s.sessionId)
             }
         },
-        by: ["flashcardNum", "deckId"],
+        by: ['flashcardNum', 'deckId'],
         _max: {
             reviewedAt: true,
         }
@@ -108,7 +108,7 @@ export const extractAnalytics = async (userId: string, endDate: Date, startDate?
                 reviewedAt: review._max.reviewedAt!,
             })),
         },
-    });
+    })
 
 
     return {

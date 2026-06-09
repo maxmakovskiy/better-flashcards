@@ -10,20 +10,20 @@ export interface HeadlessTableProps {
 
 export default function HeadlessTable({ data }: HeadlessTableProps) {
     return (
-        <Table size="small">
+        <Table size='small'>
             <TableBody>
                 {data.map(row => (
                     <TableRow
                         key={row.key}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                        <TableCell component="th" scope="row">
-                        <Typography variant="subtitle2">
+                        <TableCell component='th' scope='row'>
+                        <Typography variant='subtitle2'>
                                 {row.key}
                             </Typography>
                         </TableCell>
-                        <TableCell align="left">
-                            <Typography variant="body1">
+                        <TableCell align='left'>
+                            <Typography variant='body1'>
                                 {row.value}
                             </Typography>
                         </TableCell>

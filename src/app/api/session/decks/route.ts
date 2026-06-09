@@ -9,7 +9,7 @@ import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySess
 export const GET = auth(async function GET(req) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -48,7 +48,7 @@ export const GET = auth(async function GET(req) {
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }

@@ -5,37 +5,37 @@ import MenuItem from '@mui/material/MenuItem'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Box from '@mui/material/Box'
 
-const itemHeight = 48;
+const itemHeight = 48
 
 export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletion: () => void }) {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+    const open = Boolean(anchorEl)
 
     const handleClick = (event: MouseEvent<HTMLElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setAnchorEl(event.currentTarget);
-    };
+        event.preventDefault()
+        event.stopPropagation()
+        setAnchorEl(event.currentTarget)
+    }
     const handleClose = (event: MouseEvent<HTMLElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setAnchorEl(null);
-    };
+        event.preventDefault()
+        event.stopPropagation()
+        setAnchorEl(null)
+    }
 
     return (
         <Box>
             <IconButton
-                aria-label="more"
-                id="long-button"
+                aria-label='more'
+                id='long-button'
                 aria-controls={open ? 'long-menu' : undefined}
                 aria-expanded={open}
-                aria-haspopup="true"
+                aria-haspopup='true'
                 onClick={handleClick}
             >
-                <MoreHorizIcon fontSize="small" />
+                <MoreHorizIcon fontSize='small' />
             </IconButton>
             <Menu
-                id="long-menu"
+                id='long-menu'
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
@@ -61,5 +61,5 @@ export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletio
                 </MenuItem>
             </Menu>
         </Box>
-    );
+    )
 }

@@ -9,7 +9,7 @@ import { StudySessionActionsSchema } from '@/app/flashcards/_schemas/types/study
 import { LearningStateFromFsrsSchema } from '@/app/flashcards/_schemas/types/flashcards-learning-state-schema'
 import { DifficultyRatingFromFsrsSchema } from '@/app/flashcards/_schemas/types/difficulty-rating-from-fsrs-schema'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
-import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
+import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import { Grade, fsrs, FSRS, Rating } from 'ts-fsrs'
 
 export type StudySession = {

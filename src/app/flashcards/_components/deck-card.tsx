@@ -9,7 +9,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Stack from '@mui/material/Stack'
 import DeckCardMenu from '@/app/flashcards/_components/deck-card-menu'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
-import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
+import { useAllDecks } from '@/app/flashcards/decks/_hooks/use-all-decks'
 
 export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
     const [progress] = useState<number>(() => {
@@ -29,7 +29,7 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
 
     const deleteDeck = () => {
         fetch(`/api/decks/${deck.deckId}`, {
-            method: "DELETE",
+            method: 'DELETE',
         }).then(res => {
             if (!res.ok) {
                 throw new Error(`Failed to delete the deck with id=${deck.deckId}`)
@@ -56,17 +56,17 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
         >
             <CardContent>
                 <Stack
-                    direction="row"
+                    direction='row'
                     sx={{
                         alignItems:'center',
                         justifyContent:'space-between'
                     }}
                 >
-                    <FolderIcon fontSize="small" />
+                    <FolderIcon fontSize='small' />
                     <DeckCardMenu handleDeckDeletion={deleteDeck} />
                 </Stack>
                 <Typography
-                    variant="body1"
+                    variant='body1'
                     sx={{
                         color: 'text.primary',
                         textOverflow: 'ellipsis',
@@ -77,23 +77,23 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                     {deck.title}
                 </Typography>
                 <Stack
-                    direction="row"
+                    direction='row'
                     sx={{ justifyContent: 'space-between', alignItems:'center' }}
                 >
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                         {deck.flashcards.length} cards
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                         {progress}%
                     </Typography>
                 </Stack>
                 <LinearProgress
-                    variant="determinate"
+                    variant='determinate'
                     min={0}
                     max={100}
                     value={progress}
                 />
             </CardContent>
         </Card>
-    );
+    )
 }

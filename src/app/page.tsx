@@ -6,8 +6,8 @@ import NextLink from '@/app/_components/Link'
 import Paper from '@mui/material/Paper'
 import BrainIcon from '@/app/_components/BrainIcon'
 import Button from '@mui/material/Button'
-import { signIn, auth } from "@/auth"
-import Divider from "@mui/material/Divider";
+import { signIn, auth } from '@/auth'
+import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -17,13 +17,13 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import MoodIcon from '@mui/icons-material/Mood';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-import Box from "@mui/material/Box";
+import Box from '@mui/material/Box';
 
 
 export default async function WelcomePage() {
     const session = await auth()
   return (
-      <Stack component="main">
+      <Stack component='main'>
           <Stack
              spacing={2}
                 sx={{
@@ -35,39 +35,39 @@ export default async function WelcomePage() {
                     justifyContent:'space-between'
                 }}
           >
-              <Stack direction="row" sx={{ justifyContent:'space-between'}}>
+              <Stack direction='row' sx={{ justifyContent:'space-between'}}>
                   <BrainIcon />
                   {!session
                       ?
                       <form
                           action={async () => {
-                              "use server"
-                              await signIn("github")
+                              'use server'
+                              await signIn('github')
                           }}
                       >
                           <Link
-                              type="submit"
+                              type='submit'
                               component={Button}
-                              color="inherit"
-                              underline="always"
+                              color='inherit'
+                              underline='always'
                           >
-                              <Typography variant="h5">Sign-in with GitHub</Typography>
+                              <Typography variant='h5'>Sign-in with GitHub</Typography>
                           </Link>
                       </form>
                       :
                       <Link
-                          href="/flashcards"
+                          href='/flashcards'
                           component={NextLink}
-                          color="inherit"
-                          underline="always"
+                          color='inherit'
+                          underline='always'
                       >
-                          <Typography variant="h5">Get started!</Typography>
+                          <Typography variant='h5'>Get started!</Typography>
                       </Link>
                   }
               </Stack>
 
-              <Stack direction="row" sx={{ justifyContent:'center'}}>
-                  <Typography variant="h6">
+              <Stack direction='row' sx={{ justifyContent:'center'}}>
+                  <Typography variant='h6'>
                       Better Flashcards is an adaptive flashcard learning powered by spaced repetition. Just better.
                   </Typography>
               </Stack>
@@ -77,13 +77,13 @@ export default async function WelcomePage() {
               <Grid size={4}>
                   <Paper sx={{p:'2em'}}>
                       <Stack spacing={2}>
-                          <Typography gutterBottom variant="h4">What</Typography>
+                          <Typography gutterBottom variant='h4'>What</Typography>
                           <Divider />
-                          <Typography gutterBottom variant="subtitle1">
+                          <Typography gutterBottom variant='subtitle1'>
                               Better Flashcards is a web-based learning platform that helps users
                               retain knowledge using adaptive flashcard review sessions.
                           </Typography>
-                          <Typography variant="subtitle1">
+                          <Typography variant='subtitle1'>
                               The system schedules reviews based on previous performance,
                               allowing learners to focus more on difficult concepts and less
                               on material they already know.
@@ -95,7 +95,7 @@ export default async function WelcomePage() {
               <Grid size={4}>
                   <Paper sx={{p:'2em'}}>
                       <Stack spacing={2}>
-                          <Typography gutterBottom variant="h4">Key features</Typography>
+                          <Typography gutterBottom variant='h4'>Key features</Typography>
                           <Divider />
                           <List>
                               <ListItem>
@@ -103,7 +103,7 @@ export default async function WelcomePage() {
                                       <CheckIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                        primary={<Typography variant="subtitle1">Adaptive Reviews</Typography>}
+                                        primary={<Typography variant='subtitle1'>Adaptive Reviews</Typography>}
                                         secondary='Reviews are scheduled according to learning progress.'
                                   />
                               </ListItem>
@@ -113,7 +113,7 @@ export default async function WelcomePage() {
                                       <CheckIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Analytics Dashboard</Typography>}
+                                      primary={<Typography variant='subtitle1'>Analytics Dashboard</Typography>}
                                       secondary='Track study streaks, retention, and performance.'
                                   />
                               </ListItem>
@@ -122,7 +122,7 @@ export default async function WelcomePage() {
                                       <PendingActionsIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Interactive Flashcards (upcoming)</Typography>}
+                                      primary={<Typography variant='subtitle1'>Interactive Flashcards (upcoming)</Typography>}
                                       secondary='Support for rich card content and multiple review modes.'
                                   />
                               </ListItem>
@@ -132,7 +132,7 @@ export default async function WelcomePage() {
                                       <CheckIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Session Recovery</Typography>}
+                                      primary={<Typography variant='subtitle1'>Session Recovery</Typography>}
                                       secondary='Resume study sessions without losing progress.'
                                   />
                               </ListItem>
@@ -147,7 +147,7 @@ export default async function WelcomePage() {
 
                   <Paper sx={{p:'2em'}}>
                       <Stack spacing={2}>
-                          <Typography gutterBottom variant="h4">Built with</Typography>
+                          <Typography gutterBottom variant='h4'>Built with</Typography>
                           <Divider />
                           <List dense>
                               <ListItem>
@@ -155,7 +155,7 @@ export default async function WelcomePage() {
                                       <MoodIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Next.js</Typography>}
+                                      primary={<Typography variant='subtitle1'>Next.js</Typography>}
                                       secondary='Everything will be React. (I sure hope not)'
                                   />
                               </ListItem>
@@ -165,7 +165,7 @@ export default async function WelcomePage() {
                                       <SentimentNeutralIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">TypeScript</Typography>}
+                                      primary={<Typography variant='subtitle1'>TypeScript</Typography>}
                                       secondary={`Types are supposed to be our friend ? Aren't they ?`}
                                   />
                               </ListItem>
@@ -174,7 +174,7 @@ export default async function WelcomePage() {
                                       <MoodIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Prisma ORM</Typography>}
+                                      primary={<Typography variant='subtitle1'>Prisma ORM</Typography>}
                                       secondary='Forget your favored SQL'
                                   />
                               </ListItem>
@@ -184,7 +184,7 @@ export default async function WelcomePage() {
                                       <MoodIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Sqlite</Typography>}
+                                      primary={<Typography variant='subtitle1'>Sqlite</Typography>}
                                       secondary='What are you Database or File ?'
                                   />
                               </ListItem>
@@ -194,7 +194,7 @@ export default async function WelcomePage() {
                                       <SentimentSatisfiedIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">SWR</Typography>}
+                                      primary={<Typography variant='subtitle1'>SWR</Typography>}
                                       secondary='Takes your time'
                                   />
                               </ListItem>
@@ -204,7 +204,7 @@ export default async function WelcomePage() {
                                       <MoodIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Zustand</Typography>}
+                                      primary={<Typography variant='subtitle1'>Zustand</Typography>}
                                       secondary='Actually better than Context'
                                   />
                               </ListItem>
@@ -214,7 +214,7 @@ export default async function WelcomePage() {
                                       <SentimentSatisfiedIcon />
                                   </ListItemIcon>
                                   <ListItemText
-                                      primary={<Typography variant="subtitle1">Auth.js</Typography>}
+                                      primary={<Typography variant='subtitle1'>Auth.js</Typography>}
                                       secondary='Saves your time'
                                   />
                               </ListItem>
@@ -226,22 +226,22 @@ export default async function WelcomePage() {
 
           <Divider />
 
-          <Stack direction="row" sx={{ my:'1em', justifyContent:'center', alignItems: 'center' }}>
+          <Stack direction='row' sx={{ my:'1em', justifyContent:'center', alignItems: 'center' }}>
                 <Stack sx={{ alignItems: 'center' }}>
-                    <Typography variant="overline">Better Flashcards</Typography>
-                    <Typography variant="overline">WEB Final Project</Typography>
+                    <Typography variant='overline'>Better Flashcards</Typography>
+                    <Typography variant='overline'>WEB Final Project</Typography>
                     <Box>
-                        <Typography variant="overline">Developed by </Typography>
+                        <Typography variant='overline'>Developed by </Typography>
                         <Link
-                            href="https://github.com/maxmakovskiy"
+                            href='https://github.com/maxmakovskiy'
                             component={NextLink}
-                            color="inherit"
-                            underline="always"
+                            color='inherit'
+                            underline='always'
                         >
-                            <Typography variant="button">maxmakovskiy</Typography>
+                            <Typography variant='button'>maxmakovskiy</Typography>
                         </Link>
                     </Box>
-                    <Typography variant="overline">2026</Typography>
+                    <Typography variant='overline'>2026</Typography>
                 </Stack>
           </Stack>
 

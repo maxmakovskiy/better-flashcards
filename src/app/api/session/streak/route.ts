@@ -8,7 +8,7 @@ import {
     format,
     startOfDay,
     subDays,
-} from "date-fns"
+} from 'date-fns'
 
 // Computes streak: number of consecutive sessions (the one follows the other, day after day)
 // within give pool
@@ -26,7 +26,7 @@ function getStreak(now: Date, sessions: StudySessionModel[]): number {
             end: startOfDay(s.endedAt),
         })
             ) {
-            coveredDays.add(format(day, "yyyy-MM-dd"));
+            coveredDays.add(format(day, 'yyyy-MM-dd'));
         }
     }
 
@@ -34,13 +34,13 @@ function getStreak(now: Date, sessions: StudySessionModel[]): number {
 
     // Start from today if active today,
     // otherwise start from yesterday.
-    let current = coveredDays.has(format(today, "yyyy-MM-dd"))
+    let current = coveredDays.has(format(today, 'yyyy-MM-dd'))
         ? today
         : subDays(today, 1);
 
     let streak = 0;
 
-    while (coveredDays.has(format(current, "yyyy-MM-dd"))) {
+    while (coveredDays.has(format(current, 'yyyy-MM-dd'))) {
         streak++;
         current = subDays(current, 1);
     }
@@ -52,7 +52,7 @@ function getStreak(now: Date, sessions: StudySessionModel[]): number {
 export const GET = auth(async function GET(req: NextAuthRequest) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -74,7 +74,7 @@ export const GET = auth(async function GET(req: NextAuthRequest) {
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }

@@ -1,12 +1,12 @@
-import { auth } from "@/auth"
-import { NextResponse } from "next/server"
+import { auth } from '@/auth'
+import { NextResponse } from 'next/server'
 import { ClientAnalyticsSchema, ServerAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-schema'
 import { extractAnalytics } from '@/app/flashcards/dashboard/_lib/extract-analytics'
 
 export const POST = auth(async function POST(req) {
     if (!req.auth || !req.auth.user || !req.auth.user.id) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -18,7 +18,7 @@ export const POST = auth(async function POST(req) {
         if (!body.success) {
             console.error(`Wrong data provided: ${body.error}`)
             return NextResponse.json(
-                { message: "Wrong data provided" },
+                { message: 'Wrong data provided' },
                 { status: 400 }
             )
         }
@@ -29,7 +29,7 @@ export const POST = auth(async function POST(req) {
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }

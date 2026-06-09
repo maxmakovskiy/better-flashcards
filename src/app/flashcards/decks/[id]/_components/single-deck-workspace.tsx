@@ -8,14 +8,14 @@ import Button from '@mui/material/Button'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import AddIcon from '@mui/icons-material/Add'
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda'
-import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
+import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
 import CardsTable from './cards-table'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NextLink from '@/app/_components/Link'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import Box from "@mui/material/Box"
+import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import CachedIcon from '@mui/icons-material/Cached'
@@ -51,13 +51,13 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             inProgress: cards?.length - (learnedNumber + newNumber),
             new: newNumber
         }
-    }, [cards, isCardsLoading, isCardsError]);
+    }, [cards, isCardsLoading, isCardsError])
 
     const handleCardCreation = (frontText: string, backText: string) => {
-        const body = { frontText, backText };
+        const body = { frontText, backText }
         fetch(`/api/cards/${deckId}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         }).then(res => {
             if (!res.ok) {
@@ -72,38 +72,38 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     return (
         <Stack sx={{ p:'3em' }} spacing={3}>
             <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
-                aria-label="breadcrumb"
+                separator={<NavigateNextIcon fontSize='small' />}
+                aria-label='breadcrumb'
             >
                 <Link
                     component={NextLink}
-                    href="/flashcards/decks"
-                    color="inherit"
-                    underline="hover"
+                    href='/flashcards/decks'
+                    color='inherit'
+                    underline='hover'
                 >
-                    <Typography variant="body2">Decks</Typography>
+                    <Typography variant='body2'>Decks</Typography>
                 </Link>
-                <Typography variant="body2">
+                <Typography variant='body2'>
                     {(isDeckLoading || isDeckError) ?
-                        <Skeleton animation="wave" />
+                        <Skeleton animation='wave' />
                         : deck?.title
                     }
                 </Typography>
             </Breadcrumbs>
-            <Stack direction="row" sx={{alignItems:'center', justifyContent:'space-between'}}>
+            <Stack direction='row' sx={{alignItems:'center', justifyContent:'space-between'}}>
                 <Stack>
                     <Typography gutterBottom variant='h5'>
                         Deck:
                         {isDeckLoading || isDeckError ?
-                            <Skeleton animation="wave" />
-                            : " " + deck?.title
+                            <Skeleton animation='wave' />
+                            : ' ' + deck?.title
                         }
                     </Typography>
                     <Typography gutterBottom variant='body2'>
                         Description:
                         {isDeckLoading || isDeckError ?
-                            <Skeleton animation="wave" />
-                            : " " + deck?.description
+                            <Skeleton animation='wave' />
+                            : ' ' + deck?.description
                         }
                     </Typography>
                 </Stack>
@@ -123,45 +123,45 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             <Grid container spacing={2} columns={10} sx={{ alignItems:'stretch'}}>
                 <Grid size={2}>
                     {isCardsLoading || isCardsError
-                        ? <Skeleton animation="wave" />
+                        ? <Skeleton animation='wave' />
                         : <DeckStatGadget
-                            icon={<ViewAgendaIcon fontSize="large" />}
+                            icon={<ViewAgendaIcon fontSize='large' />}
                             title={cards?.length || 0}
                             description='Total cards' />
                     }
                 </Grid>
                 <Grid size={2}>
                     {isCardsLoading || isCardsError
-                        ? <Skeleton animation="wave" />
+                        ? <Skeleton animation='wave' />
                         : <DeckStatGadget
-                            icon={<DoneAllIcon fontSize="large" />}
+                            icon={<DoneAllIcon fontSize='large' />}
                             title={stats.learned}
                             description='Learned' />
                     }
                 </Grid>
                 <Grid size={2}>
                     {isCardsLoading || isCardsError
-                        ? <Skeleton animation="wave" />
+                        ? <Skeleton animation='wave' />
                         : <DeckStatGadget
-                            icon={<CachedIcon fontSize="large" />}
+                            icon={<CachedIcon fontSize='large' />}
                             title={stats.inProgress}
                             description='In progress' />
                     }
                 </Grid>
                 <Grid size={2}>
                     {isCardsLoading || isCardsError
-                        ? <Skeleton animation="wave" />
+                        ? <Skeleton animation='wave' />
                         : <DeckStatGadget
-                            icon={<NewReleasesIcon fontSize="large" />}
+                            icon={<NewReleasesIcon fontSize='large' />}
                             title={stats.new}
                             description='New' />
                     }
                 </Grid>
                 <Grid size={2}>
                     {isDeckLoading || isDeckError
-                        ? <Skeleton animation="wave" />
+                        ? <Skeleton animation='wave' />
                         : <DeckStatGadget
-                            icon={<CalendarMonthIcon fontSize="large" />}
+                            icon={<CalendarMonthIcon fontSize='large' />}
                             title='Created'
                             description={format(deck!.createdAt, 'MMM d, y')} />
                     }
@@ -170,10 +170,10 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             <Divider />
 
             {isCardsLoading || isCardsError 
-                ? <Skeleton animation="wave" sx={{ height:'10em' }}/>
+                ? <Skeleton animation='wave' sx={{ height:'10em' }}/>
                 : (
                     (cards?.length === 0)
-                        ? <Typography variant="body2">
+                        ? <Typography variant='body2'>
                             You have not added any cards yet
                             </Typography>
                         : <CardsTable deckId={deckId} />

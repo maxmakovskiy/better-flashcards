@@ -102,7 +102,7 @@ export default function DashboardWorkspace() {
             return []
         }
 
-        const counts = new Map();
+        const counts = new Map()
         analyticsData?.studySessions
             .map(s => ({ title: s.deck.title, numReviews: s.reviewedCards.length }))
             .forEach(({title, numReviews}) => {
@@ -125,8 +125,8 @@ export default function DashboardWorkspace() {
 
                     <Grid size={6}>
                         <Stack spacing={1}>
-                            <Typography gutterBottom variant="h5">Analytics</Typography>
-                            <Typography variant="body2">
+                            <Typography gutterBottom variant='h5'>Analytics</Typography>
+                            <Typography variant='body2'>
                                 Track your learning progress and study insights
                             </Typography>
                         </Stack>
@@ -136,7 +136,7 @@ export default function DashboardWorkspace() {
                             <Grid container spacing={3}>
                                 <Grid size={6}>
                                     <Stack >
-                                        <Typography gutterBottom variant="body2">From (optional):</Typography>
+                                        <Typography gutterBottom variant='body2'>From (optional):</Typography>
                                         <DateTimePicker
                                             value={startDate}
                                             onChange={(newValue, context) => {
@@ -148,7 +148,7 @@ export default function DashboardWorkspace() {
                                 </Grid>
                                 <Grid size={6}>
                                     <Stack >
-                                        <Typography gutterBottom variant="body2">To (required):</Typography>
+                                        <Typography gutterBottom variant='body2'>To (required):</Typography>
                                         <DateTimePicker
                                             value={endDate}
                                             onChange={(newValue, context) => {
@@ -167,21 +167,21 @@ export default function DashboardWorkspace() {
                 <Grid container columns={10} spacing={2}>
                     <Grid size={2}>
                         <DeckStatGadget
-                            icon={<FolderIcon fontSize="large" />}
+                            icon={<FolderIcon fontSize='large' />}
                             title={(
                                 (isAnalyticsError || isAnalyticsLoading)
-                                    ? <Skeleton animation="wave" />
+                                    ? <Skeleton animation='wave' />
                                     : `+ ${analyticsData?.numDeckAdded}`
                             )}
                             description={'Deck(s) Added'} />
                     </Grid>
                     <Grid size={2}>
                         <DeckStatGadget
-                            icon={<ViewAgendaIcon fontSize="large" />}
+                            icon={<ViewAgendaIcon fontSize='large' />}
                             title={
                                 (
                                     (isAnalyticsError || isAnalyticsLoading)
-                                        ? <Skeleton animation="wave" />
+                                        ? <Skeleton animation='wave' />
                                         : `+ ${analyticsData?.numCardsAdded}`
                                 )
                             }
@@ -189,11 +189,11 @@ export default function DashboardWorkspace() {
                     </Grid>
                     <Grid size={2}>
                         <DeckStatGadget
-                            icon={<MoreTimeIcon fontSize="large" />}
+                            icon={<MoreTimeIcon fontSize='large' />}
                             title={
                                 (
                                     (isAnalyticsError || isAnalyticsLoading)
-                                        ? <Skeleton animation="wave" />
+                                        ? <Skeleton animation='wave' />
                                         : formatDuration(intervalToDuration({ start:0, end: analyticsData!.studyTimeMs })) || '0 seconds'
                                 )
                             }
@@ -202,11 +202,11 @@ export default function DashboardWorkspace() {
                     <Grid size={2}>
                         {/*TODO: cards learned during given period */}
                         <DeckStatGadget
-                            icon={<DoneAllIcon fontSize="large" />}
+                            icon={<DoneAllIcon fontSize='large' />}
                             title={
                                 (
                                     (isAnalyticsError || isAnalyticsLoading)
-                                        ? <Skeleton animation="wave" />
+                                        ? <Skeleton animation='wave' />
                                         : (new Set(analyticsData?.studySessions
                                             .map(s => s.reviewedCards.map(review => `${review.deckId}$${review.flashcardNum}`))
                                             .flat().flat())).size
@@ -217,11 +217,11 @@ export default function DashboardWorkspace() {
                     <Grid size={2}>
                         {/*TODO: learning sessions initiated given period */}
                         <DeckStatGadget
-                            icon={<SchoolIcon fontSize="large" />}
+                            icon={<SchoolIcon fontSize='large' />}
                             title={
                                 (
                                     (isAnalyticsError || isAnalyticsLoading)
-                                        ? <Skeleton animation="wave" />
+                                        ? <Skeleton animation='wave' />
                                         : analyticsData?.studySessions.length
                                 )
                             }
@@ -234,10 +234,10 @@ export default function DashboardWorkspace() {
                     <Grid size={7}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1}>
-                                <Typography variant="h6">Review activity</Typography>
+                                <Typography variant='h6'>Review activity</Typography>
                                 {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
                                     ?
-                                        <Skeleton animation="wave" height={300} width='100%'/>
+                                        <Skeleton animation='wave' height={300} width='100%'/>
                                     :
                                         <BarChart
                                             height={300}
@@ -263,12 +263,12 @@ export default function DashboardWorkspace() {
                         <Stack spacing={2}>
                             <Paper sx={{ p:'1em', height:'100%' }}>
                                 <Stack spacing={1}>
-                                    <Typography variant="h6">
+                                    <Typography variant='h6'>
                                         Session average
                                     </Typography>
                                     {(isAnalyticsLoading || isAnalyticsLoading || !analyticsData)
                                         ?
-                                            <Skeleton animation="wave" />
+                                            <Skeleton animation='wave' />
                                         :
                                             <HeadlessTable data={[
                                                 {
@@ -291,15 +291,15 @@ export default function DashboardWorkspace() {
                             </Paper>
                             <Paper sx={{ p:'1em', height:'100%' }}>
                                 <Stack>
-                                    <Typography variant="h6">
+                                    <Typography variant='h6'>
                                         Most studied decks
                                     </Typography>
-                                    <Typography variant="overline" gutterBottom>
+                                    <Typography variant='overline' gutterBottom>
                                         By amount of reviews:
                                     </Typography>
                                     {(isAnalyticsLoading || isAnalyticsLoading || !analyticsData)
                                         ?
-                                            <Skeleton animation="wave" />
+                                            <Skeleton animation='wave' />
                                         :
                                             <HeadlessTable data={mostStudiedDecks} />
                                     }
@@ -317,10 +317,10 @@ export default function DashboardWorkspace() {
                     <Grid size={5}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1} sx={{ height: '100%'}}>
-                                <Typography variant="h6">Answer performance</Typography>
+                                <Typography variant='h6'>Answer performance</Typography>
 
                                 {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
-                                    ? <Skeleton variant="rounded" animation="wave" sx={{ height:'100%' }} />
+                                    ? <Skeleton variant='rounded' animation='wave' sx={{ height:'100%' }} />
                                     :
                                         <PieChart
                                             sx={{
@@ -353,10 +353,10 @@ export default function DashboardWorkspace() {
                     <Grid size={5}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1} sx={{ height: '100%'}}>
-                                <Typography variant="h6">Cards by Status</Typography>
+                                <Typography variant='h6'>Cards by Status</Typography>
 
                                 {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
-                                    ? <Skeleton variant="rounded" animation="wave" sx={{ height:'100%' }} />
+                                    ? <Skeleton variant='rounded' animation='wave' sx={{ height:'100%' }} />
                                     :
                                     <PieChart
                                         sx={{

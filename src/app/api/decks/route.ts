@@ -1,5 +1,5 @@
-import { auth } from "@/auth"
-import { NextResponse } from "next/server"
+import { auth } from '@/auth'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
 
@@ -7,7 +7,7 @@ import { EnhancedDeckModel } from '@/app/flashcards/types'
 export const POST = auth(async function POST(req) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -28,7 +28,7 @@ export const POST = auth(async function POST(req) {
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }
@@ -37,7 +37,7 @@ export const POST = auth(async function POST(req) {
 export const GET = auth(async function GET(req) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -55,7 +55,7 @@ export const GET = auth(async function GET(req) {
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }

@@ -1,6 +1,6 @@
-import { auth } from "@/auth"
+import { auth } from '@/auth'
 import { prisma } from '@/prisma'
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
 
 // endpoint to create new card
@@ -10,7 +10,7 @@ export const DELETE = auth(async function DELETE(
 ) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -36,7 +36,7 @@ export const DELETE = auth(async function DELETE(
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }
@@ -49,7 +49,7 @@ export const PUT = auth(async function PUT(
 ) {
     if (!req.auth) {
         return NextResponse.json(
-            { message: "Not authenticated" },
+            { message: 'Not authenticated' },
             { status: 401 }
         )
     }
@@ -76,7 +76,7 @@ export const PUT = auth(async function PUT(
     } catch (e) {
         console.error(e)
         return NextResponse.json(
-            { message: "Something went wrong" },
+            { message: 'Something went wrong' },
             { status: 500 }
         )
     }

@@ -1,5 +1,5 @@
-import MuiDrawer, { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
-import { styled, Theme, CSSObject } from '@mui/material/styles';
+import MuiDrawer, { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer'
+import { styled, Theme, CSSObject } from '@mui/material/styles'
 
 const openedMixin = (theme: Theme, drawerWidth: number): CSSObject => ({
     width: drawerWidth,
@@ -8,7 +8,7 @@ const openedMixin = (theme: Theme, drawerWidth: number): CSSObject => ({
         duration: theme.transitions.duration.enteringScreen,
     }),
     overflowX: 'hidden',
-});
+})
 
 const closedMixin = (theme: Theme): CSSObject => ({
     transition: theme.transitions.create('width', {
@@ -20,7 +20,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
     [theme.breakpoints.up('sm')]: {
         width: `calc(${theme.spacing(8)} + 1px)`,
     },
-});
+})
 
 interface DrawerProps extends MuiDrawerProps {
     drawerWidth: number;
@@ -51,4 +51,4 @@ export const Drawer = styled(MuiDrawer, {
             },
         ],
     }),
-);
+)

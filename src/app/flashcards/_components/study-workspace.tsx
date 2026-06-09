@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from "next-auth/react"
+import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -13,9 +13,9 @@ import Skeleton from '@mui/material/Skeleton'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import Game from '@/app/flashcards/_components/game'
 import LinearProgress from '@mui/material/LinearProgress'
-import { StudyStore } from "../_stores/study-store"
-import { useStudyStore } from "../_providers/study-store-provider"
-import DeckStatGadget from "@/app/flashcards/decks/_components/deck-stat-gadget"
+import { StudyStore } from '../_stores/study-store'
+import { useStudyStore } from '../_providers/study-store-provider'
+import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
 import SchoolIcon from '@mui/icons-material/School'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
@@ -56,27 +56,27 @@ export default function StudyWorkspace() {
             >
                 <Stack spacing={2} sx={{ py:'3em', px:'1em', overflow:'scroll', height:'100vh' }}>
                     <Box sx={{ display:'flex', alignItems:'center'}}>
-                        <BrainIcon color="primary" fontSize="large" />
-                        <Typography variant="h5">Better Flashcards</Typography>
+                        <BrainIcon color='primary' fontSize='large' />
+                        <Typography variant='h5'>Better Flashcards</Typography>
                     </Box>
                     <Divider />
 
-                    {/*<Typography variant="h5">Welcome back, {session ? `${session?.user?.name} !` : <Skeleton animation="wave" />}</Typography>*/}
-                    <Stack direction="row">
-                        <Typography variant="h5">
+                    {/*<Typography variant='h5'>Welcome back, {session ? `${session?.user?.name} !` : <Skeleton animation='wave' />}</Typography>*/}
+                    <Stack direction='row'>
+                        <Typography variant='h5'>
                             Welcome back, {session && `${session?.user?.name} !`}
                         </Typography>
-                        {!session && <Skeleton sx={{width:'200px'}} animation="wave" />}
+                        {!session && <Skeleton sx={{width:'200px'}} animation='wave' />}
                     </Stack>
                     <Divider />
 
                     <Grid container spacing={1}  sx={{ alignItems:'stretch'}}>
                         <Grid size={4}>
                             <DeckStatGadget
-                                icon={<SchoolIcon fontSize="large" />}
+                                icon={<SchoolIcon fontSize='large' />}
                                 title={
                                     (!decks
-                                        ? <Skeleton animation="wave" />
+                                        ? <Skeleton animation='wave' />
                                         : `${numOfCardsToReview} Card(s)`
                                     )
                                 }
@@ -84,10 +84,10 @@ export default function StudyWorkspace() {
                         </Grid>
                         <Grid size={4}>
                             <DeckStatGadget
-                                icon={<LocalFireDepartmentIcon fontSize="large" />}
+                                icon={<LocalFireDepartmentIcon fontSize='large' />}
                                 title={
                                     (daysStreak === null
-                                            ? <Skeleton animation="wave" />
+                                            ? <Skeleton animation='wave' />
                                             : `${daysStreak} Day(s)`
                                     )
                                 }
@@ -95,10 +95,10 @@ export default function StudyWorkspace() {
                         </Grid>
                         <Grid size={4}>
                             <DeckStatGadget
-                                icon={<DoneAllIcon fontSize="large" />}
+                                icon={<DoneAllIcon fontSize='large' />}
                                 title={
                                     (!decks
-                                            ? <Skeleton animation="wave" />
+                                            ? <Skeleton animation='wave' />
                                             : `${numOfCardsLearned} Card(s)`
                                     )
                                 }
@@ -106,13 +106,13 @@ export default function StudyWorkspace() {
                         </Grid>
                     </Grid>
 
-                    <Typography variant="h6">Your Decks to review today</Typography>
+                    <Typography variant='h6'>Your Decks to review today</Typography>
                     <Divider />
 
                     <Grid container spacing={2}>
                         {!decks && [1,2,3].map(key => (
                             <Grid key={key} size={4} spacing={2}>
-                                <Skeleton animation="wave" sx={{ height: '120px'}} />
+                                <Skeleton animation='wave' sx={{ height: '120px'}} />
                             </Grid>
                         ))}
 
@@ -139,46 +139,46 @@ export default function StudyWorkspace() {
                                 <Stack spacing={1}>
                                     <Grid container>
                                         <Grid size={10}>
-                                            <Typography variant="h6">
+                                            <Typography variant='h6'>
                                                 {selectedDeck.title}
                                             </Typography>
                                         </Grid>
                                         <Grid size={2}>
-                                            <Typography variant="h6">
+                                            <Typography variant='h6'>
                                                 {`${reviewedCount}/${selectedDeck.flashcards.length}`}
                                             </Typography>
                                         </Grid>
                                     </Grid>
                                         <LinearProgress
-                                            variant="determinate"
+                                            variant='determinate'
                                             value={reviewedCount/selectedDeck.flashcards.length * 100}
                                         />
                                 </Stack>
                             </Grid>
                             <Grid size={4} sx={{ display:'flex', justifyContent:'center', alignItems:'center' }}>
                                 {(!studySession || studySession.status === StudySessionStatusEnum.FINISHED) &&
-                                    <Button onClick={startSession} variant="contained">
+                                    <Button onClick={startSession} variant='contained'>
                                         <PlayArrowIcon />
                                     </Button>
                                 }
                                 {(studySession && studySession.status === StudySessionStatusEnum.PAUSED) &&
                                     <Button
                                         onClick={resumeSession}
-                                        variant="contained">
+                                        variant='contained'>
                                         <PlayArrowIcon />
                                     </Button>
                                 }
                                 {(studySession && studySession.status === StudySessionStatusEnum.STARTED) &&
-                                    <Stack spacing={1} direction="row" >
+                                    <Stack spacing={1} direction='row' >
                                         <Button
                                             onClick={pauseSession}
-                                            variant="contained">
+                                            variant='contained'>
                                             <PauseIcon />
                                         </Button>
 
                                         <Button
                                             onClick={completeSession}
-                                            variant="contained">
+                                            variant='contained'>
                                             <StopIcon />
                                         </Button>
                                     </Stack>
@@ -195,5 +195,5 @@ export default function StudyWorkspace() {
                 }
             </Grid>
         </Grid>
-    );
+    )
 }
