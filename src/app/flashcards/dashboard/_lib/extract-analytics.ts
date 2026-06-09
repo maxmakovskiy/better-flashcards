@@ -83,7 +83,8 @@ export const extractAnalytics = async (userId: string, endDate: Date,startDate?:
     })
 
     const totalMs = studySessions.reduce((accMs: number, currSession: EnhancedStudySessionModel) => {
-        return accMs + (currSession.endedAt!.getTime() - currSession.startedAt.getTime())
+        if (currSession.endedAt === null) { return accMs }
+        return accMs + (currSession.endedAt.getTime() - currSession.startedAt.getTime())
     }, 0)
 
     return {

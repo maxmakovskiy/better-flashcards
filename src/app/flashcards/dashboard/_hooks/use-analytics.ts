@@ -1,4 +1,5 @@
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
+import { useState } from 'react'
 import { AnalyticData } from '@/app/flashcards/types'
 import { ClientAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-schema'
 
@@ -14,16 +15,20 @@ const fetcher = async (url: string, date: Date) => {
     return ClientAnalyticsSchema.parse(obj) as AnalyticData
 }
 
-export const useAnalytics = (date: Date) => {
-    const { data, error, isLoading, isValidating } = useSWR<AnalyticData, Error>(
-        '/api/dashboard',
-        (url: string) => fetcher(url, date),
-        {
-            revalidateOnFocus: false
-        }
+export const useAnalytics = () => {
+    const [endDate, setEndDate] = useState<Date>(new Date())
+    // const [startDate, setStartDate] = useState<Date | undefined>()
+
+    const { data, error, isLoading, isValidating } = useSWRImmutable<AnalyticData, Error>(
+        ['/api/dashboard', endDate],
+        ([url, date]) => fetcher(url, date as Date),
     )
 
     return {
+        // startDate,
+        // setStartDate,
+        endDate,
+        setEndDate,
         analyticsData: data,
         isAnalyticsLoading: isLoading,
         isAnalyticsError: !!error,
