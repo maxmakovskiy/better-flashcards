@@ -3,9 +3,8 @@ import { NextAuthRequest } from 'next-auth'
 import * as z from 'zod'
 import { auth } from "@/auth"
 import { prisma } from '@/prisma'
-import { StudySessionModel } from "@/../prisma/generated/prisma/models/StudySession"
 import { StudySessionStatusEnum } from "@/../prisma/generated/prisma/enums"
-import { StudySessionActionsSchema } from '@/app/flashcards/types'
+import { StudySessionActionsSchema } from '@/app/flashcards/_schemas/types/study-sesssion-actions-schema'
 
 // end point to create new study session connected to specific deck
 export const POST = auth(async function POST(

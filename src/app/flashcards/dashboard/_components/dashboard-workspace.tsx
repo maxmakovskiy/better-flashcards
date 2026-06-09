@@ -14,13 +14,12 @@ import SchoolIcon from '@mui/icons-material/School'
 import { PieChart, pieClasses } from '@mui/x-charts/PieChart'
 import { BarChart } from '@mui/x-charts/BarChart'
 import { useAnalytics } from '../_hooks/use-analytics'
-import { intervalToDuration, formatDuration } from 'date-fns'
+import { intervalToDuration, formatDuration, format } from 'date-fns'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 export default function DashboardWorkspace() {
-
     const { endDate, setEndDate, analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics()
 
 
@@ -73,7 +72,6 @@ export default function DashboardWorkspace() {
 
                 <Grid container columns={10} spacing={2}>
                     <Grid size={2}>
-                         {/*TODO: decks added during given period */}
                         <DeckStatGadget
                             icon={<FolderIcon fontSize="large" />}
                             title={(
@@ -84,7 +82,6 @@ export default function DashboardWorkspace() {
                             description={'Deck(s) Added'} />
                     </Grid>
                     <Grid size={2}>
-                        {/*TODO: cards added during given period */}
                         <DeckStatGadget
                             icon={<ViewAgendaIcon fontSize="large" />}
                             title={
@@ -97,7 +94,6 @@ export default function DashboardWorkspace() {
                             description={'Card(s) Added'} />
                     </Grid>
                     <Grid size={2}>
-                        {/*TODO: study time during given period */}
                         <DeckStatGadget
                             icon={<MoreTimeIcon fontSize="large" />}
                             title={
@@ -143,26 +139,26 @@ export default function DashboardWorkspace() {
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1}>
                                 <Typography variant="h6">Study activity</Typography>
-                                <BarChart
-                                    height={300}
-                                    dataset={[
-                                        {date: '1 Juin', cardsStudied: 20, label:'spanish dictionary' },
-                                        {date: '1 Juin', cardsStudied: 120, label:'english dictionary' },
-                                        {date: '2 Juin', cardsStudied: 30, label:'react basics 1' },
-                                        {date: '3 Juin', cardsStudied: 40, label:'react basics 2' },
-                                        {date: '4 Juin', cardsStudied: 20, label:'networks' },
-                                        {date: '5 Juin', cardsStudied: 20, label:'networks' },
-                                        {date: '6 Juin', cardsStudied: 20, label:'networks' },
-                                        {date: '7 Juin', cardsStudied: 20, label:'networks' },
-                                        {date: '8 Juin', cardsStudied: 20, label:'networks' },
-                                        {date: '9 Juin', cardsStudied: 20, label:'networks' },
-                                        {date: '10 Juin', cardsStudied: 20, label:'networks' },
-                                    ]}
-                                    series={[
-                                        { dataKey: 'cardsStudied', label: 'card studied' },
-                                    ]}
-                                    xAxis={[{ dataKey: 'date' }]}
-                                />
+                                {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
+                                    ?
+                                        <Skeleton animation="wave" height={300} width='100%'/>
+                                    :
+                                        <BarChart
+                                            height={300}
+                                            dataset={
+                                            analyticsData.studySessions.map(s => {
+                                                    return {
+                                                        studiedCards: s.reviewedCards.length,
+                                                        day: format(s.startedAt, 'dd MMM')
+                                                    }
+                                                })
+                                            }
+                                            series={[
+                                                { dataKey: 'studiedCards', label: 'card studied' },
+                                            ]}
+                                            xAxis={[{ dataKey: 'day' }]}
+                                        />
+                                }
                             </Stack>
                         </Paper>
                     </Grid>
