@@ -1,38 +1,32 @@
-# Design Document for "Better flashcards"
+# Better Flashcards
+
+## 1 Description
+
+This project is a fullstack web application developed during the final project of WEB course in HEIG-VD.
+
+Better Flashcards is a learning platform that helps users retain knowledge by using flashcard approach of content organization and by employing spaced repetition algorithm [FSRS](https://open-spaced-repetition.github.io/ts-fsrs/).
+
+This combination enables users to have the right information at the right time, improving long-term retention and making study sessions more efficient.
+
 
 ## Content
 
-1.[General information](#1-general-information) <br/>
-2.[Project description](#2-project-description) <br/>
-3.[Objectives](#3-objectives) <br/>
-4.[Features](#4-features) <br/>
-3.[Technologies](#5-technologies) <br/>
-3.[Architecture](#6-architecture) <br/>
-3.[Possible Future Developments](#7-possible-future-developments) <br/>
+1.[Project description](#1-project-description) <br/>
+2.[Features](#2-features) <br/>
+3.[Project structure](#3-project-structure) <br/>
+4.[Data model](#4-data-model) <br/>
+5.[Endpoints](#5-api-endpoints) <br/>
+6.[UI/UX](#6-uiux) <br/>
+7.[Get started](#7-get-started) <br/>
+8.[Technologies](#8-technologies) <br/>
+9.[Acknowledgements](#9-acknowledgements) <br/>
 
-## 1. General Information
 
-- **Project name**: Better Flashcards
-- **Team members**: Maksym Makovskyi
-- **Git repository link**: https://github.com/maxmakovskiy/better-flashcards.git
+## 2 Features
 
-## 2. Project Description
+### 2.1 Core Features
 
-It is a learning platform that uses flashcards in its core, but it also provides tools to analyze learning progress.
-It is something that I personally use very often, primary example is Anki flashcards, so it is really easy to concretize the final product.
-
-## 3. Objectives
-
-The platform allows users to:
-- Create and organize personalized learning materials into structured study decks
-- Improve long-term knowledge retention through adaptive repetition and review scheduling
-- Track learning progress and identify weak areas over time
-
-## 4. Features
-
-### 4.1 Core Features
-
-The features the application **must** provide in order to be considered complete:
+The platform has next set of features:
 
 - User authentication with identity provider
 - Deck and Flashcard management (CRUD decks/cards, cards include text)
@@ -40,7 +34,7 @@ The features the application **must** provide in order to be considered complete
 - Interactive study mode (guess the other side of a card)
 - Learning dashboard (track study progress, view study statistics)
 
-### 4.2 Optional Features
+### 2.2 Upcoming (Planned) Features
 
 Bonus features if time permits:
 
@@ -51,28 +45,38 @@ Bonus features if time permits:
 - Shared decks and collaborative editing
 - Public/private decks
 
-## 5. Technologies
+---
 
-List the planned technologies and **briefly justify each choice**.
+## 3 Project structure
 
-For example:
 
-- **Frontend**: 
-    - React (DOM manipulating lib)
-    - MUI (component lib)
-    - Zustand (state management, if React Context is not enough)
-    - Motion for React (card animations)
-- **Backend**: Next.js
-- **Database**: Prisma (orm), Sqlite
-- **Authentication**: NextAuth.js
+---
 
-## 6. Architecture
+## 4 Data Model
 
-Overview of the components and their interactions (client, server, database, third-party services, etc.). A small diagram is welcome.
 
-![er schema](docs/db_er_scheme.png)
+---
 
-## 7. Possible Future Developments
+## 5 API Endpoints
 
-*(Optional)* Ideas for future improvements identified but outside the scope of the lab/project:
-- Elements of social network (list of friends/clubs of interest/competitions)
+
+---
+
+## 6 UI/UX
+
+
+---
+
+## 7 Get Started
+
+---
+
+## 8 Technologies
+
+
+---
+
+## 9 Acknowledgements
+
+
+
