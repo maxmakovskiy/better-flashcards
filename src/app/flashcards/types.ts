@@ -4,6 +4,7 @@ import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { ReviewHistoryModel } from '@/../prisma/generated/prisma/models/ReviewHistory'
 import { FsrsLearningStateSchema } from './_schemas/types/fsrs-learning-state-schema'
+import { type ClientAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-schema'
 
 export type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[] }
 export type EnhancedStudyDeckModel = DeckModel & { flashcards: FlashcardModel[], studySessions: StudySessionModel[] }
@@ -25,10 +26,5 @@ export function mapFlashcardToFsrs(
     }
 }
 
-export type AnalyticData = {
-    numDeckAdded: number,
-    numCardsAdded: number,
-    studyTimeMs: number,
-    studySessions: EnhancedStudySessionModel[]
-}
+export type AnalyticData = ClientAnalyticsSchema
 

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { EnhancedStudySessionSchema } from './types/study-session-schema'
+import { ReviewHistorySchema } from './types/review-history-schema'
 
 export const ServerAnalyticsSchema = z.object({
     startDate: z.coerce.date().optional(),
@@ -13,6 +14,7 @@ export const ClientAnalyticsSchema = z.object({
     numCardsAdded: z.number(),
     studyTimeMs: z.number(),
     studySessions: z.array(EnhancedStudySessionSchema),
+    latestReviews: z.array(ReviewHistorySchema),
 })
 
 export type ClientAnalyticsSchema = z.infer<typeof ClientAnalyticsSchema>

@@ -33,7 +33,7 @@ export const extractAnalytics = async (userId: string, endDate: Date,startDate?:
         }
     }
 
-    const addedDecks: DeckModel[] = await prisma.deck.findMany({
+    const addedDecksNumber = await prisma.deck.count({
         where: {
             userId: userId,
             createdAt: {
@@ -43,7 +43,7 @@ export const extractAnalytics = async (userId: string, endDate: Date,startDate?:
         }
     })
 
-    const addedCards: FlashcardModel[] = await prisma.flashcard.findMany({
+    const addedCardsNumber = await prisma.flashcard.count({
         where: {
             deck: {
                 userId: userId,
@@ -79,6 +79,9 @@ export const extractAnalytics = async (userId: string, endDate: Date,startDate?:
         },
         include: {
             reviewedCards: true
+        },
+        orderBy: {
+            endedAt: 'desc'
         }
     })
 
@@ -87,10 +90,34 @@ export const extractAnalytics = async (userId: string, endDate: Date,startDate?:
         return accMs + (currSession.endedAt.getTime() - currSession.startedAt.getTime())
     }, 0)
 
+    // latest reviews for given period of time
+    const groupedReviews = await prisma.reviewHistory.groupBy({
+        where: {
+            sessionId: {
+                in: studySessions.map(s => s.sessionId)
+            }
+        },
+        by: ["flashcardNum", "deckId"],
+        _max: {
+            reviewedAt: true,
+        }
+    })
+    const latestReviews = await prisma.reviewHistory.findMany({
+        where: {
+            OR: groupedReviews.map(review => ({
+                flashcardNum: review.flashcardNum,
+                deckId: review.deckId,
+                reviewedAt: review._max.reviewedAt!,
+            })),
+        },
+    });
+
+
     return {
-        numDeckAdded: addedDecks.length,
-        numCardsAdded: addedCards.length,
+        numDeckAdded: addedDecksNumber,
+        numCardsAdded: addedCardsNumber,
         studyTimeMs: totalMs,
         studySessions: studySessions,
+        latestReviews: latestReviews
     }
 }

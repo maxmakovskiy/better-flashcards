@@ -142,7 +142,7 @@ export const createStudyStore = (
                 learningSteps: updatedFsrsCard.card.learning_steps,
                 reps: updatedFsrsCard.card.reps,
                 lapses: updatedFsrsCard.card.lapses,
-                learningState: LearningStateFromFsrsSchema.parse(updatedFsrsCard.card.state),
+                learningState: LearningStateFromFsrsSchema.parse(updatedFsrsCard.log.state),
                 nextReviewAt: updatedFsrsCard.card.due,
                 lastReviewAt: now,
                 lastDueData: updatedFsrsCard.log.due,
