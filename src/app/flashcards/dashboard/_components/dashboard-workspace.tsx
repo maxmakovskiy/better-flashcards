@@ -38,15 +38,31 @@ export default function DashboardWorkspace() {
         const counter = (desiredState: LearningStateEnum) => (analyticsData?.latestReviews
             .filter(review => review.learningState === desiredState).length)
 
-        const obj = {
+        return {
             new: counter(LearningStateEnum.NEW) / total * 100,
             learning:  counter(LearningStateEnum.LEARNING) / total * 100,
             review:  counter(LearningStateEnum.REVIEW) / total * 100,
             relearning:  counter(LearningStateEnum.RELEARNING) / total * 100
         }
-        console.log(JSON.stringify(obj))
-        return obj
     }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
+
+    const answerAccuracy = useMemo(() => {
+        if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
+            return {
+                correct: 0,
+                inCorrect: 0
+            }
+        }
+
+        const reviews = analyticsData?.studySessions.flatMap(s => s.reviewedCards).flat()
+        const numCorrect = reviews.filter(rev => rev.isCorrect).length
+        return {
+            correct: Math.min(Math.ceil(numCorrect / reviews.length * 100), 100),
+            inCorrect: Math.min(Math.floor((reviews.length - numCorrect) / reviews.length * 100), 100),
+        }
+    }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
+
+
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -165,7 +181,7 @@ export default function DashboardWorkspace() {
                     <Grid size={8}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1}>
-                                <Typography variant="h6">Study activity</Typography>
+                                <Typography variant="h6">Review activity</Typography>
                                 {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
                                     ?
                                         <Skeleton animation="wave" height={300} width='100%'/>
@@ -175,13 +191,13 @@ export default function DashboardWorkspace() {
                                             dataset={
                                                 analyticsData.studySessions.map(s => {
                                                         return {
-                                                            studiedCards: s.reviewedCards.length,
+                                                            reviewedCards: s.reviewedCards.length,
                                                             day: format(s.startedAt, 'dd MMM')
                                                         }
                                                     })
                                                 }
                                             series={[
-                                                { dataKey: 'studiedCards', label: 'card studied' },
+                                                { dataKey: 'reviewedCards', label: 'cards reviewed' },
                                             ]}
                                             xAxis={[{ dataKey: 'day' }]}
                                         />
@@ -216,28 +232,34 @@ export default function DashboardWorkspace() {
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1} sx={{ height: '100%'}}>
                                 <Typography variant="h6">Cards by Status</Typography>
-                                <PieChart
-                                    sx={{
-                                        [`& .${pieClasses.arcLabel}`]: {
-                                            fontWeight: 'bold',
-                                        },
-                                    }}
-                                    series={[
-                                        {
-                                            data: [
-                                                { label: 'correct', value: 82, color: 'green' },
-                                                { label: 'incorrect', value: 18, color: 'red' },
-                                            ],
-                                            outerRadius: 110,
-                                            innerRadius: 10,
-                                            highlightScope: { fade: 'global', highlight: 'item' },
-                                            faded: { innerRadius: 10, additionalRadius: -10, color: 'gray' },
-                                            valueFormatter: (item: { value: number }) => (`${item.value}%`),
-                                            arcLabel: (item) => (`${item.value}%`),
-                                            arcLabelMinAngle: 40
-                                        },
-                                    ]}
-                                />
+
+                                {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
+                                    ? <Skeleton variant="rounded" animation="wave" sx={{ height:'100%' }} />
+                                    :
+                                        <PieChart
+                                            sx={{
+                                                [`& .${pieClasses.arcLabel}`]: {
+                                                    fontWeight: 'bold',
+                                                },
+                                            }}
+                                            series={[
+                                                {
+                                                    data: [
+                                                        { label: 'correct', value: answerAccuracy.correct, color: 'green' },
+                                                        { label: 'incorrect', value: answerAccuracy.inCorrect, color: 'red' },
+                                                    ],
+                                                    outerRadius: 110,
+                                                    innerRadius: 10,
+                                                    highlightScope: { fade: 'global', highlight: 'item' },
+                                                    faded: { innerRadius: 10, additionalRadius: -10, color: 'gray' },
+                                                    valueFormatter: (item: { value: number }) => (`${item.value}%`),
+                                                    arcLabel: (item) => (`${item.value}%`),
+                                                    arcLabelMinAngle: 40
+                                                },
+                                            ]}
+                                        />
+                                }
+
                             </Stack>
                         </Paper>
                     </Grid>
