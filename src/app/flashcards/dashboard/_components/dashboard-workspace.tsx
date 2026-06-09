@@ -1,30 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import AddIcon from '@mui/icons-material/Add'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import InputAdornment from '@mui/material/InputAdornment'
-import TextField from '@mui/material/TextField'
-import SearchIcon from '@mui/icons-material/Search'
-import DeckCard from '@/app/flashcards/_components/deck-card'
-import NextLink from '@/app/_components/Link'
-import Button from '@mui/material/Button'
-import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
-import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import FolderIcon from '@mui/icons-material/Folder'
 import Paper from '@mui/material/Paper'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
-import ViewDayIcon from '@mui/icons-material/ViewDay'
-import TrendingUpIcon from '@mui/icons-material/TrendingUp'
-import { useAllDecks } from "@/app/flashcards/decks/_hooks/use-all-decks"
-import { TransitionGroup } from 'react-transition-group'
-import Fade from '@mui/material/Fade'
-import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
-import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -33,11 +17,13 @@ import ViewAgendaIcon from '@mui/icons-material/ViewAgenda'
 import MoreTimeIcon from '@mui/icons-material/MoreTime'
 import SchoolIcon from '@mui/icons-material/School'
 import { PieChart, pieClasses } from '@mui/x-charts/PieChart'
-import { BarChart, BarChartProps } from '@mui/x-charts/BarChart'
-
+import { BarChart } from '@mui/x-charts/BarChart'
+import { useAnalytics } from '../_hooks/use-analytics'
+import { intervalToDuration, formatDuration } from 'date-fns'
 
 export default function DashboardWorkspace() {
-    const [period, setPeriod] = useState(0);
+    const [period, setPeriod] = useState(0)
+    const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(new Date())
 
     const handlePeriodChange = (event: SelectChangeEvent) => {
         setPeriod(Number.parseInt(event.target.value));
@@ -77,35 +63,63 @@ export default function DashboardWorkspace() {
                      {/*TODO: decks added during given period */}
                     <DeckStatGadget
                         icon={<FolderIcon fontSize="large" />}
-                        title={'18'}
+                        title={(
+                            (isAnalyticsError || isAnalyticsLoading)
+                                ? <Skeleton animation="wave" />
+                                : `+ ${analyticsData?.numDeckAdded}`
+                        )}
                         description={'Deck(s) Added'} />
                 </Grid>
                 <Grid size={2}>
                     {/*TODO: cards added during given period */}
                     <DeckStatGadget
                         icon={<ViewAgendaIcon fontSize="large" />}
-                        title={'358'}
+                        title={
+                            (
+                                (isAnalyticsError || isAnalyticsLoading)
+                                    ? <Skeleton animation="wave" />
+                                    : `+ ${analyticsData?.numCardsAdded}`
+                            )
+                        }
                         description={'Card(s) Added'} />
                 </Grid>
                 <Grid size={2}>
                     {/*TODO: study time during given period */}
                     <DeckStatGadget
                         icon={<MoreTimeIcon fontSize="large" />}
-                        title={'7h 42m'}
+                        title={
+                            (
+                                (isAnalyticsError || isAnalyticsLoading)
+                                    ? <Skeleton animation="wave" />
+                                    : formatDuration(intervalToDuration({ start:0, end: analyticsData!.studyTimeMs }))
+                            )
+                        }
                         description={'Study Time'} />
                 </Grid>
                 <Grid size={2}>
                     {/*TODO: cards learned during given period */}
                     <DeckStatGadget
                         icon={<DoneAllIcon fontSize="large" />}
-                        title={'358'}
+                        title={
+                            (
+                                (isAnalyticsError || isAnalyticsLoading)
+                                    ? <Skeleton animation="wave" />
+                                    : analyticsData?.studySessions.map(s => s.reviewedCards).flat().length
+                            )
+                        }
                         description={'Card(s) Studied'} />
                 </Grid>
                 <Grid size={2}>
                     {/*TODO: learning sessions initiated given period */}
                     <DeckStatGadget
                         icon={<SchoolIcon fontSize="large" />}
-                        title={'358'}
+                        title={
+                            (
+                                (isAnalyticsError || isAnalyticsLoading)
+                                    ? <Skeleton animation="wave" />
+                                    : analyticsData?.studySessions.length
+                            )
+                        }
                         description={'Study Session(s)'} />
                 </Grid>
             </Grid>

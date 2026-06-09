@@ -25,3 +25,10 @@ export function mapFlashcardToFsrs(
     }
 }
 
+export interface AnalyticData {
+    numDeckAdded: number;
+    numCardsAdded: number;
+    studyTimeMs: number;
+    studySessions: EnhancedStudySessionModel[];
+}
+

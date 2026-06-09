@@ -6,7 +6,6 @@ export const ReviewHistorySchema = z.object({
     sessionId: z.string(),
     flashcardNum: z.number(),
     deckId: z.string(),
-    difficultyRating: DifficultyRatingSchema,
     learningState: FlashcardsLearningStateSchema,
     dueData: z.coerce.date(),
     stability: z.number(),
@@ -15,5 +14,6 @@ export const ReviewHistorySchema = z.object({
     isCorrect: z.boolean(),
     reviewedAt: z.coerce.date(),
     scheduledDays: z.number(),
-    learningSteps: z.number()
+    learningSteps: z.number(),
+    rating: DifficultyRatingSchema
 })

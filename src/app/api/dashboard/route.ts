@@ -5,10 +5,8 @@ import { EnhancedStudySessionModel } from '@/app/flashcards/types'
 import { ServerAnalyticsSchema } from '../../flashcards/_schemas/analytics-schema'
 import { DeckModel } from "@/../prisma/generated/prisma/models/Deck"
 import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
-import { intervalToDuration } from 'date-fns'
 
-// endpoint to create new deck
-export const GET = auth(async function GET(req) {
+export const POST = auth(async function POST(req) {
     if (!req.auth) {
         return NextResponse.json(
             { message: "Not authenticated" },
@@ -17,51 +15,27 @@ export const GET = auth(async function GET(req) {
     }
 
     try {
-        const body = await req.json().then(r => ServerAnalyticsSchema.safeParse(r))
+        const body = await req.json().then(r => {
+            return ServerAnalyticsSchema.safeParse(r)
+        })
         if (!body.success) {
+            console.error(`Wrong data provided: ${body.error}`)
             return NextResponse.json(
                 { message: "Wrong data provided" },
                 { status: 400 }
             )
         }
 
-        if (body.data.startDate === null || body.data.endDate === null) {
-            return NextResponse.json(
-                { message: "Full range" },
-                { status: 200 }
-            )
-        }
-
-        const addedDecks: DeckModel[] = await prisma.deck.findMany({
-            where: {
-                userId: req.auth.user?.id,
+        let createAtFilterMixin = {}
+        let inRangeFilterMixin = {}
+        if (!!body.data.startDate) {
+            createAtFilterMixin = {
                 createdAt: {
                     gte: body.data.startDate,
                     lte: body.data.endDate
                 }
             }
-        })
-
-        const addedCards: FlashcardModel[] = await prisma.flashcard.findMany({
-            where: {
-                deck: {
-                    userId: req.auth.user?.id,
-                },
-                createdAt: {
-                    gte: body.data.startDate,
-                    lte: body.data.endDate
-                }
-            }
-        })
-
-        const studySessions: EnhancedStudySessionModel[] = await prisma.studySession.findMany({
-            where: {
-                deck: {
-                    userId: req.auth.user?.id,
-                },
-                NOT: {
-                    endedAt: null
-                },
+            inRangeFilterMixin = {
                 AND: [
                     {
                         startedAt: {
@@ -76,6 +50,52 @@ export const GET = auth(async function GET(req) {
                         }
                     },
                 ]
+            }
+        }
+
+        const addedDecks: DeckModel[] = await prisma.deck.findMany({
+            where: {
+                userId: req.auth!.user?.id,
+                createdAt: {
+                    lte: body.data.endDate,
+                },
+                ...createAtFilterMixin
+            }
+        })
+
+        const addedCards: FlashcardModel[] = await prisma.flashcard.findMany({
+            where: {
+                deck: {
+                    userId: req.auth!.user?.id,
+                },
+                createdAt: {
+                    lte: body.data.endDate,
+                },
+                ...createAtFilterMixin
+            }
+        })
+
+        const studySessions: EnhancedStudySessionModel[] = await prisma.studySession.findMany({
+            where: {
+                deck: {
+                    userId: req.auth!.user?.id,
+                },
+                NOT: {
+                    endedAt: null
+                },
+                AND: [
+                    {
+                        startedAt: {
+                            lte: body.data.endDate,
+                        }
+                    },
+                    {
+                        endedAt: {
+                            lte: body.data.endDate,
+                        }
+                    },
+                ],
+                ...inRangeFilterMixin
             },
             include: {
                 reviewedCards: true
@@ -85,13 +105,11 @@ export const GET = auth(async function GET(req) {
         const totalMs = studySessions.reduce((accMs: number, currSession: EnhancedStudySessionModel) => {
             return accMs + (currSession.endedAt!.getTime() - currSession.startedAt.getTime())
         }, 0)
-        const timeSpentStudying = intervalToDuration({ start: 0, end: totalMs })
-
 
         return NextResponse.json({
             numDeckAdded: addedDecks.length,
             numCardsAdded: addedCards.length,
-            studyTime: timeSpentStudying,
+            studyTimeMs: totalMs,
             studySessions: studySessions,
         })
     } catch (e) {
