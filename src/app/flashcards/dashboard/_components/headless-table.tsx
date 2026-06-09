@@ -22,7 +22,7 @@ export default function HeadlessTable({ data }: HeadlessTableProps) {
                                 {row.key}
                             </Typography>
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="left">
                             <Typography variant="body1">
                                 {row.value}
                             </Typography>

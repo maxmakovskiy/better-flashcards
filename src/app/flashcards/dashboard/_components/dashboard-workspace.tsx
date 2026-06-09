@@ -63,7 +63,32 @@ export default function DashboardWorkspace() {
         }
     }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
 
+    const sessionAverage = useMemo(() => {
+        if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
+            return {
+                avgRespTimeMs: 0,
+                avgAmountReviews: 0,
+                avgAccuracy: 0,
+            }
+        }
 
+        let respMs = 0
+        let reviewsAmount = 0
+        let accuracy = 0
+        for (const s of analyticsData?.studySessions) {
+            respMs += (s.avgResponseTimeMs || 0)
+            reviewsAmount += s.reviewedCards.length
+            accuracy += (s.reviewedCards.filter(r => r.isCorrect).length / s.reviewedCards.length)
+        }
+
+        const totalSessions = analyticsData?.studySessions.length || 1
+
+        return {
+            avgRespTimeMs: Math.round(respMs / totalSessions),
+            avgAmountReviews: Math.round(reviewsAmount / totalSessions),
+            avgAccuracy: Math.round((accuracy / totalSessions) * 100),
+        }
+    }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -179,7 +204,7 @@ export default function DashboardWorkspace() {
 
                 <Grid container spacing={3} sx={{ alignItems:'stretch'}}>
 
-                    <Grid size={8}>
+                    <Grid size={7}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1}>
                                 <Typography variant="h6">Review activity</Typography>
@@ -207,19 +232,34 @@ export default function DashboardWorkspace() {
                         </Paper>
                     </Grid>
 
-                    <Grid size={4}>
+                    <Grid size={5}>
                         <Stack spacing={2}>
                             <Paper sx={{ p:'1em', height:'100%' }}>
                                 <Stack spacing={1}>
                                     <Typography variant="h6">
                                         Session average
                                     </Typography>
+                                    {(isAnalyticsLoading || isAnalyticsLoading || !analyticsData)
+                                        ?
+                                            <Skeleton animation="wave" />
+                                        :
+                                            <HeadlessTable data={[
+                                                {
+                                                    key: 'Avg response time',
+                                                    value: formatDuration(
+                                                        intervalToDuration({start:0, end:sessionAverage.avgRespTimeMs}))
+                                                },
+                                                {
+                                                    key: 'Avg amount of reviews',
+                                                    value: sessionAverage.avgAmountReviews
+                                                },
+                                                {
+                                                    key: 'Avg accuracy',
+                                                    value: `${sessionAverage.avgAccuracy}%`
+                                                },
+                                            ]} />
+                                    }
 
-                                    <HeadlessTable data={[
-                                        { key: 'Avg response time', value: '12s' },
-                                        { key: 'Avg amount of reviews', value: 5 },
-                                        { key: 'Avg accuracy', value: '71%' },
-                                    ]} />
                                 </Stack>
                             </Paper>
                             <Paper sx={{ p:'1em', height:'100%' }}>
@@ -250,7 +290,7 @@ export default function DashboardWorkspace() {
                     <Grid size={5}>
                         <Paper sx={{ p:'1em', height:'100%' }}>
                             <Stack spacing={1} sx={{ height: '100%'}}>
-                                <Typography variant="h6">Cards by Status</Typography>
+                                <Typography variant="h6">Answer performance</Typography>
 
                                 {(isAnalyticsError || isAnalyticsLoading || !analyticsData)
                                     ? <Skeleton variant="rounded" animation="wave" sx={{ height:'100%' }} />
