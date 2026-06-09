@@ -19,7 +19,9 @@ export default async function ProfilePage() {
 
     return (
         <Stack sx={{ p:'3em', alignItems:'flex-start' }} spacing={2}>
+
             <Typography variant="h5">Account & Application Settings</Typography>
+
             <Paper elevation={3} sx={{ px:'2em', py:'1em', minWidth: '50%'}}>
                 <Stack>
                     <Typography gutterBottom variant="h6">Profile & Account</Typography>
@@ -32,9 +34,8 @@ export default async function ProfilePage() {
                         </Grid>
                         <Grid size={9}>
                             <Stack spacing={1}>
-                                <Typography variant="body1">Identified with IndentityProvider</Typography>
+                                <Typography variant="body1">Identified with GitHub</Typography>
                                 <TextField disabled defaultValue={session?.user?.email} />
-                                {/*<SignOut />*/}
                                 <Button
                                     onClick={async () => { 'use server'; await signOut();}}
                                     variant="contained"
@@ -48,17 +49,7 @@ export default async function ProfilePage() {
                 </Stack>
             </Paper>
 
-            <Paper elevation={3} sx={{ px:'2em', py:'1em', minWidth: '50%'}}>
-                <Typography variant="h5">Account & Application Settings</Typography>
-                <Stack>
-                    <Typography variant="body1">New Cards Limit per Day</Typography>
-                    {/* TODO: define meaningful min max */}
-                    <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
-                    <Typography variant="body1">Ease Factor Adjustment</Typography>
-                    <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
-                </Stack>
 
-            </Paper>
 
 
         </Stack>

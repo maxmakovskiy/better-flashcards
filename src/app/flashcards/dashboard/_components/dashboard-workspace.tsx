@@ -32,7 +32,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda'
 import MoreTimeIcon from '@mui/icons-material/MoreTime'
 import SchoolIcon from '@mui/icons-material/School'
-import { PieChart } from '@mui/x-charts/PieChart'
+import { PieChart, pieClasses } from '@mui/x-charts/PieChart'
+import { BarChart, BarChartProps } from '@mui/x-charts/BarChart'
 
 
 export default function DashboardWorkspace() {
@@ -109,64 +110,123 @@ export default function DashboardWorkspace() {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} sx={{ minHeight:'200px', alignItems:'stretch'}}>
+            <Grid container spacing={3} sx={{ alignItems:'stretch'}}>
 
-                <Grid size={4}></Grid>
-
-                <Grid size={4}>
+                <Grid size={8}>
                     <Paper sx={{ p:'1em', height:'100%' }}>
-                        <Stack spacing={1} sx={{ height: '100%'}}>
-                           <Typography variant="h6">Cards by Status</Typography>
-                            <PieChart
-                                // hideLegend={true}
-                                series={[
-                                    {
-                                        data: [
-                                            { label: 'learned', value: 52, color: 'green' },
-                                            { label: 'in progress', value: 34, color: 'orange' },
-                                            { label: 'new', value: 14, color: 'red' },
-                                        ],
-                                        // innerRadius: 40,
-                                        highlightScope: { fade: 'global', highlight: 'item' },
-                                        faded: { innerRadius: 10, additionalRadius: -10, color: 'gray' },
-                                        valueFormatter: (item: { value: number }) => (`${item.value}%`),
-                                    },
+                        <Stack spacing={1}>
+                            <Typography variant="h6">Study activity</Typography>
+                            <BarChart
+                                height={300}
+                                dataset={[
+                                    {date: '1 Juin', cardsStudied: 20, label:'spanish dictionary' },
+                                    {date: '1 Juin', cardsStudied: 120, label:'english dictionary' },
+                                    {date: '2 Juin', cardsStudied: 30, label:'react basics 1' },
+                                    {date: '3 Juin', cardsStudied: 40, label:'react basics 2' },
+                                    {date: '4 Juin', cardsStudied: 20, label:'networks' },
+                                    {date: '5 Juin', cardsStudied: 20, label:'networks' },
+                                    {date: '6 Juin', cardsStudied: 20, label:'networks' },
+                                    {date: '7 Juin', cardsStudied: 20, label:'networks' },
+                                    {date: '8 Juin', cardsStudied: 20, label:'networks' },
+                                    {date: '9 Juin', cardsStudied: 20, label:'networks' },
+                                    {date: '10 Juin', cardsStudied: 20, label:'networks' },
                                 ]}
+                                series={[
+                                    { dataKey: 'cardsStudied', label: 'card studied' },
+                                ]}
+                                xAxis={[{ dataKey: 'date' }]}
                             />
                         </Stack>
                     </Paper>
-
                 </Grid>
 
                 <Grid size={4}>
-
-                    <Paper sx={{ p:'1em', height:'100%' }}>
-                        <Stack spacing={1} sx={{ height: '100%'}}>
-                            <Typography variant="h6">Cards by Status</Typography>
-                            <PieChart
-                                // hideLegend={true}
-                                series={[
-                                    {
-                                        data: [
-                                            { label: 'learned', value: 52, color: 'green' },
-                                            { label: 'in progress', value: 34, color: 'orange' },
-                                            { label: 'new', value: 14, color: 'red' },
-                                        ],
-                                        // innerRadius: 40,
-                                        highlightScope: { fade: 'global', highlight: 'item' },
-                                        faded: { innerRadius: 10, additionalRadius: -10, color: 'gray' },
-                                        valueFormatter: (item: { value: number }) => (`${item.value}%`),
-                                    },
-                                ]}
-                            />
-                        </Stack>
-                    </Paper>
-
-
+                        <Paper sx={{ p:'1em', height:'100%' }}>
+                            <Stack>
+                                <Typography variant="h6">
+                                    Session average
+                                </Typography>
+                                <Grid container>
+                                    <Grid size={6}>
+                                       <Typography variant="body1">
+                                           Response time
+                                       </Typography>
+                                    </Grid>
+                                    <Grid size={6}></Grid>
+                                </Grid>
+                            </Stack>
+                        </Paper>
                 </Grid>
 
             </Grid>
 
+            <Grid container spacing={3} sx={{ minHeight:'300px', alignItems:'stretch'}}>
+
+                <Grid size={5}>
+                    <Paper sx={{ p:'1em', height:'100%' }}>
+                        <Stack spacing={1} sx={{ height: '100%'}}>
+                            <Typography variant="h6">Cards by Status</Typography>
+                            <PieChart
+                                sx={{
+                                    [`& .${pieClasses.arcLabel}`]: {
+                                        fontWeight: 'bold',
+                                    },
+                                }}
+                                series={[
+                                    {
+                                        data: [
+                                            { label: 'correct', value: 82, color: 'green' },
+                                            { label: 'incorrect', value: 18, color: 'red' },
+                                        ],
+                                        outerRadius: 110,
+                                        innerRadius: 10,
+                                        highlightScope: { fade: 'global', highlight: 'item' },
+                                        faded: { innerRadius: 10, additionalRadius: -10, color: 'gray' },
+                                        valueFormatter: (item: { value: number }) => (`${item.value}%`),
+                                        arcLabel: (item) => (`${item.value}%`),
+                                        arcLabelMinAngle: 40
+                                    },
+                                ]}
+                            />
+                        </Stack>
+                    </Paper>
+                </Grid>
+
+                <Grid size={5}>
+                    <Paper sx={{ p:'1em', height:'100%' }}>
+                        <Stack spacing={1} sx={{ height: '100%'}}>
+                            <Typography variant="h6">Cards by Status</Typography>
+                            <PieChart
+                                sx={{
+                                    [`& .${pieClasses.arcLabel}`]: {
+                                        fontWeight: 'bold',
+                                    },
+                                }}
+                                series={[
+                                    {
+                                        data: [
+                                            { label: 'learned', value: 52, color: 'green' },
+                                            { label: 'in progress', value: 34, color: 'orange' },
+                                            { label: 'new', value: 14, color: 'red' },
+                                        ],
+                                        outerRadius: 110,
+                                        innerRadius: 10,
+                                        highlightScope: { fade: 'global', highlight: 'item' },
+                                        faded: { innerRadius: 10, additionalRadius: -10, color: 'gray' },
+                                        valueFormatter: (item: { value: number }) => (`${item.value}%`),
+                                        arcLabel: (item) => (`${item.value}%`),
+                                        arcLabelMinAngle: 40
+                                    },
+                                ]}
+                            />
+                        </Stack>
+                    </Paper>
+                </Grid>
+
+                <Grid size={2}>
+                </Grid>
+
+            </Grid>
 
         </Stack>
     )

@@ -26,8 +26,8 @@ const drawerWidth: number = 240
 type MenuItemT = { icon: ReactNode, url: string }
 const menuItems = new Map<string, MenuItemT>([
     ["Home", {icon: <HomeIcon color='primary' />, url: "/flashcards"}],
-    ["Dashboard", {icon: <AnalyticsIcon color='primary' />, url: "/flashcards/dashboard"}],
     ["Decks", {icon: <BackupTableIcon color='primary' />, url: "/flashcards/decks"}],
+    ["Analytics", {icon: <AnalyticsIcon color='primary' />, url: "/flashcards/dashboard"}],
     ["Profile", {icon: <ManageAccountsIcon color='primary' />, url: "/flashcards/profile"}],
 ])
 
