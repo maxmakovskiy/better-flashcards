@@ -1,11 +1,8 @@
 import { prisma } from '@/prisma'
 import { EnhancedStudySessionModel } from '@/app/flashcards/types'
-import { DeckModel } from "@/../prisma/generated/prisma/models/Deck"
-import { FlashcardModel } from "@/../prisma/generated/prisma/models/Flashcard"
 import { type ClientAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-schema'
 
-
-export const extractAnalytics = async (userId: string, endDate: Date,startDate?: Date): Promise<ClientAnalyticsSchema> => {
+export const extractAnalytics = async (userId: string, endDate: Date, startDate?: Date | null): Promise<ClientAnalyticsSchema> => {
     let createAtFilterMixin = {}
     let inRangeFilterMixin = {}
     if (!!startDate) {

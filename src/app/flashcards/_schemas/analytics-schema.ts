@@ -3,7 +3,7 @@ import { EnhancedStudySessionSchema } from './types/study-session-schema'
 import { ReviewHistorySchema } from './types/review-history-schema'
 
 export const ServerAnalyticsSchema = z.object({
-    startDate: z.coerce.date().optional(),
+    startDate: z.coerce.date().nullish(),
     endDate: z.coerce.date(),
 })
 

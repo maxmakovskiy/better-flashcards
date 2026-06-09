@@ -23,7 +23,14 @@ import { LearningStateEnum } from '@/../prisma/generated/prisma/enums'
 import HeadlessTable from './headless-table'
 
 export default function DashboardWorkspace() {
-    const { endDate, setEndDate, analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics()
+    const {
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate,
+        analyticsData,
+        isAnalyticsLoading,
+        isAnalyticsError } = useAnalytics()
 
     const cardsByStatus = useMemo(() => {
         if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
@@ -131,11 +138,11 @@ export default function DashboardWorkspace() {
                                     <Stack >
                                         <Typography gutterBottom variant="body2">From (optional):</Typography>
                                         <DateTimePicker
-                                            // value={startDate}
-                                            // onChange={(newValue, context) => {
-                                            //     if (context.validationError) { return }
-                                            //     setStartDate(newValue!)
-                                            // }}
+                                            value={startDate}
+                                            onChange={(newValue, context) => {
+                                                if (context.validationError) { return }
+                                                setStartDate(newValue!)
+                                            }}
                                         />
                                     </Stack>
                                 </Grid>
