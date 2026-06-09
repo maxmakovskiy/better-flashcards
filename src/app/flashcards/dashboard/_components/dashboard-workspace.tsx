@@ -37,10 +37,10 @@ import { BarChart, BarChartProps } from '@mui/x-charts/BarChart'
 
 
 export default function DashboardWorkspace() {
-    const [period, setPeriod] = useState('all time');
+    const [period, setPeriod] = useState(0);
 
     const handlePeriodChange = (event: SelectChangeEvent) => {
-        setPeriod(event.target.value as string);
+        setPeriod(Number.parseInt(event.target.value));
     };
 
     return (
@@ -60,13 +60,13 @@ export default function DashboardWorkspace() {
                         <InputLabel id="period-select-label">Period</InputLabel>
                         <Select
                             labelId="period-select-label"
-                            value={period}
+                            value={period + ''}
                             label="Age"
                             onChange={handlePeriodChange}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem value={0}>all time</MenuItem>
+                            <MenuItem value={7}>last week</MenuItem>
+                            <MenuItem value={31}>last month</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
