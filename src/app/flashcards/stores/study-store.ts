@@ -24,7 +24,7 @@ export type StudySession = {
     timerTimestamp: Date | null
     numOfCardsToReview: number
     numOfCardsLearned: number
-    daysStreak?: number
+    daysStreak: number | null
 }
 
 export type StudyStoreAction = {
@@ -52,7 +52,8 @@ export const defaultInitState: StudySession = {
     correctCount: 0,
     timerTimestamp: null,
     numOfCardsToReview: 0,
-    numOfCardsLearned: 0
+    numOfCardsLearned: 0,
+    daysStreak: null
 }
 
 export const createStudyStore = (
@@ -191,17 +192,19 @@ export const createStudyStore = (
 
                 // We don't need to wait for it
                 // as it is supplementory information
-                fetch('/api/session/streak')
+                const streak = await fetch('/api/session/streak')
                     .then(res => {
                         if (!res.ok) {
                             throw new Error('Failed to fetch the streak')
                         }
                         return res.json()
-                    }).then(({streak}) => {
-                        set({
-                            daysStreak: streak
-                        })
-                    }).catch(e => console.error(e))
+                    }).then(({ streak }: { streak: number }) => {
+                        console.log(`Your streak is ${streak}`)
+                        return streak
+                    })
+                set({
+                    daysStreak: streak
+                })
 
                 const now = new Date()
                 let learned = 0

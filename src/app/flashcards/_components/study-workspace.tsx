@@ -86,7 +86,7 @@ export default function StudyWorkspace() {
                             <DeckStatGadget
                                 icon={<LocalFireDepartmentIcon fontSize="large" />}
                                 title={
-                                    (!daysStreak
+                                    (daysStreak === null
                                             ? <Skeleton animation="wave" />
                                             : `${daysStreak} Day(s)`
                                     )
@@ -102,7 +102,7 @@ export default function StudyWorkspace() {
                                             : `${numOfCardsLearned} Card(s)`
                                     )
                                 }
-                                description={'Learned'} />
+                                description='Learned' />
                         </Grid>
                     </Grid>
 
