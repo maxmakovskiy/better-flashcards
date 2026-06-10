@@ -201,7 +201,6 @@ export const createStudyStore = (
                         }
                         return res.json()
                     }).then(({ streak }: { streak: number }) => {
-                        console.log(`Your streak is ${streak}`)
                         return streak
                     })
                 set({

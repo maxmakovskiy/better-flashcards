@@ -21,6 +21,8 @@ import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
+import useSWRImmutable from 'swr/immutable'
+import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
 
 
 export default function AllDecksWorkspace() {
@@ -32,6 +34,14 @@ export default function AllDecksWorkspace() {
         isAllDecksValidating,
         mutateAllDecks
     } = useAllDecks()
+    const {
+        data: streak,
+        isLoading: isStreakLoading,
+        error: streakError
+    } = useSWRImmutable<number, Error>(
+        '/api/session/streak',
+        (url: string) => generalGetFetcher(url).then(({ streak }) => Number(streak))
+    )
 
     const createNewDeck = (title: string, description: string) => {
         fetch(`/api/decks`, {
@@ -70,7 +80,8 @@ export default function AllDecksWorkspace() {
                 <Grid size={3}>
                     <DeckStatGadget
                         icon={<FolderIcon fontSize='large' />}
-                        title={isAllDecksLoading ? <Skeleton animation='wave' /> : allDecks?.length}
+                        title={isAllDecksLoading || isAllDecksError
+                            ? <Skeleton animation='wave' /> : allDecks?.length}
                         description='Total Decks' />
                 </Grid>
                 <Grid size={3}>
@@ -93,7 +104,7 @@ export default function AllDecksWorkspace() {
                     {/* TODO: compute study streak */}
                     <DeckStatGadget
                         icon={<TrendingUpIcon fontSize='large' />}
-                        title={isAllDecksLoading ? <Skeleton animation='wave' /> : 0}
+                        title={isStreakLoading || !!streakError ? <Skeleton animation='wave' /> : streak}
                         description='Day Study Streak' />
                 </Grid>
             </Grid>
