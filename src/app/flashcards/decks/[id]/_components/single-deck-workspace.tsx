@@ -27,11 +27,13 @@ import { useDeck } from '../_hooks/use-deck'
 import { useCards } from '../_hooks/use-cards'
 import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { format } from 'date-fns'
-
+import DeckDialog from '@/app/flashcards/decks/_components/deck-dialog'
+import { DeckSchema } from '@/app/flashcards/_schemas/types/basic-deck-schema'
 
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const [isNewCardDialogOpen, setNewCardDialogOpen] = useState(false)
-    const { deck, isDeckLoading, isDeckError } = useDeck(deckId)
+    const [isEditDeckDialogOpen, setEditDeckDialogOpen] = useState(false)
+    const { deck, isDeckLoading, isDeckError, deckMutate } = useDeck(deckId)
     const { cards, isCardsLoading, isCardsError, cardsMutate } = useCards(deckId)
 
     const stats = useMemo(() => {
@@ -52,6 +54,22 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             new: newNumber
         }
     }, [cards, isCardsLoading, isCardsError])
+
+    const handleDeckModification = (title: string, description: string) => {
+        const url = `/api/decks/${deckId}`
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({title, description}),
+        }).then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed update the deck with url=${url}`)
+            }
+            return res.json()
+        }).then(deck => DeckSchema.parse(deck)).then(deck => {
+            return deckMutate(deck)
+        }).catch(e => console.error(e))
+    }
 
     const handleCardCreation = (frontText: string, backText: string) => {
         const body = { frontText, backText }
@@ -108,7 +126,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                     </Typography>
                 </Stack>
                 <Box>
-                    <Button>
+                    <Button onClick={() => setEditDeckDialogOpen(true)}>
                         <MoreHorizIcon />
                     </Button>
                     <Button
@@ -185,7 +203,15 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 isOpen={isNewCardDialogOpen}
                 setClose={() => setNewCardDialogOpen(false)}
                 handleData={handleCardCreation} />
-
+            <DeckDialog
+                titleInit={deck?.title}
+                descriptionInit={deck?.description}
+                dialogTitle={'Edit Deck'}
+                dialogDescription={'Please enter the following information'}
+                isOpen={isEditDeckDialogOpen}
+                setClose={() => setEditDeckDialogOpen(false)}
+                handleSubmit={handleDeckModification}
+            />
         </Stack>
     )
 }

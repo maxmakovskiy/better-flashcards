@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import DeckCard from '@/app/flashcards/_components/deck-card'
 import NextLink from '@/app/_components/Link'
 import Button from '@mui/material/Button'
-import NewDeckDialog from './new-deck-dialog'
+import DeckDialog from './deck-dialog'
 import FolderIcon from '@mui/icons-material/Folder'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
@@ -164,7 +164,9 @@ export default function AllDecksWorkspace() {
 
             }
 
-            <NewDeckDialog
+            <DeckDialog
+                dialogTitle={'New Deck'}
+                dialogDescription={'Please enter the following information'}
                 isOpen={isDialogOpen}
                 setClose={() => setDialogOpen(false)}
                 handleSubmit={createNewDeck}

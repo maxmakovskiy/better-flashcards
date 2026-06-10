@@ -63,7 +63,9 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                     }}
                 >
                     <FolderIcon fontSize='small' />
-                    <DeckCardMenu deckId={deck.deckId} handleDeckDeletion={deleteDeck} />
+                    <DeckCardMenu
+                        deckId={deck.deckId}
+                        handleDeckDeletion={deleteDeck} />
                 </Stack>
                 <Typography
                     variant='body1'

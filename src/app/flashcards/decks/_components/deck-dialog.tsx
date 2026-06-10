@@ -7,13 +7,17 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-export interface NewDeckDialogProps {
+export interface DeckDialogProps {
+    titleInit?: string;
+    descriptionInit?: string | null;
+    dialogTitle: string;
+    dialogDescription?: string;
     isOpen: boolean;
     setClose: () => void;
     handleSubmit: (title: string, description: string) => void;
 }
 
-export default function NewDeckDialog({ isOpen, setClose, handleSubmit }: NewDeckDialogProps) {
+export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, dialogDescription, isOpen, setClose, handleSubmit }: DeckDialogProps) {
     const handleCreate = (event) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
@@ -26,10 +30,12 @@ export default function NewDeckDialog({ isOpen, setClose, handleSubmit }: NewDec
 
     return (
         <Dialog open={isOpen} onClose={setClose}>
-            <DialogTitle>New Deck</DialogTitle>
+            <DialogTitle>
+                {dialogTitle}
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Please enter the following information
+                    {dialogDescription}
                 </DialogContentText>
                 <form onSubmit={handleCreate} id='new-deck-form'>
                     <TextField
@@ -41,6 +47,7 @@ export default function NewDeckDialog({ isOpen, setClose, handleSubmit }: NewDec
                         label='Title of a deck'
                         fullWidth
                         variant='standard'
+                        defaultValue={titleInit || ''}
                     />
                     <TextField
                         autoFocus
@@ -50,14 +57,14 @@ export default function NewDeckDialog({ isOpen, setClose, handleSubmit }: NewDec
                         label='Description of a deck'
                         fullWidth
                         variant='standard'
+                        defaultValue={descriptionInit || ''}
                     />
-
                 </form>
             </DialogContent>
             <DialogActions>
                 <Button onClick={setClose}>Cancel</Button>
                 <Button type='submit' form='new-deck-form'>
-                    Create
+                    Done
                 </Button>
             </DialogActions>
         </Dialog>

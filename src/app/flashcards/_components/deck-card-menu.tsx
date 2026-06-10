@@ -65,7 +65,6 @@ export default function DeckCardMenu({ deckId, handleDeckDeletion }: DeckCardMen
                 >
                     Explore
                 </MenuItem>
-                <MenuItem onClick={handleClose}>Edit</MenuItem>
                 <MenuItem onClick={e => {
                         handleClose(e)
                         handleDeckDeletion()
