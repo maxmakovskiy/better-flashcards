@@ -5,7 +5,7 @@ import { prisma } from '@/prisma'
 import * as z from 'zod'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 
-// end point to create new study session connected to specific deck
+// end point to create new review history connected to specific study session
 export const POST = auth(async function POST(
     req: NextAuthRequest,
     { params }: { params: Promise<{ id: string }> }

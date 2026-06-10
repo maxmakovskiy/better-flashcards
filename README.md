@@ -133,7 +133,7 @@ For more information, please refer to [nextjs docs](https://nextjs.org/docs)
 
 ## 4 Data Model
 
-Data model was havily inspired by Anki and FSRS algorithm.
+Data model was heavily inspired by Anki and FSRS algorithm.
 
 ![data model](./docs/better-flashcard-er-schema.png)
 
@@ -141,6 +141,47 @@ Data model was havily inspired by Anki and FSRS algorithm.
 
 ## 5 API Endpoints
 
+API Endpoints are grouped by domain.
+
+#### Auth
+
+| Endpoint                       | Description                                                |
+|--------------------------------|------------------------------------------------------------|
+| `GET /api/auth/*`              | GET NextAuth.js endpoint for GitHub OAuth                  |
+| `POST /api/auth/*`             | POST NextAuth.js endpoint for GitHub OAuth                 |
+
+#### Cards
+
+| Endpoint                                      | Description                                                         |
+|-----------------------------------------------|---------------------------------------------------------------------|
+| `POST /api/cards/{deckId}`                    | Creates a new card for deck with given `deckId`                     |
+| `GET /api/cards/{deckId}`                     | Returns all the card available for a deck with `deckId`             |
+| `DELETE /api/cards/{deckId}/{flashcardNum}`   | Deletes a card with `flashcardNum` inside a deck with `deckId`      |
+| `PUT /api/cards/{deckId}/{flashcardNum}`      | Modifies a card with `flashcardNum` inside a deck with `deckId`     |
+
+#### Dashboard
+
+| Endpoint                       | Description                                                |
+|--------------------------------|------------------------------------------------------------|
+| `POST /api/dashboard`          | Fetches the analytics information for given time range     |
+
+#### Decks
+
+| Endpoint                       | Description                                                        |
+|--------------------------------|--------------------------------------------------------------------|
+| `POST /api/decks`              | Creates a new deck with no flashcards inside                       |
+| `GET /api/decks/{id}`          | Returns a deck with `deckId=id` without attached flashcards inside |
+| `DELETE /api/decks/{id}`       | Deletes a deck with `deckId=id` and all attached flashcards        |
+
+#### Session
+
+| Endpoint                                  | Description                                                        |
+|-------------------------------------------|--------------------------------------------------------------------|
+| `POST /api/session/{id}/add-review`       | Creates a new review history for session with `sessionId`          |
+| `POST /api/session/{id}/manage`           | Pauses/Stops/Resumes study session with `sessionId`                |
+| `GET /api/session/decks`                  | Returns all the deck containing flashcards needed to be reviwed    |
+| `GET /api/session/start`                  | Creates a new study session for the with `deckId` supplied in body |
+| `GET /api/session/streak`                 | Returns number of days withint current study streak                |
 
 ---
 
@@ -165,6 +206,14 @@ request => 'decks/page.tsx' => fetch data from DB => 'decks/_components/all-deck
 ---
 
 ## 7 Get Started
+
+#### Clone project
+#### Install packages
+#### Register GitHub OAuth App
+#### Generate Prisma Client
+#### Generate Apply Migrations
+#### Start The Project
+#### Run linter
 
 ---
 

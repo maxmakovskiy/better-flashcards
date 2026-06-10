@@ -3,7 +3,7 @@ import { prisma } from '@/prisma'
 import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
 
-// endpoint to create new card
+// endpoint to delete a card inside a deck
 export const DELETE = auth(async function DELETE(
     req: NextAuthRequest,
     { params }: { params: Promise<{ deckId: string, flashcardNum: number }> }
