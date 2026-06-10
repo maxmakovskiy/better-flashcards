@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
@@ -23,6 +23,8 @@ import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
 import useSWRImmutable from 'swr/immutable'
 import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
+import { useAnalytics } from '@/app/flashcards/dashboard/_hooks/use-analytics'
+import { startOfDay, endOfDay } from 'date-fns'
 
 
 export default function AllDecksWorkspace() {
@@ -42,6 +44,17 @@ export default function AllDecksWorkspace() {
         '/api/session/streak',
         (url: string) => generalGetFetcher(url).then(({ streak }) => Number(streak))
     )
+    const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
+        startOfDay(new Date()), endOfDay(new Date())
+    )
+
+    const numDeckStudied = useMemo(( ) => {
+        if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
+            return 0
+        }
+        const uniqueDeckIds = new Set(analyticsData.studySessions.map(s => s.deckId))
+        return uniqueDeckIds.size
+    }, [analyticsData, isAnalyticsError, isAnalyticsLoading])
 
     const createNewDeck = (title: string, description: string) => {
         fetch(`/api/decks`, {
@@ -85,10 +98,10 @@ export default function AllDecksWorkspace() {
                         description='Total Decks' />
                 </Grid>
                 <Grid size={3}>
-                    {/* TODO: compute from study session how many decks have been studied today */}
                     <DeckStatGadget
                         icon={<DoneAllIcon fontSize='large' />}
-                        title={isAllDecksLoading ? <Skeleton animation='wave' /> : 0}
+                        title={isAnalyticsLoading || isAnalyticsError ?
+                            <Skeleton animation='wave' /> : numDeckStudied}
                         description='Decks Studied Today' />
                 </Grid>
                 <Grid size={3}>
@@ -101,7 +114,6 @@ export default function AllDecksWorkspace() {
                         description='Total Cards' />
                 </Grid>
                 <Grid size={3}>
-                    {/* TODO: compute study streak */}
                     <DeckStatGadget
                         icon={<TrendingUpIcon fontSize='large' />}
                         title={isStreakLoading || !!streakError ? <Skeleton animation='wave' /> : streak}

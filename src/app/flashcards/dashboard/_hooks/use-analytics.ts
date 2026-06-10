@@ -17,9 +17,9 @@ const fetcher = async (url: string, endDate: Date, startDate: Date | null) => {
     return ClientAnalyticsSchema.parse(obj) as AnalyticData
 }
 
-export const useAnalytics = () => {
-    const [endDate, setEndDate] = useState<Date>(new Date())
-    const [startDate, setStartDate] = useState<Date | null>(null)
+export const useAnalytics = (fromDate?: Date, toDate?: Date) => {
+    const [endDate, setEndDate] = useState<Date>(toDate || new Date())
+    const [startDate, setStartDate] = useState<Date | null>(fromDate || null)
 
     const { data, error, isLoading, isValidating } = useSWRImmutable<AnalyticData, Error>(
         ['/api/dashboard', endDate, startDate],
