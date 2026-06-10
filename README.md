@@ -207,13 +207,69 @@ request => 'decks/page.tsx' => fetch data from DB => 'decks/_components/all-deck
 
 ## 7 Get Started
 
+Initial setup is super easy!
+
 #### Clone project
+
+```
+git clone https://github.com/maxmakovskiy/better-flashcards.git
+```
+
 #### Install packages
+
+````
+npm install
+````
+
 #### Register GitHub OAuth App
+
+Follow [official Github instruction](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) to create OAuth App to get:
+
+```
+AUTH_GITHUB_ID
+AUTH_GITHUB_SECRET
+```
+
+_Note:_ To provide correct callback URL please refer [Auth.js docs](https://authjs.dev/getting-started/providers/github) for help.
+
+After receiving id and secret add them to your `.env` file in the root directory of the cloned repo.
+
+Also, generate `AUTH_SECRET` that will be used to encrypt JWT.
+For this run:
+
+```
+npx auth secret
+```
+
+Don't forget to add to `.env` file
+
+
 #### Generate Prisma Client
+
+```
+npx prisma generate
+```
+
 #### Generate Apply Migrations
+
+```
+npx prisma migrate [database_name_of_your_choice]
+```
+
 #### Start The Project
-#### Run linter
+
+You can use either JetBrains WebStorm. In this case you are provided with run config.
+
+Or you can run it from terminal with:
+```
+npm run dev
+```
+
+#### Run linter (optional)
+
+```
+npm run lint
+```
 
 ---
 
