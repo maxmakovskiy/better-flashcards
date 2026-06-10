@@ -213,14 +213,29 @@ style: |
 
 ---
 
+<style scoped>
+  section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-# Inspiration source (for features)
+    h1,h2,h3,h4 {
+      align-self: stretch;
+    }
+    img {
+      border-radius: 5px;
+      border: 1px solid var(--dark-blue);
+    }
+  }
+</style>
 
-Anki
+# Anki as an inspiration source (for features)
+
+![height:450](./anki_card_example.png)
 
 ---
 
-# Objectives to Features
+# From Objectives to Features
 
 <div class="columns">
 
@@ -238,6 +253,11 @@ Anki
 
 #### Core Features
 
+- User authentication with identity provider (GitHub)
+- Deck and Flashcard management (CRUD ops on decks/cards, cards exclusively include text)
+- Adaptive study system (spaced repetition scheduling, SM-2)
+- Interactive study mode (guess the other side of a card)
+- Learning dashboard (track study progress, view study statistics)
 
 </div>
 
@@ -251,6 +271,10 @@ Anki
 
     h1,h2,h3,h4 {
       align-self: stretch;
+    }
+    img {
+      border-radius: 5px;
+      border: 1px solid var(--dark-blue);
     }
   }
 </style>
@@ -611,16 +635,12 @@ export default async function DecksPage() {
 }
 ```
 
-
-
 </div>
 
 </div>
 
 
 ---
-
-
 
 # It is demo time !
 
@@ -628,14 +648,54 @@ export default async function DecksPage() {
 
 # Specification
 
-#### What has or has not been done according to intial design document ?
+### What has or has not been done according to intial design document ?
+
+<div class="columns">
+
+<div class="box">
+
+#### Technologies
+
+| Name               | Reason                                                                                                      |
+|--------------------|-------------------------------------------------------------------------------------------------------------|
+| React Motion       | Material design guideliness advises against Card flipping as method to reveal card content                  |
+| SuperMemo 2 (SM-2) | Obsolete (1987) and not really appearing (you should wait a day for repeat card that you don't know at all) |
+
+</div>
+
+<div class="box">
+
+#### Features
+
+Reason is one - I've run out of time.
+
+- Deck information editing
+- Deck deletion
+- (*) Filtering and Searching through collection of Decks/Cards
+- (*) No way to update the algorithm settings from UI
+
+_(*) was not a part of initial design document but can be considered this way_
+
+</div>
+
+</div>
 
 ---
 
 # Further development
 
+- Proper errors display
+- Cards can include the images and rich text
+- Tags
+- Filtering and search
+- Session details
+- More study modes (pair it/choose it/type it)
+- Public/private decks 
+- More charts and analytics data for dashboard (example: Knowledge Graph Visualization of related cards among related decks)
+- Replay previous study session
+- Shared decks
 
 ---
 
-# Thank you for attention !
+# Thank you for your attention !
 
