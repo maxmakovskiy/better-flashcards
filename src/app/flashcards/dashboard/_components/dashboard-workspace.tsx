@@ -83,6 +83,10 @@ export default function DashboardWorkspace() {
         let reviewsAmount = 0
         let accuracy = 0
         for (const s of analyticsData?.studySessions) {
+            if (!s.reviewedCards || s.reviewedCards.length === 0) {
+                continue
+            }
+
             respMs += (s.avgResponseTimeMs || 0)
             reviewsAmount += s.reviewedCards.length
             accuracy += (s.reviewedCards.filter(r => r.isCorrect).length / s.reviewedCards.length)
