@@ -145,7 +145,8 @@ export default function DashboardWorkspace() {
                                             value={startDate}
                                             onChange={(newValue, context) => {
                                                 if (context.validationError) { return }
-                                                setStartDate(newValue!)
+                                                if (!newValue || (newValue > endDate)) { return }
+                                                setStartDate(newValue)
                                             }}
                                         />
                                     </Stack>
