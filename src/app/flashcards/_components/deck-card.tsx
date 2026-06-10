@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
@@ -12,7 +12,7 @@ import { EnhancedDeckModel } from '@/app/flashcards/types'
 import { useAllDecks } from '@/app/flashcards/decks/_hooks/use-all-decks'
 
 export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
-    const [progress] = useState<number>(() => {
+    const progress = useMemo(() => {
         const now = new Date()
         const cardReviewed = deck.flashcards.filter(card => (now < card.nextReviewAt) && (card.lastReviewAt !== null))
         return (
@@ -20,7 +20,7 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                 ? 0
                 : Math.min(Math.ceil(cardReviewed.length / deck.flashcards.length * 100), 100)
         )
-    })
+    }, [deck]);
 
     const {
         allDecks,
@@ -35,7 +35,7 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                 throw new Error(`Failed to delete the deck with id=${deck.deckId}`)
             }
         }).then(() => {
-            mutateAllDecks(allDecks?.filter(d => {
+            return mutateAllDecks(allDecks?.filter(d => {
                 return d.deckId !== deck.deckId
             }))
         }).catch(e => console.log(e))

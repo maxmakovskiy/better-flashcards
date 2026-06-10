@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
-import { DeckSchema } from '@/app/flashcards/_schemas/types/deck-schema'
+import { DeckSchema } from '@/app/flashcards/_schemas/types/basic-deck-schema'
 import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
 
 export const useDeck = (deckId: string) => {

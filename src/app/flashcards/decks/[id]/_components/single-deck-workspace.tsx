@@ -85,7 +85,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 </Link>
                 <Typography variant='body2'>
                     {(isDeckLoading || isDeckError) ?
-                        <Skeleton animation='wave' />
+                        <Skeleton animation='wave' sx={{ width:'50px' }} />
                         : deck?.title
                     }
                 </Typography>
