@@ -170,6 +170,7 @@ API Endpoints are grouped by domain.
 | Endpoint                       | Description                                                        |
 |--------------------------------|--------------------------------------------------------------------|
 | `POST /api/decks`              | Creates a new deck with no flashcards inside                       |
+| `GET  /api/decks`              | Returns all the decks with flashcards inside                       |
 | `GET /api/decks/{id}`          | Returns a deck with `deckId=id` without attached flashcards inside |
 | `DELETE /api/decks/{id}`       | Deletes a deck with `deckId=id` and all attached flashcards        |
 

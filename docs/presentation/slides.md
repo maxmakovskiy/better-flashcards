@@ -400,7 +400,7 @@ Anki
 
 ---
 
-# Challenges (1)
+# Challenges (1) Types 
 
 #### How to type this whole thing ?
 
@@ -460,7 +460,7 @@ const session: StudySessionModel = await fetch(
 
 ---
 
-# Challenges (2)
+# Challenges (2) Types
 
 #### Zod
 
@@ -492,9 +492,8 @@ export const StudySessionSchema = z.object({
 
 - What is up with `status` ?
 
-According to Prisma schema it should be:
-
 ```js
+// schema.prisma
 enum StudySessionStatusEnum {
   STARTED
   PAUSED
@@ -502,10 +501,22 @@ enum StudySessionStatusEnum {
 }
 ```
 
-- So, simple use `z.enum`
+- Simple use `z.enum`
 
 ```js
 export const StudySessionStatusSchema = z.enum(StudySessionStatusEnum)
+```
+
+- Finally, use `StudySessionSchema`
+
+```js
+// later in study-store.ts:73
+then(res => {
+  if (!res.ok) {
+    throw new Error(`Failed to create new session for deck with id=${selectedDeck?.deckId}`)
+  }
+  return res.json()
+}).then(s => StudySessionSchema.parse(s))
 ```
 
 </div>
@@ -514,11 +525,110 @@ export const StudySessionStatusSchema = z.enum(StudySessionStatusEnum)
 
 ---
 
-# Demo
+# Challenges (3) Data fetching 1
+
+<div class="columns">
+
+<div>
+
+- Given this endpoint, how would you fetch data ?
+
+| Endpoint          | Description                                  |
+|-------------------|----------------------------------------------|
+| `GET  /api/decks` | Returns all the decks with flashcards inside |
+
+Returned type:
+
+```js
+export type EnhancedDeckModel = DeckModel & { flashcards: FlashcardModel[] }
+```
+
+- Would you use `fetch`, `useEffect` and `useState`/`Context` ?
+
+- There is something better ?
+
+</div>
+
+<div>
+
+- Yes, **SWR**. It does everyhing above + data (re-)validation
+
+```js
+// _hooks/use-all-decks.ts
+const { data, error, isLoading, isValidating, mutate } = 
+  useSWR<EnhancedDeckModel[], Error>(
+    '/api/decks',
+    (url: string) => generalGetFetcher(url)
+        .then(obj => EnhancedFlashcardsDeckArraySchema.parse(obj) as EnhancedDeckModel[])
+  )
+```
+
+- But then the real challenge arises - pre-fill client component on the server
+_Note (from https://react.dev/reference/rsc/use-client)_:
+  - Client Components are components in a render tree that are rendered on the client.
+  - Server Components are components in a render tree that are rendered on the server
+
+</div>
+
+</div>
+
 
 ---
 
-# Respect of defined specification
+# Challenges (3) Data fetching 2
+
+<div class="columns">
+
+<div>
+
+#### Pre-filling data for SWR
+
+It can be solved by fetching data in server component and passing promise as fallback data to client component, in this way entry in cache referenced by `url` used to fetch data is already prefilled when client component calls `useSWR`
+
+</div>
+
+<div>
+
+- Server Component
+```js
+export default async function DecksPage() {
+  // ...
+  const decksPromise: Promise<EnhancedDeckModel[]> = prisma.deck.findMany({
+      where: { userId: session.user?.id },
+      include: { flashcards: true }
+  })
+  return (
+      <SWRConfig
+          value={{
+              fallback: {
+                  '/api/decks': decksPromise,
+              },
+          }}
+      >
+          <AllDecksWorkspace />
+      </SWRConfig>
+  )
+}
+```
+
+
+
+</div>
+
+</div>
+
+
+---
+
+
+
+# It is demo time !
+
+---
+
+# Specification
+
+#### What has or has not been done according to intial design document ?
 
 ---
 
