@@ -207,9 +207,9 @@ style: |
 <!-- _footer: '' -->
 
 # Better Flashcards
-## Online learning platform based on flashcards method and spicied with spaced repetition
+## Online learning platform based on flashcards method and spiced with spaced repetition
 
-<p>HEIG-VD WEB 2026<br>Makovskyi Maksym<br>10.06.2026</p>
+<p>HEIG-VD WEB 2026<br>Makovskyi Maksym</p>
 
 ---
 
