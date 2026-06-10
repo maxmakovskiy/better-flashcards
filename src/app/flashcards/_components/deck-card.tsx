@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
@@ -63,7 +63,7 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
                     }}
                 >
                     <FolderIcon fontSize='small' />
-                    <DeckCardMenu handleDeckDeletion={deleteDeck} />
+                    <DeckCardMenu deckId={deck.deckId} handleDeckDeletion={deleteDeck} />
                 </Stack>
                 <Typography
                     variant='body1'

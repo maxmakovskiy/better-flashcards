@@ -47,7 +47,6 @@ export default function AllDecksWorkspace() {
     const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
         startOfDay(new Date()), endOfDay(new Date())
     )
-
     const numDeckStudied = useMemo(( ) => {
         if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
             return 0
@@ -69,7 +68,7 @@ export default function AllDecksWorkspace() {
         }).then(newDeck => {
             return EnhancedFlashcardsDeckSchema.parse(newDeck)
         }).then((newDeck: EnhancedDeckModel) => {
-            mutateAllDecks([...allDecks || [], newDeck])
+            return mutateAllDecks([...allDecks || [], newDeck])
         }).catch(e => console.log(e))
     }
 
@@ -121,23 +120,6 @@ export default function AllDecksWorkspace() {
                 </Grid>
             </Grid>
 
-
-            {/*<TextField*/}
-            {/*    sx={{ width:'40%'}}*/}
-            {/*    // id={`${textFieldId}-input`}*/}
-            {/*    label='Search'*/}
-            {/*    slotProps={{*/}
-            {/*        input: {*/}
-            {/*            startAdornment: (*/}
-            {/*                <InputAdornment position='start'>*/}
-            {/*                    <SearchIcon />*/}
-            {/*                </InputAdornment>*/}
-            {/*            ),*/}
-            {/*        },*/}
-            {/*    }}*/}
-            {/*    variant='filled'*/}
-            {/*/>*/}
-
             <TransitionGroup>
                 {(!isAllDecksLoading && isAllDecksValidating) &&
                     <Fade>
@@ -146,9 +128,9 @@ export default function AllDecksWorkspace() {
                 }
             </TransitionGroup>
 
-            {!isAllDecksLoading
+            {!isAllDecksLoading || isAllDecksError
                 ? (
-                    (isAllDecksError || allDecks?.length === 0)
+                    (allDecks?.length === 0)
                         ?
                             <Typography variant='body2'>
                                 You have 0 decks. Please add some

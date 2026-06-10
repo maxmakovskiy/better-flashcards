@@ -4,12 +4,19 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Box from '@mui/material/Box'
+import { useRouter } from 'next/navigation'
 
 const itemHeight = 48
 
-export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletion: () => void }) {
+export interface DeckCardMenuProps {
+    deckId: string;
+    handleDeckDeletion: () => void;
+}
+
+export default function DeckCardMenu({ deckId, handleDeckDeletion }: DeckCardMenuProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
+    const router = useRouter()
 
     const handleClick = (event: MouseEvent<HTMLElement>) => {
         event.preventDefault()
@@ -51,6 +58,13 @@ export default function DeckCardMenu({ handleDeckDeletion }: { handleDeckDeletio
                     },
                 }}
             >
+                <MenuItem onClick={e => {
+                        handleClose(e)
+                        router.push(`/flashcards/decks/${deckId}`)
+                    }}
+                >
+                    Explore
+                </MenuItem>
                 <MenuItem onClick={handleClose}>Edit</MenuItem>
                 <MenuItem onClick={e => {
                         handleClose(e)
