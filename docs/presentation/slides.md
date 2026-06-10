@@ -669,7 +669,6 @@ export default async function DecksPage() {
 
 Reason is one - I've run out of time.
 
-- Deck information editing
 - (*) Filtering and Searching through collection of Decks/Cards
 - (*) No way to update the algorithm settings from UI
 
