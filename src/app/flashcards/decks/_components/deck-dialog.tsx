@@ -9,33 +9,34 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Stack from '@mui/material/Stack'
 
 export interface DeckDialogProps {
-    titleInit?: string;
-    descriptionInit?: string | null;
     dialogTitle: string;
-    dialogDescription?: string;
+    dialogDescription: string;
+    deckTitle: string;
+    deckDescription: string;
+    setDeckTitle: (value: string) => void;
+    setDeckDescription: (value: string) => void;
     isOpen: boolean;
+    isMutating: boolean;
     setClose: () => void;
-    handleData: (title: string, description: string) => void;
+    doneTrigger: () => void;
 }
 
-export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, dialogDescription, isOpen, setClose, handleData }: DeckDialogProps) {
-    const [title, setTitle] = useState<string>(titleInit ?? '')
-    const [description, setDescription] = useState<string>(descriptionInit ?? '')
+export default function DeckDialog(props: DeckDialogProps) {
     const [isTitleEmpty, setTitleError] = useState<boolean>(false)
 
     const resetErrorOnClose = () => {
         setTitleError(false)
-        setClose()
+        props.setClose()
     }
 
     return (
-        <Dialog fullWidth open={isOpen} onClose={resetErrorOnClose}>
+        <Dialog fullWidth open={props.isOpen} onClose={resetErrorOnClose}>
             <DialogTitle>
-                {dialogTitle}
+                {props.dialogTitle}
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {dialogDescription}
+                    {props.dialogDescription}
                 </DialogContentText>
                 <Stack>
                     <TextField
@@ -47,8 +48,8 @@ export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, di
                         label='Title of a deck'
                         fullWidth
                         variant='standard'
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
+                        value={props.deckTitle}
+                        onChange={e => props.setDeckTitle(e.target.value)}
                     />
                     <TextField
                         autoFocus
@@ -58,22 +59,25 @@ export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, di
                         multiline
                         rows={4}
                         variant='standard'
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
+                        value={props.deckDescription}
+                        onChange={e => props.setDeckDescription(e.target.value)}
                     />
                 </Stack>
             </DialogContent>
             <DialogActions>
                 <Button onClick={resetErrorOnClose}>Cancel</Button>
-                <Button onClick={() => {
-                    const emptyTitle = title.length === 0
-                    setTitleError(emptyTitle)
-                    if (emptyTitle) {
-                        return
-                    }
-                    handleData(title, description)
-                    setClose()
-                }}>
+                <Button
+                    loading={props.isMutating}
+                    loadingPosition='start'
+                    onClick={() => {
+                        const emptyTitle = props.deckTitle.length === 0
+                        setTitleError(emptyTitle)
+                        if (emptyTitle) {
+                            return
+                        }
+                        props.doneTrigger()
+                    }}
+                >
                     Done
                 </Button>
             </DialogActions>

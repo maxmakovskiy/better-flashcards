@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
@@ -14,8 +14,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { useAllDecks } from '@/app/flashcards/decks/_hooks/use-all-decks'
-import { EnhancedDeckModel } from '@/app/flashcards/types'
-import { EnhancedFlashcardsDeckSchema } from '@/app/flashcards/_schemas/types/deck-schema'
+import { useCreateDeck } from '@/app/flashcards/decks/_hooks/use-create-deck'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -29,12 +28,14 @@ import { startOfDay, endOfDay } from 'date-fns'
 
 export default function AllDecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
+    const [newDeckTitle, setNewDeckTitle] = useState('')
+    const [newDeckDescription, setNewDeckDescription] = useState('')
+
     const {
         allDecks,
         isAllDecksLoading,
         isAllDecksError,
         isAllDecksValidating,
-        mutateAllDecks
     } = useAllDecks()
     const {
         data: streak,
@@ -47,6 +48,8 @@ export default function AllDecksWorkspace() {
     const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
         startOfDay(new Date()), endOfDay(new Date())
     )
+    const { createNewDeck, isCreationOngoing, isCreationFailed } = useCreateDeck()
+
     const numDeckStudied = useMemo(( ) => {
         if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
             return 0
@@ -55,22 +58,7 @@ export default function AllDecksWorkspace() {
         return uniqueDeckIds.size
     }, [analyticsData, isAnalyticsError, isAnalyticsLoading])
 
-    const createNewDeck = (title: string, description: string) => {
-        fetch(`/api/decks`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, description }),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed to create new deck with title=${title}`)
-            }
-            return res.json()
-        }).then(newDeck => {
-            return EnhancedFlashcardsDeckSchema.parse(newDeck)
-        }).then((newDeck: EnhancedDeckModel) => {
-            return mutateAllDecks([...allDecks || [], newDeck])
-        }).catch(e => console.log(e))
-    }
+    const closeDialog = () => setDialogOpen(false)
 
     return (
         <Stack sx={{ p:'3em'}} spacing={3}>
@@ -165,11 +153,22 @@ export default function AllDecksWorkspace() {
             }
 
             <DeckDialog
-                dialogTitle={'New Deck'}
-                dialogDescription={'Please enter the following information'}
+                dialogTitle='New Deck'
+                dialogDescription='Please enter the following information'
+                deckTitle={newDeckTitle}
+                deckDescription={newDeckDescription}
+                setDeckTitle={setNewDeckTitle}
+                setDeckDescription={setNewDeckDescription}
                 isOpen={isDialogOpen}
+                isMutating={isCreationOngoing}
                 setClose={() => setDialogOpen(false)}
-                handleData={createNewDeck}
+                doneTrigger={() => (
+                    createNewDeck({
+                        title: newDeckTitle,
+                        description: newDeckDescription,
+                        closeDialog: closeDialog
+                    })
+                )}
             />
         </Stack>
     )

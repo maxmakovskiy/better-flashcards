@@ -38,6 +38,8 @@ export default function CardDialog({
         setFrontEmptyError(false)
         setBackEmptyError(false)
         setClose()
+        setFront('')
+        setBack('')
     }
 
     return (
@@ -89,8 +91,12 @@ export default function CardDialog({
                     if (emptyFront || emptyBack) {
                         return
                     }
-                    handleData(front, back)
+                    if (frontTextInit !== front || backTextInit !== back) {
+                        handleData(front, back)
+                    }
                     setClose()
+                    setFront('')
+                    setBack('')
                 }}>
                     Done
                 </Button>

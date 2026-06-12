@@ -203,7 +203,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 isOpen={isNewCardDialogOpen}
                 setClose={() => setNewCardDialogOpen(false)}
                 handleData={handleCardCreation} />
-            {(deck || !isDeckLoading || !isDeckValidating) &&
+            {(!isDeckLoading && !isDeckValidating) &&
                 <DeckDialog
                     titleInit={deck?.title}
                     descriptionInit={deck?.description}
