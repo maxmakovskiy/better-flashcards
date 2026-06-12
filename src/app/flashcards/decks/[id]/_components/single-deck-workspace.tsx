@@ -33,7 +33,7 @@ import { DeckSchema } from '@/app/flashcards/_schemas/types/basic-deck-schema'
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const [isNewCardDialogOpen, setNewCardDialogOpen] = useState(false)
     const [isEditDeckDialogOpen, setEditDeckDialogOpen] = useState(false)
-    const { deck, isDeckLoading, isDeckError, deckMutate } = useDeck(deckId)
+    const { deck, isDeckLoading, isDeckError, isDeckValidating, deckMutate } = useDeck(deckId)
     const { cards, isCardsLoading, isCardsError, cardsMutate } = useCards(deckId)
 
     const stats = useMemo(() => {
@@ -203,15 +203,17 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 isOpen={isNewCardDialogOpen}
                 setClose={() => setNewCardDialogOpen(false)}
                 handleData={handleCardCreation} />
-            <DeckDialog
-                titleInit={deck?.title}
-                descriptionInit={deck?.description}
-                dialogTitle={'Edit Deck'}
-                dialogDescription={'Please enter the following information'}
-                isOpen={isEditDeckDialogOpen}
-                setClose={() => setEditDeckDialogOpen(false)}
-                handleSubmit={handleDeckModification}
-            />
+            {(deck || !isDeckLoading || !isDeckValidating) &&
+                <DeckDialog
+                    titleInit={deck?.title}
+                    descriptionInit={deck?.description}
+                    dialogTitle={'Edit Deck'}
+                    dialogDescription={'Please enter the following information'}
+                    isOpen={isEditDeckDialogOpen}
+                    setClose={() => setEditDeckDialogOpen(false)}
+                    handleData={handleDeckModification}
+                />
+            }
         </Stack>
     )
 }

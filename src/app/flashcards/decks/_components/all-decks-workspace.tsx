@@ -169,7 +169,7 @@ export default function AllDecksWorkspace() {
                 dialogDescription={'Please enter the following information'}
                 isOpen={isDialogOpen}
                 setClose={() => setDialogOpen(false)}
-                handleSubmit={createNewDeck}
+                handleData={createNewDeck}
             />
         </Stack>
     )

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import Stack from '@mui/material/Stack'
 
 export interface DeckDialogProps {
     titleInit?: string;
@@ -14,22 +15,21 @@ export interface DeckDialogProps {
     dialogDescription?: string;
     isOpen: boolean;
     setClose: () => void;
-    handleSubmit: (title: string, description: string) => void;
+    handleData: (title: string, description: string) => void;
 }
 
-export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, dialogDescription, isOpen, setClose, handleSubmit }: DeckDialogProps) {
-    const handleCreate = (event) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        const formJson = Object.fromEntries((formData as any).entries())
-        const title = formJson.title
-        const description = formJson.description
+export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, dialogDescription, isOpen, setClose, handleData }: DeckDialogProps) {
+    const [title, setTitle] = useState<string>(titleInit ?? '')
+    const [description, setDescription] = useState<string>(descriptionInit ?? '')
+    const [isTitleEmpty, setTitleError] = useState<boolean>(false)
+
+    const resetErrorOnClose = () => {
+        setTitleError(false)
         setClose()
-        handleSubmit(title, description)
     }
 
     return (
-        <Dialog open={isOpen} onClose={setClose}>
+        <Dialog fullWidth open={isOpen} onClose={resetErrorOnClose}>
             <DialogTitle>
                 {dialogTitle}
             </DialogTitle>
@@ -37,33 +37,41 @@ export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, di
                 <DialogContentText>
                     {dialogDescription}
                 </DialogContentText>
-                <form onSubmit={handleCreate} id='new-deck-form'>
+                <Stack>
                     <TextField
+                        error={isTitleEmpty}
+                        helperText={isTitleEmpty ? 'Title cannot be empty' : ''}
                         autoFocus
                         required
                         margin='dense'
-                        id='title'
-                        name='title'
                         label='Title of a deck'
                         fullWidth
                         variant='standard'
-                        defaultValue={titleInit || ''}
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
                     />
                     <TextField
                         autoFocus
                         margin='dense'
-                        id='description'
-                        name='description'
                         label='Description of a deck'
                         fullWidth
                         variant='standard'
-                        defaultValue={descriptionInit || ''}
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
                     />
-                </form>
+                </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={setClose}>Cancel</Button>
-                <Button type='submit' form='new-deck-form'>
+                <Button onClick={resetErrorOnClose}>Cancel</Button>
+                <Button onClick={() => {
+                    const emptyTitle = title.length === 0
+                    setTitleError(emptyTitle)
+                    if (emptyTitle) {
+                        return
+                    }
+                    handleData(title, description)
+                    setClose()
+                }}>
                     Done
                 </Button>
             </DialogActions>
