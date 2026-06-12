@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -8,6 +8,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import Stack from '@mui/material/Stack'
 
 export interface CardDialogProps {
     frontTextInit?: string;
@@ -28,24 +29,28 @@ export default function CardDialog({
     setClose,
     handleData
 }: CardDialogProps) {
+    const [front, setFront] = useState<string>(frontTextInit ?? '')
+    const [back, setBack] = useState<string>(backTextInit ?? '')
+    const [isFrontEmpty, setFrontEmptyError] = useState<boolean>(false)
+    const [isBackEmpty, setBackEmptyError] = useState<boolean>(false)
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        const formJson = Object.fromEntries((formData as any).entries())
-        handleData(formJson.front, formJson.back)
+    const resetErrorsOnClose = () => {
+        setFrontEmptyError(false)
+        setBackEmptyError(false)
         setClose()
     }
 
     return (
-        <Dialog open={isOpen} onClose={setClose}>
+        <Dialog open={isOpen} onClose={resetErrorsOnClose} fullWidth>
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     {dialogDescription}
                 </DialogContentText>
-                <form onSubmit={handleSubmit} id='subscription-form'>
+                <Stack spacing={2}>
                     <TextField
+                        error={isFrontEmpty}
+                        helperText={isFrontEmpty ? 'Front side should contain text': ''}
                         autoFocus
                         required
                         margin='dense'
@@ -55,10 +60,12 @@ export default function CardDialog({
                         fullWidth
                         rows={4}
                         variant='filled'
-                        defaultValue={frontTextInit || ''}
+                        value={front}
+                        onChange={e => setFront(e.target.value)}
                     />
                     <TextField
-                        autoFocus
+                        error={isBackEmpty}
+                        helperText={isBackEmpty ? 'Back side should contain text' : ''}
                         required
                         margin='dense'
                         name='back'
@@ -67,13 +74,26 @@ export default function CardDialog({
                         fullWidth
                         rows={4}
                         variant='filled'
-                        defaultValue={backTextInit || ''}
+                        value={back}
+                        onChange={e => setBack(e.target.value)}
                     />
-                </form>
+                </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={setClose}>Cancel</Button>
-                <Button type='submit' form='subscription-form'>
+                <Button onClick={resetErrorsOnClose}>
+                    Cancel
+                </Button>
+                <Button onClick={() => {
+                    const emptyFront = front.length === 0
+                    const emptyBack = back.length === 0
+                    setFrontEmptyError(emptyFront)
+                    setBackEmptyError(emptyBack)
+                    if (emptyFront || emptyBack) {
+                        return
+                    }
+                    handleData(front, back)
+                    setClose()
+                }}>
                     Done
                 </Button>
             </DialogActions>

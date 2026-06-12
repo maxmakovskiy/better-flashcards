@@ -76,7 +76,7 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     : card
             ))
         }).then((cardsWithUpdated: FlashcardModel[]) => {
-            cardsMutate(cardsWithUpdated, { revalidate: false })
+            return cardsMutate(cardsWithUpdated, { revalidate: false })
         }).catch(e => console.log(e))
     }
 
@@ -226,7 +226,6 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                 <TableCell align='center'>
                                     <Button onClick={(e: MouseEvent<HTMLElement>) => {
                                         e.stopPropagation()
-                                        // e.preventDefault()
                                         handleCardDeletion(c.flashcardNum)
                                     }}>
                                         <DeleteForeverIcon />
@@ -237,14 +236,19 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <CardDialog
-                dialogTitle='Modify card'
-                isOpen={isModifyCardDialogOpen}
-                setClose={() => setModifyCardDialogOpen(false)}
-                backTextInit={cardToMod?.backText}
-                frontTextInit={cardToMod?.frontText}
-                handleData={handleCardModification}
-            />
+            {cardToMod &&
+                <CardDialog
+                    dialogTitle='Modify card'
+                    isOpen={isModifyCardDialogOpen}
+                    setClose={() => {
+                        setModifyCardDialogOpen(false)
+                        setCardToMod(null)
+                    }}
+                    backTextInit={cardToMod?.backText}
+                    frontTextInit={cardToMod?.frontText}
+                    handleData={handleCardModification}
+                />
+            }
         </Stack>
     )
 }
