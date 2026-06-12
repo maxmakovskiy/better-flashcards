@@ -54,7 +54,6 @@ export default function CardDialog({
                         autoFocus
                         required
                         margin='dense'
-                        name='front'
                         label='Front side of a card'
                         multiline
                         fullWidth
@@ -68,7 +67,6 @@ export default function CardDialog({
                         helperText={isBackEmpty ? 'Back side should contain text' : ''}
                         required
                         margin='dense'
-                        name='back'
                         label='Back side of a card'
                         multiline
                         fullWidth

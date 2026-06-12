@@ -55,6 +55,8 @@ export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, di
                         margin='dense'
                         label='Description of a deck'
                         fullWidth
+                        multiline
+                        rows={4}
                         variant='standard'
                         value={description}
                         onChange={e => setDescription(e.target.value)}
