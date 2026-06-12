@@ -4,7 +4,7 @@ import { EnhancedFlashcardsDeckArraySchema } from '@/app/flashcards/_schemas/typ
 import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
 
 export const useAllDecks = () => {
-    const { data, error, isLoading, isValidating } = useSWRImmutable<EnhancedDeckModel[], Error>(
+    const { data, error, isLoading, isValidating, mutate } = useSWRImmutable<EnhancedDeckModel[], Error>(
         '/api/decks',
         (url: string) => generalGetFetcher(url)
             .then(obj => EnhancedFlashcardsDeckArraySchema.parse(obj) as EnhancedDeckModel[]),
@@ -16,6 +16,7 @@ export const useAllDecks = () => {
         isAllDecksLoading: isLoading,
         isAllDecksError: !!error,
         isAllDecksValidating: isValidating,
+        mutateAllDecks: mutate
     }
 }
 
