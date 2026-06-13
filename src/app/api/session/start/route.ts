@@ -16,9 +16,10 @@ export const POST = auth(async function POST(req: NextAuthRequest) {
     }
     try {
         const { deckId } = await req.json()
+            .then(obj => z.object({ deckId: z.cuid2() }).parse(obj))
         const session: StudySessionModel = await prisma.studySession.create({
             data: {
-                deckId: z.cuid2().parse(deckId),
+                deckId: deckId,
                 status: StudySessionStatusEnum.STARTED
             },
         })

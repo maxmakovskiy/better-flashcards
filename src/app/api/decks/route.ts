@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 import { EnhancedDeckModel } from '@/app/flashcards/types'
+import { DeckHandleSchema } from '@/app/flashcards/_schemas/deck-handle-schema'
 
 // endpoint to create new deck
 export const POST = auth(async function POST(req) {
@@ -13,13 +14,21 @@ export const POST = auth(async function POST(req) {
     }
 
     try {
-        // TODO: verify with Zod ?
-        // https://zod.dev/api
-        const { title, description } = await req.json()
+        const body = await req.json()
+            .then(obj => DeckHandleSchema.safeParse(obj))
+
+        if (!body.success) {
+            console.error(`Wrong data provided: ${body.error}`)
+            return NextResponse.json(
+                { message: 'Wrong data provided' },
+                { status: 400 }
+            )
+        }
+
         const newDeck = await prisma.deck.create({
             data: {
-                title: title as string,
-                description: description as string,
+                title: body.data.title as string,
+                description: body.data.description as string,
                 userId: req.auth.user?.id as string
             },
             include: { flashcards: true }

@@ -21,10 +21,9 @@ import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
-import useSWRImmutable from 'swr/immutable'
-import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
 import { useAnalytics } from '@/app/flashcards/dashboard/_hooks/use-analytics'
 import { startOfDay, endOfDay } from 'date-fns'
+import { useStreak } from '@/app/flashcards/decks/_hooks/use-streak'
 
 
 export default function AllDecksWorkspace() {
@@ -38,14 +37,7 @@ export default function AllDecksWorkspace() {
         isAllDecksError,
         isAllDecksValidating,
     } = useAllDecks()
-    const {
-        data: streak,
-        isLoading: isStreakLoading,
-        error: streakError
-    } = useSWRImmutable<number, Error>(
-        '/api/session/streak',
-        (url: string) => generalGetFetcher(url).then(({ streak }) => Number(streak))
-    )
+    const { streak, isStreakLoading, isStreakError } = useStreak()
     const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
         startOfDay(new Date()), endOfDay(new Date())
     )
@@ -103,7 +95,8 @@ export default function AllDecksWorkspace() {
                 <Grid size={3}>
                     <DeckStatGadget
                         icon={<TrendingUpIcon fontSize='large' />}
-                        title={isStreakLoading || !!streakError ? <Skeleton animation='wave' /> : streak}
+                        title={isStreakLoading || isStreakError
+                            ? <Skeleton animation='wave' /> : streak}
                         description='Day Study Streak' />
                 </Grid>
             </Grid>

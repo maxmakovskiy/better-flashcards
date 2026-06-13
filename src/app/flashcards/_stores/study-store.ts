@@ -11,6 +11,7 @@ import { DifficultyRatingFromFsrsSchema } from '@/app/flashcards/_schemas/types/
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import { Grade, fsrs, FSRS, Rating } from 'ts-fsrs'
+import { StreakSchema } from '@/app/flashcards/_schemas/streak-schema'
 
 export type StudySession = {
     session: StudySessionModel | null
@@ -200,9 +201,7 @@ export const createStudyStore = (
                             throw new Error('Failed to fetch the streak')
                         }
                         return res.json()
-                    }).then(({ streak }: { streak: number }) => {
-                        return streak
-                    })
+                    }).then(obj => StreakSchema.parse(obj).streak)
                 set({
                     daysStreak: streak
                 })

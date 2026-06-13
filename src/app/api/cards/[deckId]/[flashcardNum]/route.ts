@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/prisma'
 import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
+import { FlashcardHandleSchema } from '@/app/flashcards/_schemas/flashcard-handle-schema'
 
 // endpoint to delete a card inside a deck
 export const DELETE = auth(async function DELETE(
@@ -55,7 +56,16 @@ export const PUT = auth(async function PUT(
     }
     try {
         const { deckId, flashcardNum } = await params
-        const { frontText, backText } = await req.json()
+        const body = await req.json()
+            .then(obj => FlashcardHandleSchema.safeParse(obj))
+
+        if (!body.success) {
+            console.error(`Wrong data provided: ${body.error}`)
+            return NextResponse.json(
+                { message: 'Wrong data provided' },
+                { status: 400 }
+            )
+        }
 
         const updatedCard = await prisma.flashcard.update({
             where: {
@@ -65,8 +75,8 @@ export const PUT = auth(async function PUT(
                 }
             },
             data: {
-                frontText: frontText,
-                backText: backText
+                frontText: body.data.frontText,
+                backText: body.data.backText
             }
         })
         return NextResponse.json(updatedCard)
