@@ -168,8 +168,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             }
 
             <CardDialog
-                dialogTitle='New card'
-                dialogDescription='To create new card please fill front and back sides with data'
+                dialogTitle='Modify card'
                 frontText={newCardFrontText}
                 backText={newCardBackText}
                 setFrontText={setNewCardFrontText}

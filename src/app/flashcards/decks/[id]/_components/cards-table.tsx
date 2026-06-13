@@ -25,6 +25,7 @@ import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { formatDistanceToNow } from 'date-fns'
+import CardModificationDialog from '@/app/flashcards/decks/[id]/_components/card-modification-dialog'
 
 
 export default function CardsTable({ deckId }: { deckId: string }) {
@@ -51,30 +52,6 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         return formatDistanceToNow(card.lastReviewAt, {
             addSuffix: true,
         })
-    }
-
-    const handleCardModification = (newFront: string, newBack: string) => {
-        const body = { frontText: newFront, backText: newBack }
-        fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed update the flashcard with url=${`/api/cards/${deckId}/${cardToMod!.flashcardNum}`}`)
-            }
-            return res.json()
-        }).then(card => {
-            return FlashcardSchema.parse(card)
-        }).then((updatedCard: FlashcardModel) => {
-            return cards!.map((card: FlashcardModel) => (
-                card.flashcardNum === updatedCard.flashcardNum
-                    ? updatedCard
-                    : card
-            ))
-        }).then((cardsWithUpdated: FlashcardModel[]) => {
-            return cardsMutate(cardsWithUpdated, { revalidate: false })
-        }).catch(e => console.log(e))
     }
 
     const handleCardDeletion = async (flashcardNum: number) =>
@@ -238,19 +215,16 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/*{cardToMod &&*/}
-            {/*    <CardDialog*/}
-            {/*        dialogTitle='Modify card'*/}
-            {/*        isOpen={isModifyCardDialogOpen}*/}
-            {/*        setClose={() => {*/}
-            {/*            setModifyCardDialogOpen(false)*/}
-            {/*            setCardToMod(null)*/}
-            {/*        }}*/}
-            {/*        backTextInit={cardToMod?.backText}*/}
-            {/*        frontTextInit={cardToMod?.frontText}*/}
-            {/*        handleData={handleCardModification}*/}
-            {/*    />*/}
-            {/*}*/}
+            {cardToMod &&
+                <CardModificationDialog
+                    isDialogOpen={isModifyCardDialogOpen}
+                    setDialogClose={() => {
+                        setModifyCardDialogOpen(false)
+                        setCardToMod(null)
+                    }}
+                    card={cardToMod}
+                />
+            }
         </Stack>
     )
 }
