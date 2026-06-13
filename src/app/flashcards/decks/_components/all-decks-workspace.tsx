@@ -59,8 +59,6 @@ export default function AllDecksWorkspace() {
         return uniqueDeckIds.size
     }, [analyticsData, isAnalyticsError, isAnalyticsLoading])
 
-    const closeDialog = () => setDialogOpen(false)
-
     return (
         <Stack sx={{ p:'3em'}} spacing={3}>
             <Stack>
@@ -170,7 +168,7 @@ export default function AllDecksWorkspace() {
                     createNewDeck({
                         title: newDeckTitle,
                         description: newDeckDescription,
-                        closeDialog: closeDialog
+                        closeDialog: () => setDialogOpen(false)
                     })
                 )}
             />

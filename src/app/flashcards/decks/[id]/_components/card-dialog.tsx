@@ -11,43 +11,36 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Stack from '@mui/material/Stack'
 
 export interface CardDialogProps {
-    frontTextInit?: string;
-    backTextInit?: string;
     dialogTitle: string;
     dialogDescription?: string;
+    frontText: string;
+    backText: string;
+    setFrontText: (value: string) => void;
+    setBackText: (value: string) => void;
     isOpen: boolean;
+    isMutating?: boolean;
     setClose: () => void;
-    handleData: (front: string, back: string) => void;
+    doneTrigger: () => void;
 }
 
-export default function CardDialog({
-    frontTextInit,
-    backTextInit,
-    dialogTitle,
-    dialogDescription,
-    isOpen,
-    setClose,
-    handleData
-}: CardDialogProps) {
-    const [front, setFront] = useState<string>(frontTextInit ?? '')
-    const [back, setBack] = useState<string>(backTextInit ?? '')
+export default function CardDialog(props: CardDialogProps) {
     const [isFrontEmpty, setFrontEmptyError] = useState<boolean>(false)
     const [isBackEmpty, setBackEmptyError] = useState<boolean>(false)
 
     const resetErrorsOnClose = () => {
         setFrontEmptyError(false)
         setBackEmptyError(false)
-        setClose()
-        setFront('')
-        setBack('')
+        props.setClose()
     }
 
     return (
-        <Dialog open={isOpen} onClose={resetErrorsOnClose} fullWidth>
-            <DialogTitle>{dialogTitle}</DialogTitle>
+        <Dialog open={props.isOpen} onClose={resetErrorsOnClose} fullWidth>
+            <DialogTitle>
+                {props.dialogTitle}
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {dialogDescription}
+                    {props.dialogDescription}
                 </DialogContentText>
                 <Stack spacing={2}>
                     <TextField
@@ -61,8 +54,8 @@ export default function CardDialog({
                         fullWidth
                         rows={4}
                         variant='filled'
-                        value={front}
-                        onChange={e => setFront(e.target.value)}
+                        value={props.frontText}
+                        onChange={e => props.setFrontText(e.target.value)}
                     />
                     <TextField
                         error={isBackEmpty}
@@ -74,8 +67,8 @@ export default function CardDialog({
                         fullWidth
                         rows={4}
                         variant='filled'
-                        value={back}
-                        onChange={e => setBack(e.target.value)}
+                        value={props.backText}
+                        onChange={e => props.setBackText(e.target.value)}
                     />
                 </Stack>
             </DialogContent>
@@ -83,21 +76,20 @@ export default function CardDialog({
                 <Button onClick={resetErrorsOnClose}>
                     Cancel
                 </Button>
-                <Button onClick={() => {
-                    const emptyFront = front.length === 0
-                    const emptyBack = back.length === 0
-                    setFrontEmptyError(emptyFront)
-                    setBackEmptyError(emptyBack)
-                    if (emptyFront || emptyBack) {
-                        return
-                    }
-                    if (frontTextInit !== front || backTextInit !== back) {
-                        handleData(front, back)
-                    }
-                    setClose()
-                    setFront('')
-                    setBack('')
-                }}>
+                <Button
+                    loading={props.isMutating}
+                    loadingPosition='start'
+                    onClick={() => {
+                        const emptyFront = props.frontText.length === 0
+                        const emptyBack = props.backText.length === 0
+                        setFrontEmptyError(emptyFront)
+                        setBackEmptyError(emptyBack)
+                        if (emptyFront || emptyBack) {
+                            return
+                        }
+                        props.doneTrigger()
+                    }}
+                >
                     Done
                 </Button>
             </DialogActions>
