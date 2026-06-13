@@ -5,7 +5,6 @@ import { ClientAnalyticsSchema } from '@/app/flashcards/_schemas/analytics-schem
 
 const fetcher = async (url: string, endDate: Date, startDate: Date | null) => {
     const body = JSON.stringify({ endDate : endDate, startDate : startDate })
-    console.log('Body to send: ' + body)
     const res = await fetch(url, {
         method: 'POST',
         body: body,

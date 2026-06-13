@@ -57,8 +57,12 @@ export const extractAnalytics = async (userId: string, endDate: Date, startDate?
             deck: {
                 userId: userId,
             },
+            // fetch study session having at least one history review
+            // reviewedCards: {
+            //     some: {}
+            // },
             NOT: {
-                endedAt: null
+                endedAt: null,
             },
             AND: [
                 {
