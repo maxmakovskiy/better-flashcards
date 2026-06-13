@@ -3,6 +3,7 @@ import { prisma } from '@/prisma'
 import { NextResponse } from 'next/server'
 import { NextAuthRequest } from 'next-auth'
 import { DeckModel } from '@/../prisma/generated/prisma/models/Deck'
+import { DeckHandleSchema } from '@/app/flashcards/_schemas/deck-handle-schema'
 
 // return the deck
 export const GET = auth(async function GET(
@@ -72,15 +73,25 @@ export const POST = auth(async function POST(
 
     try {
         const { id } = await params
-        const { title, description } = await req.json()
+        const body = await req.json()
+            .then(obj => DeckHandleSchema.safeParse(obj))
+
+        if (!body.success) {
+            console.error(`Wrong data provided: ${body.error}`)
+            return NextResponse.json(
+                { message: 'Wrong data provided' },
+                { status: 400 }
+            )
+        }
+
         const updatedDeck: DeckModel = await prisma.deck.update({
             where: {
                 deckId: id,
                 userId: req.auth.user?.id as string
             },
             data: {
-                title: title as string,
-                description: description as string,
+                title: body.data.title as string,
+                description: body.data.description as string,
             },
         })
         return NextResponse.json(updatedDeck)
