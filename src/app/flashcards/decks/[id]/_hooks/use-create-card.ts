@@ -5,7 +5,7 @@ import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 interface CreateNewCardArgs {
     frontText: string;
     backText: string;
-    closeDialog: () => void;
+    onDialogClose: () => void;
 }
 
 const createCard = async (url: string, { arg }: { arg: CreateNewCardArgs }) => {
@@ -21,7 +21,7 @@ const createCard = async (url: string, { arg }: { arg: CreateNewCardArgs }) => {
     }).then(card => {
         return FlashcardSchema.parse(card)
     }).then((c: FlashcardModel) => {
-        arg.closeDialog()
+        arg.onDialogClose()
         return c
     })
 }

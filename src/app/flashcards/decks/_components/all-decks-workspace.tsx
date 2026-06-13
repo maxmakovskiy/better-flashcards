@@ -49,7 +49,7 @@ export default function AllDecksWorkspace() {
     const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
         startOfDay(new Date()), endOfDay(new Date())
     )
-    const { createNewDeck, isCreationOngoing } = useCreateDeck()
+    const { createNewDeck, isDeckCreationOngoing } = useCreateDeck()
 
     const numDeckStudied = useMemo(( ) => {
         if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
@@ -162,13 +162,17 @@ export default function AllDecksWorkspace() {
                 setDeckTitle={setNewDeckTitle}
                 setDeckDescription={setNewDeckDescription}
                 isOpen={isDialogOpen}
-                isMutating={isCreationOngoing}
+                isMutating={isDeckCreationOngoing}
                 setClose={() => setDialogOpen(false)}
                 onComplete={() => (
                     createNewDeck({
                         title: newDeckTitle,
                         description: newDeckDescription,
-                        closeDialog: () => setDialogOpen(false)
+                        onDialogClose: () => {
+                            setNewDeckTitle('')
+                            setNewDeckDescription('')
+                            setDialogOpen(false)
+                        }
                     })
                 )}
             />

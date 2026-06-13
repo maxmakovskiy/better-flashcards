@@ -34,7 +34,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const { deck, isDeckLoading, isDeckError, isDeckValidating } = useDeck(deckId)
     const { cards, isCardsLoading, isCardsError } = useCards(deckId)
     const { createNewCard, isCardCreationOngoing } = useCreateCard(deckId)
-    const [newCardFrontText, setNewCardFronText] = useState<string>('')
+    const [newCardFrontText, setNewCardFrontText] = useState<string>('')
     const [newCardBackText, setNewCardBackText] = useState<string>('')
 
     const stats = useMemo(() => {
@@ -95,7 +95,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                     </Typography>
                 </Stack>
                 <Box>
-                    <Button onClick={() => setEditDeckDialogOpen(true)}>
+                    <Button onClick={() => setEditDeckDialogOpen(!(isDeckLoading || isDeckValidating || isDeckError))}>
                         <EditIcon />
                     </Button>
                     <Button
@@ -172,18 +172,22 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 dialogDescription='To create new card please fill front and back sides with data'
                 frontText={newCardFrontText}
                 backText={newCardBackText}
-                setFrontText={setNewCardFronText}
+                setFrontText={setNewCardFrontText}
                 setBackText={setNewCardBackText}
                 isOpen={isNewCardDialogOpen}
                 isMutating={isCardCreationOngoing}
                 setClose={() => setNewCardDialogOpen(false)}
-                onComplete={() => {
+                onComplete={() => (
                     createNewCard({
                         frontText: newCardFrontText,
                         backText: newCardBackText,
-                        closeDialog: () => setNewCardDialogOpen(false)
+                        onDialogClose: () => {
+                            setNewCardFrontText('')
+                            setNewCardBackText('')
+                            setNewCardDialogOpen(false)
+                        }
                     })
-                }}
+                )}
             />
 
             {(!isDeckLoading && !isDeckError && !isDeckValidating && deck) &&

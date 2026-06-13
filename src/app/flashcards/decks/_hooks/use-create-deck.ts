@@ -5,7 +5,7 @@ import { EnhancedFlashcardsDeckSchema } from '@/app/flashcards/_schemas/types/de
 interface CreateNewDeckArgs {
     title: string;
     description: string;
-    closeDialog: () => void;
+    onDialogClose: () => void;
 }
 
 const createNewDeck = async (url: string, { arg }: { arg: CreateNewDeckArgs }) => {
@@ -21,7 +21,7 @@ const createNewDeck = async (url: string, { arg }: { arg: CreateNewDeckArgs }) =
     }).then(newDeck => {
         return EnhancedFlashcardsDeckSchema.parse(newDeck) as EnhancedDeckModel
     }).then(deck => {
-        arg.closeDialog()
+        arg.onDialogClose()
         return deck
     })
 }
@@ -44,8 +44,8 @@ export const useCreateDeck = () => {
 
     return {
         createNewDeck: trigger,
-        isCreationOngoing: isMutating,
-        isCreationFailed: !!error,
+        isDeckCreationOngoing: isMutating,
+        isDeckCreationFailed: !!error,
     }
 }
 
