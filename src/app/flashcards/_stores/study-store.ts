@@ -31,10 +31,7 @@ export type StudySession = {
 
 export type StudyStoreAction = {
     startSession: () => void
-    pauseSession: () => void
-    resumeSession: () => void
     completeSession: () => void
-    manageSession: (desiredStatus: StudySessionActionsSchema) => Promise<StudySessionModel | undefined>
     selectDeck: (deckId: string) => void
     loadDecks: () => void
     answerCard: (grade: Grade) => void
@@ -95,8 +92,10 @@ export const createStudyStore = (
             }
 
             if (deck.studySessions.length !== 0) {
+                console.log(`Session exist on deck (deckId=${deck.deckId}): ${JSON.stringify(deck.studySessions[0])}`)
                 set({
-                    session: deck.studySessions[0]
+                    session: deck.studySessions[0],
+                    timerTimestamp: new Date()
                 })
             }
 
@@ -164,12 +163,13 @@ export const createStudyStore = (
                     })
                 }).catch(e => console.log(e))
 
+            const updatedCards = cards?.splice(1)
             set({
-                cards: cards?.splice(1),
+                cards: updatedCards,
                 isCurrentCardAnswered: false,
             })
 
-            if (cards?.length === 0) {
+            if (updatedCards.length === 0) {
                 console.log('Finishing session automatically because no cards left to review')
                 completeSession()
             }
@@ -193,8 +193,6 @@ export const createStudyStore = (
                     return EnhancedStudyDeckArraySchema.parse(decks)
                 })
 
-                // We don't need to wait for it
-                // as it is supplementory information
                 const streak = await fetch('/api/session/streak')
                     .then(res => {
                         if (!res.ok) {
@@ -226,51 +224,26 @@ export const createStudyStore = (
             }
         },
 
-        manageSession: async (desiredStatus: StudySessionActionsSchema) => {
-            const { session } = get()
+        completeSession: async () => {
+            const { loadDecks, session } = get()
             try {
-                const updatedSession: StudySessionModel = await fetch(
-                    `/api/session/${session?.sessionId}/manage`,
-                    {
-                        method: 'POST',
-                        body: JSON.stringify({ action: desiredStatus })
-                    }
+                await fetch(
+                    `/api/session/${session?.sessionId}/finish`,
+                    { method: 'POST' }
                 ).then(res => {
                     if (!res.ok) {
-                        throw new Error(`Failed to manage the session with id=${session?.sessionId} and action to execute=${desiredStatus}`)
+                        throw new Error(`Failed to finish the session with id=${session?.sessionId}`)
                     }
                     return res.json()
-                }).then(s => StudySessionSchema.parse(s))
-                return updatedSession
+                })
+                set({
+                    session: null,
+                    selectedDeck: null
+                })
+                loadDecks()
             } catch (e) {
                 console.log(e)
             }
-        },
-        pauseSession: async () => {
-            const { loadDecks, manageSession } = get()
-            const session = await manageSession(StudySessionActionsSchema.enum.PAUSE)
-            set({
-                session: session
-            })
-            loadDecks()
-            console.log('Successfully paused the session')
-        },
-        completeSession: async () => {
-            const { loadDecks, manageSession } = get()
-            const session = await manageSession(StudySessionActionsSchema.enum.FINISH)
-            set({
-                session: session
-            })
-            loadDecks()
-            console.log('Successfully finished the session')
-        },
-        resumeSession: async () => {
-            const { manageSession } = get()
-            const session = await manageSession(StudySessionActionsSchema.enum.FINISH)
-            set({
-                session: session
-            })
-            console.log('Successfully resumed the session')
         },
 
     }))
