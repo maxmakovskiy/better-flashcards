@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import AddIcon from '@mui/icons-material/Add'
+import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -76,6 +77,7 @@ export default function AllDecksWorkspace() {
                         </Button>
                 </Stack>
             </Stack>
+
             <Grid container spacing={3} sx={{ alignItems:'stretch' }}>
                 <Grid size={3}>
                     <DeckStatGadget
@@ -107,6 +109,8 @@ export default function AllDecksWorkspace() {
                         description='Day Study Streak' />
                 </Grid>
             </Grid>
+
+            <Divider />
 
             <TransitionGroup>
                 {(!isAllDecksLoading && isAllDecksValidating) &&
