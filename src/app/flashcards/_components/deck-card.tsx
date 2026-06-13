@@ -27,19 +27,25 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
         mutateAllDecks
     } = useAllDecks()
 
-    const deleteDeck = () => {
-        fetch(`/api/decks/${deck.deckId}`, {
-            method: 'DELETE',
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed to delete the deck with id=${deck.deckId}`)
+    const deleteDeck = async () =>
+        mutateAllDecks(
+            async () => {
+                const optimistic = allDecks?.filter(d => d.deckId !== deck.deckId)
+
+                await fetch(`/api/decks/${deck.deckId}`, {
+                    method: 'DELETE',
+                }).then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Failed to delete the deck with id=${deck.deckId}`)
+                    }
+                })
+                return optimistic;
+            },
+            {
+                optimisticData: allDecks?.filter(d => d.deckId !== deck.deckId),
+                rollbackOnError: true,
             }
-        }).then(() => {
-            return mutateAllDecks(allDecks?.filter(d => {
-                return d.deckId !== deck.deckId
-            }))
-        }).catch(e => console.log(e))
-    }
+        )
 
     return (
         <Card

@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import AddIcon from '@mui/icons-material/Add'
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
@@ -14,7 +13,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NextLink from '@/app/_components/Link'
-import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
@@ -25,16 +23,19 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import CardDialog from '@/app/flashcards/decks/[id]/_components/card-dialog'
 import { useDeck } from '../_hooks/use-deck'
 import { useCards } from '../_hooks/use-cards'
-import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { format } from 'date-fns'
-import DeckDialog from '@/app/flashcards/decks/_components/deck-dialog'
-import { DeckSchema } from '@/app/flashcards/_schemas/types/basic-deck-schema'
+import DeckModificationDialog from '@/app/flashcards/decks/[id]/_components/deck-modification-dialog'
+import EditIcon from '@mui/icons-material/Edit'
+import { useCreateCard } from '@/app/flashcards/decks/[id]/_hooks/use-create-card'
 
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const [isNewCardDialogOpen, setNewCardDialogOpen] = useState(false)
     const [isEditDeckDialogOpen, setEditDeckDialogOpen] = useState(false)
-    const { deck, isDeckLoading, isDeckError, deckMutate } = useDeck(deckId)
-    const { cards, isCardsLoading, isCardsError, cardsMutate } = useCards(deckId)
+    const { deck, isDeckLoading, isDeckError, isDeckValidating } = useDeck(deckId)
+    const { cards, isCardsLoading, isCardsError } = useCards(deckId)
+    const { createNewCard, isCardCreationOngoing } = useCreateCard(deckId)
+    const [newCardFrontText, setNewCardFrontText] = useState<string>('')
+    const [newCardBackText, setNewCardBackText] = useState<string>('')
 
     const stats = useMemo(() => {
         const now = new Date()
@@ -54,38 +55,6 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             new: newNumber
         }
     }, [cards, isCardsLoading, isCardsError])
-
-    const handleDeckModification = (title: string, description: string) => {
-        const url = `/api/decks/${deckId}`
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({title, description}),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed update the deck with url=${url}`)
-            }
-            return res.json()
-        }).then(deck => DeckSchema.parse(deck)).then(deck => {
-            return deckMutate(deck)
-        }).catch(e => console.error(e))
-    }
-
-    const handleCardCreation = (frontText: string, backText: string) => {
-        const body = { frontText, backText }
-        fetch(`/api/cards/${deckId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed to create new flashcard (front=${frontText}; back=${backText}) in deck with id=${deckId}`)
-            }
-            return res.json()
-        }).then(card => {
-            return FlashcardSchema.parse(card)
-        }).then((c: FlashcardModel) => cardsMutate([...cards!, c]))
-    }
 
     return (
         <Stack sx={{ p:'3em' }} spacing={3}>
@@ -126,8 +95,8 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                     </Typography>
                 </Stack>
                 <Box>
-                    <Button onClick={() => setEditDeckDialogOpen(true)}>
-                        <MoreHorizIcon />
+                    <Button onClick={() => setEditDeckDialogOpen(!(isDeckLoading || isDeckValidating || isDeckError))}>
+                        <EditIcon />
                     </Button>
                     <Button
                         onClick={() => setNewCardDialogOpen(true)}
@@ -197,21 +166,36 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                         : <CardsTable deckId={deckId} />
                     )
             }
+
             <CardDialog
-                dialogTitle='New card'
-                dialogDescription='To create new card please fill front and back sides with data'
+                dialogTitle='Modify card'
+                frontText={newCardFrontText}
+                backText={newCardBackText}
+                setFrontText={setNewCardFrontText}
+                setBackText={setNewCardBackText}
                 isOpen={isNewCardDialogOpen}
+                isMutating={isCardCreationOngoing}
                 setClose={() => setNewCardDialogOpen(false)}
-                handleData={handleCardCreation} />
-            <DeckDialog
-                titleInit={deck?.title}
-                descriptionInit={deck?.description}
-                dialogTitle={'Edit Deck'}
-                dialogDescription={'Please enter the following information'}
-                isOpen={isEditDeckDialogOpen}
-                setClose={() => setEditDeckDialogOpen(false)}
-                handleSubmit={handleDeckModification}
+                onComplete={() => (
+                    createNewCard({
+                        frontText: newCardFrontText,
+                        backText: newCardBackText,
+                        onDialogClose: () => {
+                            setNewCardFrontText('')
+                            setNewCardBackText('')
+                            setNewCardDialogOpen(false)
+                        }
+                    })
+                )}
             />
+
+            {(!isDeckLoading && !isDeckError && !isDeckValidating && deck) &&
+                <DeckModificationDialog
+                    deck={deck}
+                    isDialogOpen={isEditDeckDialogOpen}
+                    setDialogClose={() => setEditDeckDialogOpen(false)}
+                />
+            }
         </Stack>
     )
 }

@@ -4,7 +4,7 @@ import { DeckSchema } from '@/app/flashcards/_schemas/types/basic-deck-schema'
 import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
 
 export const useDeck = (deckId: string) => {
-    const { data, error, isLoading, mutate } = useSWR<DeckModel, Error>(
+    const { data, error, isLoading, isValidating, mutate } = useSWR<DeckModel, Error>(
         `/api/decks/${deckId}`,
         (url: string) => generalGetFetcher(url)
             .then(obj => DeckSchema.parse(obj) as DeckModel)
@@ -13,6 +13,7 @@ export const useDeck = (deckId: string) => {
     return {
         deck: data,
         isDeckLoading: isLoading,
+        isDeckValidating: isValidating,
         isDeckError: !!error,
         deckMutate: mutate
     }

@@ -57,8 +57,6 @@ export const PUT = auth(async function PUT(
         const { deckId, flashcardNum } = await params
         const { frontText, backText } = await req.json()
 
-        console.log(`Server: Updating flashcard ${flashcardNum} at deck ${deckId} with new values (front=${frontText} | back=${backText})`)
-
         const updatedCard = await prisma.flashcard.update({
             where: {
                 flashcardNum_deckId: {
@@ -71,7 +69,6 @@ export const PUT = auth(async function PUT(
                 backText: backText
             }
         })
-        console.log(`Server: flashcard(flashcardNum=${flashcardNum},deckId=${deckId}) updated successfully: new values are (front=${updatedCard.frontText} | back=${updatedCard.backText})`)
         return NextResponse.json(updatedCard)
     } catch (e) {
         console.error(e)

@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -8,72 +8,88 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import Stack from '@mui/material/Stack'
 
 export interface CardDialogProps {
-    frontTextInit?: string;
-    backTextInit?: string;
     dialogTitle: string;
     dialogDescription?: string;
+    frontText: string;
+    backText: string;
+    setFrontText: (value: string) => void;
+    setBackText: (value: string) => void;
     isOpen: boolean;
+    isMutating?: boolean;
     setClose: () => void;
-    handleData: (front: string, back: string) => void;
+    onComplete: () => void;
 }
 
-export default function CardDialog({
-    frontTextInit,
-    backTextInit,
-    dialogTitle,
-    dialogDescription,
-    isOpen,
-    setClose,
-    handleData
-}: CardDialogProps) {
+export default function CardDialog(props: CardDialogProps) {
+    const [isFrontEmpty, setFrontEmptyError] = useState<boolean>(false)
+    const [isBackEmpty, setBackEmptyError] = useState<boolean>(false)
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        const formJson = Object.fromEntries((formData as any).entries())
-        handleData(formJson.front, formJson.back)
-        setClose()
+    const resetErrorsOnClose = () => {
+        setFrontEmptyError(false)
+        setBackEmptyError(false)
+        props.setClose()
     }
 
     return (
-        <Dialog open={isOpen} onClose={setClose}>
-            <DialogTitle>{dialogTitle}</DialogTitle>
+        <Dialog open={props.isOpen} onClose={resetErrorsOnClose} fullWidth>
+            <DialogTitle>
+                {props.dialogTitle}
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {dialogDescription}
+                    {props.dialogDescription}
                 </DialogContentText>
-                <form onSubmit={handleSubmit} id='subscription-form'>
+                <Stack spacing={2}>
                     <TextField
+                        error={isFrontEmpty}
+                        helperText={isFrontEmpty ? 'Front side should contain text': ''}
                         autoFocus
                         required
                         margin='dense'
-                        name='front'
                         label='Front side of a card'
                         multiline
                         fullWidth
                         rows={4}
                         variant='filled'
-                        defaultValue={frontTextInit || ''}
+                        value={props.frontText}
+                        onChange={e => props.setFrontText(e.target.value)}
                     />
                     <TextField
-                        autoFocus
+                        error={isBackEmpty}
+                        helperText={isBackEmpty ? 'Back side should contain text' : ''}
                         required
                         margin='dense'
-                        name='back'
                         label='Back side of a card'
                         multiline
                         fullWidth
                         rows={4}
                         variant='filled'
-                        defaultValue={backTextInit || ''}
+                        value={props.backText}
+                        onChange={e => props.setBackText(e.target.value)}
                     />
-                </form>
+                </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={setClose}>Cancel</Button>
-                <Button type='submit' form='subscription-form'>
+                <Button onClick={resetErrorsOnClose}>
+                    Cancel
+                </Button>
+                <Button
+                    loading={props.isMutating}
+                    loadingPosition='start'
+                    onClick={() => {
+                        const emptyFront = props.frontText.length === 0
+                        const emptyBack = props.backText.length === 0
+                        setFrontEmptyError(emptyFront)
+                        setBackEmptyError(emptyBack)
+                        if (emptyFront || emptyBack) {
+                            return
+                        }
+                        props.onComplete()
+                    }}
+                >
                     Done
                 </Button>
             </DialogActions>
