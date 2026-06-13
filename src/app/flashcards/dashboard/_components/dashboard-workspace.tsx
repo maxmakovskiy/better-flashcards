@@ -47,10 +47,10 @@ export default function DashboardWorkspace() {
             .filter(review => review.learningState === desiredState).length)
 
         return {
-            new: counter(LearningStateEnum.NEW) / total * 100,
-            learning:  counter(LearningStateEnum.LEARNING) / total * 100,
-            review:  counter(LearningStateEnum.REVIEW) / total * 100,
-            relearning:  counter(LearningStateEnum.RELEARNING) / total * 100
+            new: Math.min(Math.round(counter(LearningStateEnum.NEW) / total * 100), 100),
+            learning:  Math.min(Math.round(counter(LearningStateEnum.LEARNING) / total * 100), 100),
+            review:  Math.min(Math.round(counter(LearningStateEnum.REVIEW) / total * 100), 100),
+            relearning:  Math.min(Math.round(counter(LearningStateEnum.RELEARNING) / total * 100), 100)
         }
     }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
 
@@ -71,7 +71,11 @@ export default function DashboardWorkspace() {
     }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
 
     const sessionAverage = useMemo(() => {
-        if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
+        if (isAnalyticsLoading ||
+            isAnalyticsError ||
+            !analyticsData ||
+            !analyticsData?.studySessions.length)
+        {
             return {
                 avgRespTimeMs: 0,
                 avgAmountReviews: 0,
@@ -92,12 +96,12 @@ export default function DashboardWorkspace() {
             accuracy += (s.reviewedCards.filter(r => r.isCorrect).length / s.reviewedCards.length)
         }
 
-        const totalSessions = analyticsData?.studySessions.length || 1
+        const totalSessions = analyticsData.studySessions.length
 
         return {
             avgRespTimeMs: Math.round(respMs / totalSessions),
             avgAmountReviews: Math.round(reviewsAmount / totalSessions),
-            avgAccuracy: Math.round((accuracy / totalSessions) * 100),
+            avgAccuracy: Math.min(Math.round((accuracy / totalSessions) * 100), 100),
         }
     }, [analyticsData, isAnalyticsLoading, isAnalyticsError])
 
@@ -205,7 +209,6 @@ export default function DashboardWorkspace() {
                             description={'Study Time'} />
                     </Grid>
                     <Grid size={2}>
-                        {/*TODO: cards learned during given period */}
                         <DeckStatGadget
                             icon={<DoneAllIcon fontSize='large' />}
                             title={
@@ -220,7 +223,6 @@ export default function DashboardWorkspace() {
                             description={'Card(s) Studied'} />
                     </Grid>
                     <Grid size={2}>
-                        {/*TODO: learning sessions initiated given period */}
                         <DeckStatGadget
                             icon={<SchoolIcon fontSize='large' />}
                             title={
@@ -271,15 +273,15 @@ export default function DashboardWorkspace() {
                                     <Typography variant='h6'>
                                         Session average
                                     </Typography>
-                                    {(isAnalyticsLoading || isAnalyticsLoading || !analyticsData)
+                                    {(isAnalyticsLoading || !analyticsData)
                                         ?
-                                            <Skeleton animation='wave' />
+                                            <Skeleton animation='wave' height='100px' />
                                         :
                                             <HeadlessTable data={[
                                                 {
                                                     key: 'Avg response time',
                                                     value: formatDuration(
-                                                        intervalToDuration({start:0, end:sessionAverage.avgRespTimeMs}))
+                                                        intervalToDuration({ start: 0, end: sessionAverage.avgRespTimeMs }))
                                                 },
                                                 {
                                                     key: 'Avg amount of reviews',
@@ -304,7 +306,7 @@ export default function DashboardWorkspace() {
                                     </Typography>
                                     {(isAnalyticsLoading || isAnalyticsLoading || !analyticsData)
                                         ?
-                                            <Skeleton animation='wave' />
+                                            <Skeleton animation='wave' height='100px' />
                                         :
                                             <HeadlessTable data={mostStudiedDecks} />
                                     }
@@ -390,7 +392,7 @@ export default function DashboardWorkspace() {
                                                     {
                                                         label: 'relearning',
                                                         value: cardsByStatus.relearning,
-                                                        color: 'blue'
+                                                        color: 'brown'
                                                     },
                                                 ],
                                                 outerRadius: 110,
