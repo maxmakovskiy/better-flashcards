@@ -25,7 +25,7 @@ export const POST = auth(async function POST(
         if (action === StudySessionActionsSchema.enum.RESUME) {
             const session = await prisma.studySession.update({
                 where: {
-                    sessionId: z.cuid2().parse(id)
+                    sessionId: id
                 },
                 data: {
                     status: StudySessionStatusEnum.STARTED,
@@ -35,14 +35,14 @@ export const POST = auth(async function POST(
         } else {
             const reviews = await prisma.reviewHistory.findMany({
                 where: {
-                    sessionId: z.cuid2().parse(id)
+                    sessionId: id
                 }
             })
             const statusToAssign = ((action === StudySessionActionsSchema.enum.PAUSE)
                 ? StudySessionStatusEnum.PAUSED : StudySessionStatusEnum.FINISHED)
             const session = await prisma.studySession.update({
                 where: {
-                    sessionId: z.cuid2().parse(id)
+                    sessionId: id
                 },
                 data: {
                     endedAt: new Date(),
