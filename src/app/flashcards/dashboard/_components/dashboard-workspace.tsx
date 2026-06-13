@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
-import ViewAgendaIcon from '@mui/icons-material/ViewAgenda'
+import ViewDayIcon from '@mui/icons-material/ViewDay'
 import MoreTimeIcon from '@mui/icons-material/MoreTime'
 import SchoolIcon from '@mui/icons-material/School'
 import { PieChart, pieClasses } from '@mui/x-charts/PieChart'
@@ -182,7 +182,7 @@ export default function DashboardWorkspace() {
                     </Grid>
                     <Grid size={2}>
                         <DeckStatGadget
-                            icon={<ViewAgendaIcon fontSize='large' />}
+                            icon={<ViewDayIcon fontSize='large' />}
                             title={
                                 (
                                     (isAnalyticsError || isAnalyticsLoading)
