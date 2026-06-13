@@ -20,7 +20,7 @@ export interface CardDialogProps {
     isOpen: boolean;
     isMutating?: boolean;
     setClose: () => void;
-    doneTrigger: () => void;
+    onComplete: () => void;
 }
 
 export default function CardDialog(props: CardDialogProps) {
@@ -87,7 +87,7 @@ export default function CardDialog(props: CardDialogProps) {
                         if (emptyFront || emptyBack) {
                             return
                         }
-                        props.doneTrigger()
+                        props.onComplete()
                     }}
                 >
                     Done

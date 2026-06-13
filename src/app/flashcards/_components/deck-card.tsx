@@ -30,7 +30,7 @@ export default function DeckCard({ deck }: { deck: EnhancedDeckModel }) {
     const deleteDeck = async () =>
         mutateAllDecks(
             async () => {
-                const optimistic = allDecks?.filter(d => d.deckId !== deck.deckId);
+                const optimistic = allDecks?.filter(d => d.deckId !== deck.deckId)
 
                 await fetch(`/api/decks/${deck.deckId}`, {
                     method: 'DELETE',

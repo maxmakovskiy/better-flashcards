@@ -18,7 +18,7 @@ export interface DeckDialogProps {
     isOpen: boolean;
     isMutating?: boolean;
     setClose: () => void;
-    doneTrigger: () => void;
+    onComplete: () => void;
 }
 
 export default function DeckDialog(props: DeckDialogProps) {
@@ -75,7 +75,7 @@ export default function DeckDialog(props: DeckDialogProps) {
                         if (emptyTitle) {
                             return
                         }
-                        props.doneTrigger()
+                        props.onComplete()
                     }}
                 >
                     Done

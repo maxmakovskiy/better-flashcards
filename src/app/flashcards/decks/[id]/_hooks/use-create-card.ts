@@ -26,7 +26,6 @@ const createCard = async (url: string, { arg }: { arg: CreateNewCardArgs }) => {
     })
 }
 
-
 export const useCreateCard = (deckId: string) => {
     const { trigger, isMutating, error } = useSWRMutation(
         `/api/cards/${deckId}`,

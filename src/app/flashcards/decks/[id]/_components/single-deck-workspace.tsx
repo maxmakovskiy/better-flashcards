@@ -177,7 +177,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 isOpen={isNewCardDialogOpen}
                 isMutating={isCardCreationOngoing}
                 setClose={() => setNewCardDialogOpen(false)}
-                doneTrigger={() => {
+                onComplete={() => {
                     createNewCard({
                         frontText: newCardFrontText,
                         backText: newCardBackText,

@@ -164,7 +164,7 @@ export default function AllDecksWorkspace() {
                 isOpen={isDialogOpen}
                 isMutating={isCreationOngoing}
                 setClose={() => setDialogOpen(false)}
-                doneTrigger={() => (
+                onComplete={() => (
                     createNewDeck({
                         title: newDeckTitle,
                         description: newDeckDescription,

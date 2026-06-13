@@ -33,14 +33,11 @@ export default function CardsTable({ deckId }: { deckId: string }) {
     const [isModifyCardDialogOpen, setModifyCardDialogOpen] = useState<boolean>(false)
     const [cardToMod, setCardToMod] = useState<FlashcardModel | null>(null)
 
-    // const now = useRef<Date>(new Date())
-
     const defineStatus = (card: FlashcardModel): string => {
         const now = new Date()
         if (!card.lastReviewAt) {
             return 'New'
         }
-        // if (card.nextReviewAt > now.current) {
         if (card.nextReviewAt > now) {
             return 'Learned'
         }
@@ -80,20 +77,26 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         }).catch(e => console.log(e))
     }
 
-    const handleCardDeletion = (flashcardNum: number) => {
-        fetch(`/api/cards/${deckId}/${flashcardNum}`, {
-            method: 'DELETE'
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed deleting card with flashcardNum=${flashcardNum} in deck with id=${deckId}`)
+    const handleCardDeletion = async (flashcardNum: number) =>
+        cardsMutate(
+            async () => {
+                const optimistic = cards?.filter(c => c.flashcardNum !== flashcardNum)
+
+                await fetch(`/api/cards/${deckId}/${flashcardNum}`, {
+                    method: 'DELETE'
+                }).then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Failed deleting card with flashcardNum=${flashcardNum} in deck with id=${deckId}`)
+                    }
+                })
+
+                return optimistic;
+            },
+            {
+                optimisticData: cards?.filter(c => c.flashcardNum !== flashcardNum),
+                rollbackOnError: true,
             }
-            return res.json()
-        }).then(() => {
-            return cards!.filter((card: FlashcardModel) => card.flashcardNum !== flashcardNum)
-        }).then(filteredCards => {
-            return cardsMutate(filteredCards)
-        }).catch(e => console.error(e))
-    }
+        )
 
     return (
         <Stack spacing={2}>
@@ -213,7 +216,6 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                     <Typography variant='body1'>{c.backText}</Typography>
                                 </TableCell>
                                 <TableCell align='center'>
-                                    {/* TODO: replace with actual status */}
                                     <Typography variant='body2'>
                                         {defineStatus(c)}
                                     </Typography>
@@ -236,19 +238,19 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {cardToMod &&
-                <CardDialog
-                    dialogTitle='Modify card'
-                    isOpen={isModifyCardDialogOpen}
-                    setClose={() => {
-                        setModifyCardDialogOpen(false)
-                        setCardToMod(null)
-                    }}
-                    backTextInit={cardToMod?.backText}
-                    frontTextInit={cardToMod?.frontText}
-                    handleData={handleCardModification}
-                />
-            }
+            {/*{cardToMod &&*/}
+            {/*    <CardDialog*/}
+            {/*        dialogTitle='Modify card'*/}
+            {/*        isOpen={isModifyCardDialogOpen}*/}
+            {/*        setClose={() => {*/}
+            {/*            setModifyCardDialogOpen(false)*/}
+            {/*            setCardToMod(null)*/}
+            {/*        }}*/}
+            {/*        backTextInit={cardToMod?.backText}*/}
+            {/*        frontTextInit={cardToMod?.frontText}*/}
+            {/*        handleData={handleCardModification}*/}
+            {/*    />*/}
+            {/*}*/}
         </Stack>
     )
 }

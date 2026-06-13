@@ -48,7 +48,7 @@ export default function DeckModificationDialog({ deck, isDialogOpen, setDialogCl
             setDeckDescription={setNewDeckDescription}
             isOpen={isDialogOpen}
             setClose={setDialogClose}
-            doneTrigger={modifyDeck}
+            onComplete={modifyDeck}
         />
     )
 }
