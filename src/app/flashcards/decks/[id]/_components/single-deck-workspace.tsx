@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import AddIcon from '@mui/icons-material/Add'
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
@@ -27,13 +26,13 @@ import { useDeck } from '../_hooks/use-deck'
 import { useCards } from '../_hooks/use-cards'
 import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { format } from 'date-fns'
-import DeckDialog from '@/app/flashcards/decks/_components/deck-dialog'
-import { DeckSchema } from '@/app/flashcards/_schemas/types/basic-deck-schema'
+import DeckModificationDialog from '@/app/flashcards/decks/[id]/_components/deck-modification-dialog'
+import EditIcon from '@mui/icons-material/Edit'
 
 export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const [isNewCardDialogOpen, setNewCardDialogOpen] = useState(false)
     const [isEditDeckDialogOpen, setEditDeckDialogOpen] = useState(false)
-    const { deck, isDeckLoading, isDeckError, isDeckValidating, deckMutate } = useDeck(deckId)
+    const { deck, isDeckLoading, isDeckError, isDeckValidating } = useDeck(deckId)
     const { cards, isCardsLoading, isCardsError, cardsMutate } = useCards(deckId)
 
     const stats = useMemo(() => {
@@ -54,22 +53,6 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             new: newNumber
         }
     }, [cards, isCardsLoading, isCardsError])
-
-    const handleDeckModification = (title: string, description: string) => {
-        const url = `/api/decks/${deckId}`
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({title, description}),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed update the deck with url=${url}`)
-            }
-            return res.json()
-        }).then(deck => DeckSchema.parse(deck)).then(deck => {
-            return deckMutate(deck)
-        }).catch(e => console.error(e))
-    }
 
     const handleCardCreation = (frontText: string, backText: string) => {
         const body = { frontText, backText }
@@ -127,7 +110,7 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 </Stack>
                 <Box>
                     <Button onClick={() => setEditDeckDialogOpen(true)}>
-                        <MoreHorizIcon />
+                        <EditIcon />
                     </Button>
                     <Button
                         onClick={() => setNewCardDialogOpen(true)}
@@ -203,15 +186,11 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 isOpen={isNewCardDialogOpen}
                 setClose={() => setNewCardDialogOpen(false)}
                 handleData={handleCardCreation} />
-            {(!isDeckLoading && !isDeckValidating) &&
-                <DeckDialog
-                    titleInit={deck?.title}
-                    descriptionInit={deck?.description}
-                    dialogTitle={'Edit Deck'}
-                    dialogDescription={'Please enter the following information'}
-                    isOpen={isEditDeckDialogOpen}
-                    setClose={() => setEditDeckDialogOpen(false)}
-                    handleData={handleDeckModification}
+            {(!isDeckLoading && !isDeckError && !isDeckValidating && deck) &&
+                <DeckModificationDialog
+                    deck={deck}
+                    isDialogOpen={isEditDeckDialogOpen}
+                    setDialogClose={() => setEditDeckDialogOpen(false)}
                 />
             }
         </Stack>

@@ -12,11 +12,11 @@ export interface DeckDialogProps {
     dialogTitle: string;
     dialogDescription: string;
     deckTitle: string;
-    deckDescription: string;
+    deckDescription?: string | null;
     setDeckTitle: (value: string) => void;
     setDeckDescription: (value: string) => void;
     isOpen: boolean;
-    isMutating: boolean;
+    isMutating?: boolean;
     setClose: () => void;
     doneTrigger: () => void;
 }

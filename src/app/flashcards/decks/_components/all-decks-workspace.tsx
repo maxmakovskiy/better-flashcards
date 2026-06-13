@@ -48,7 +48,7 @@ export default function AllDecksWorkspace() {
     const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
         startOfDay(new Date()), endOfDay(new Date())
     )
-    const { createNewDeck, isCreationOngoing, isCreationFailed } = useCreateDeck()
+    const { createNewDeck, isCreationOngoing } = useCreateDeck()
 
     const numDeckStudied = useMemo(( ) => {
         if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
