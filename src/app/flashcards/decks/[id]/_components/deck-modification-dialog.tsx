@@ -20,7 +20,7 @@ export default function DeckModificationDialog({ deck, isDialogOpen, setDialogCl
         setDialogClose()
         await deckMutate(
             async () => {
-                return await fetch(`/api/decks/${deck.deckId}`, {
+                return fetch(`/api/decks/${deck.deckId}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ title: newDeckTitle, description: newDeckDescription }),

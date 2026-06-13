@@ -5,7 +5,7 @@ import CardDialog from '@/app/flashcards/decks/[id]/_components/card-dialog'
 import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 
 const modifyCard = async (deckId: string, flashcardNum: number, cardFrontText: string, cardBackText: string) => {
-    return await fetch(`/api/cards/${deckId}/${flashcardNum}`, {
+    return fetch(`/api/cards/${deckId}/${flashcardNum}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({frontText: cardFrontText, backText: cardBackText}),
@@ -41,14 +41,14 @@ export default function CardModificationDialog({ card, isDialogOpen, setDialogCl
                         return [result]
                     }
                     return currentData.map((c: FlashcardModel) => {
-                        return c.flashcardNum === card.flashcardNum ? card : c
+                        return c.flashcardNum === result.flashcardNum ? result : c
                     })
                 },
                 optimisticData: currentData => {
                     if (!Array.isArray(currentData)) {
                         return [{...card, frontText: cardFrontText, backText: cardBackText}]
                     }
-                    return currentData?.map((c: FlashcardModel) => {
+                    return currentData.map((c: FlashcardModel) => {
                         return c.flashcardNum === card.flashcardNum
                             ? {...card, frontText: cardFrontText, backText: cardBackText}
                             : c
