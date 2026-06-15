@@ -5,7 +5,6 @@ import {
 } from '@/app/flashcards/types'
 import { EnhancedStudyDeckArraySchema } from '@/app/flashcards/_schemas/types/deck-schema'
 import { StudySessionSchema } from '@/app/flashcards/_schemas/types/study-session-schema'
-import { StudySessionActionsSchema } from '@/app/flashcards/_schemas/types/study-sesssion-actions-schema'
 import { LearningStateFromFsrsSchema } from '@/app/flashcards/_schemas/types/flashcards-learning-state-schema'
 import { DifficultyRatingFromFsrsSchema } from '@/app/flashcards/_schemas/types/difficulty-rating-from-fsrs-schema'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'

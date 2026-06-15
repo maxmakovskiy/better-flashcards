@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 import { EnhancedStudyDeckModel } from '@/app/flashcards/types'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 
 // endpoint to retrieve decks that need to be reviewed
 export const GET = auth(async function GET(req) {
