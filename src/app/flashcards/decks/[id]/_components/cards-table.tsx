@@ -17,13 +17,11 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import CardDialog from './card-dialog'
 import { useCards } from '../_hooks/use-cards'
 import Skeleton from '@mui/material/Skeleton'
 import LinearProgress from '@mui/material/LinearProgress'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
-import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { formatDistanceToNow } from 'date-fns'
 import CardModificationDialog from '@/app/flashcards/decks/[id]/_components/card-modification-dialog'
 
@@ -79,20 +77,19 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         <Stack spacing={2}>
             <Grid container>
                 <Grid size={6} spacing={3}>
-                    <TextField fullWidth
-                        // sx={{ width:'60%'}}
-                        // id={`${textFieldId}-input`}
-                               label='Search'
-                               slotProps={{
-                                   input: {
-                                       startAdornment: (
-                                           <InputAdornment position='start'>
-                                               <SearchIcon />
-                                           </InputAdornment>
-                                       ),
-                                   },
-                               }}
-                               variant='filled'
+                    <TextField
+                        fullWidth
+                        label='Search'
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                         <SearchIcon />
+                                     </InputAdornment>
+                                 ),
+                             },
+                        }}
+                        variant='filled'
                     />
                 </Grid>
                 <Grid size={3}>

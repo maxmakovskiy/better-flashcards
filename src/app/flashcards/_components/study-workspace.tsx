@@ -21,7 +21,6 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import GamePlaceholder from '@/app/flashcards/_components/game-placeholder'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import PauseIcon from '@mui/icons-material/Pause'
 import StopIcon from '@mui/icons-material/Stop'
 
 export default function StudyWorkspace() {
@@ -37,6 +36,7 @@ export default function StudyWorkspace() {
     const numOfCardsToReview = useStudyStore((s: StudyStore) => s.numOfCardsToReview)
     const numOfCardsLearned = useStudyStore((s: StudyStore) => s.numOfCardsLearned)
     const daysStreak = useStudyStore((s: StudyStore) => s.daysStreak)
+    const isSessionCreating = useStudyStore((s: StudyStore) => s.isSessionCreating)
 
     useEffect(() => {
         loadDecks()
@@ -58,7 +58,6 @@ export default function StudyWorkspace() {
                     </Box>
                     <Divider />
 
-                    {/*<Typography variant='h5'>Welcome back, {session ? `${session?.user?.name} !` : <Skeleton animation='wave' />}</Typography>*/}
                     <Stack direction='row'>
                         <Typography variant='h5'>
                             Welcome back, {session && `${session?.user?.name} !`}
@@ -155,13 +154,17 @@ export default function StudyWorkspace() {
                             <Grid size={2}>
                                 {(!studySession)
                                     ?
-                                    <Button onClick={startSession} variant='contained'>
-                                        <PlayArrowIcon />
-                                    </Button>
+                                        <Button
+                                            disabled={isSessionCreating}
+                                            onClick={startSession}
+                                            variant='contained'
+                                        >
+                                            <PlayArrowIcon />
+                                        </Button>
                                     :
-                                    <Button onClick={completeSession} variant='contained'>
-                                        <StopIcon />
-                                    </Button>
+                                        <Button onClick={completeSession} variant='contained'>
+                                            <StopIcon />
+                                        </Button>
                                 }
                             </Grid>
                         </Grid>

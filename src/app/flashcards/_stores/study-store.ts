@@ -27,6 +27,9 @@ export type StudySession = {
     numOfCardsToReview: number
     numOfCardsLearned: number
     daysStreak: number | null
+    // loading state
+    isSessionCreating: boolean
+    isSessionError: boolean
 }
 
 export type StudyStoreAction = {
@@ -52,7 +55,9 @@ export const defaultInitState: StudySession = {
     timerTimestamp: null,
     numOfCardsToReview: 0,
     numOfCardsLearned: 0,
-    daysStreak: null
+    daysStreak: null,
+    isSessionCreating: false,
+    isSessionError: false
 }
 
 export const createStudyStore = (
@@ -62,8 +67,11 @@ export const createStudyStore = (
         ...initState,
         startSession: async () => {
             const { selectedDeck } = get()
+            set({
+                isSessionCreating: true
+            })
             try {
-                const session: StudySessionModel = await fetch(
+                const session = await fetch(
                     '/api/session/start',
                     {
                         method: 'POST',
@@ -73,10 +81,20 @@ export const createStudyStore = (
                             throw new Error(`Failed to create new session for deck with id=${selectedDeck?.deckId}`)
                         }
                         return res.json()
-                    }).then(s => StudySessionSchema.parse(s))
+                    }).then(s => {
+                        const data = StudySessionSchema.safeParse(s)
+                        if (!data.success) {
+                            set({
+                                isSessionError: true
+                            })
+                            throw new Error(`Failed to parse study session received from server: ${data.error}`)
+                        }
+                        return data.data
+                    })
                 set({
                     session: session,
-                    timerTimestamp: new Date()
+                    timerTimestamp: new Date(),
+                    isSessionCreating: false
                 })
             } catch (e) {
                 console.log(e)
@@ -95,7 +113,7 @@ export const createStudyStore = (
                 console.log(`Session exist on deck (deckId=${deck.deckId}): ${JSON.stringify(deck.studySessions[0])}`)
                 set({
                     session: deck.studySessions[0],
-                    timerTimestamp: new Date()
+                    timerTimestamp: new Date(),
                 })
             } else {
                 set({
@@ -106,7 +124,8 @@ export const createStudyStore = (
             set({
                 selectedDeck: deck,
                 reviewedCount: deck?.flashcards.filter((c: FlashcardModel) => c.nextReviewAt > now).length,
-                cards: deck?.flashcards.filter(c => !(c.nextReviewAt > now) || !c.lastReviewAt)
+                cards: deck?.flashcards.filter(c => !(c.nextReviewAt > now) || !c.lastReviewAt),
+                isCurrentCardAnswered: false
             })
         },
         answerCard: (grade: Grade) => {
@@ -180,9 +199,8 @@ export const createStudyStore = (
         },
 
         revealCard: () => {
-            const { isCurrentCardAnswered } = get()
             set({
-                isCurrentCardAnswered: !isCurrentCardAnswered,
+                isCurrentCardAnswered: true,
             })
         },
         loadDecks: async () => {
