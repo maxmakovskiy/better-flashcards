@@ -132,7 +132,7 @@ export default function StudyWorkspace() {
                     :
                     <Stack sx={{height: '100%'}}>
                         <Grid spacing={2} container sx={{p:'1em'}}>
-                            <Grid size={8}>
+                            <Grid size={10}>
                                 <Stack spacing={1}>
                                     <Grid container>
                                         <Grid size={10}>
@@ -152,16 +152,14 @@ export default function StudyWorkspace() {
                                         />
                                 </Stack>
                             </Grid>
-                            <Grid size={4}>
-                                {(!studySession) &&
+                            <Grid size={2}>
+                                {(!studySession)
+                                    ?
                                     <Button onClick={startSession} variant='contained'>
                                         <PlayArrowIcon />
                                     </Button>
-                                }
-                                {(studySession) &&
-                                    <Button
-                                        onClick={completeSession}
-                                        variant='contained'>
+                                    :
+                                    <Button onClick={completeSession} variant='contained'>
                                         <StopIcon />
                                     </Button>
                                 }

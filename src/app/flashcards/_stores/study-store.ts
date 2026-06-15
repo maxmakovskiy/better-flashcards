@@ -97,6 +97,10 @@ export const createStudyStore = (
                     session: deck.studySessions[0],
                     timerTimestamp: new Date()
                 })
+            } else {
+                set({
+                    session: null
+                })
             }
 
             set({
