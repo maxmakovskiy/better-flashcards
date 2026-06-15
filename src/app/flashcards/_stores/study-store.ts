@@ -5,7 +5,6 @@ import {
 } from '@/app/flashcards/types'
 import { EnhancedStudyDeckArraySchema } from '@/app/flashcards/_schemas/types/deck-schema'
 import { StudySessionSchema } from '@/app/flashcards/_schemas/types/study-session-schema'
-import { StudySessionActionsSchema } from '@/app/flashcards/_schemas/types/study-sesssion-actions-schema'
 import { LearningStateFromFsrsSchema } from '@/app/flashcards/_schemas/types/flashcards-learning-state-schema'
 import { DifficultyRatingFromFsrsSchema } from '@/app/flashcards/_schemas/types/difficulty-rating-from-fsrs-schema'
 import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
@@ -27,14 +26,14 @@ export type StudySession = {
     numOfCardsToReview: number
     numOfCardsLearned: number
     daysStreak: number | null
+    // loading state
+    isSessionCreating: boolean
+    isSessionError: boolean
 }
 
 export type StudyStoreAction = {
     startSession: () => void
-    pauseSession: () => void
-    resumeSession: () => void
     completeSession: () => void
-    manageSession: (desiredStatus: StudySessionActionsSchema) => Promise<StudySessionModel | undefined>
     selectDeck: (deckId: string) => void
     loadDecks: () => void
     answerCard: (grade: Grade) => void
@@ -55,7 +54,9 @@ export const defaultInitState: StudySession = {
     timerTimestamp: null,
     numOfCardsToReview: 0,
     numOfCardsLearned: 0,
-    daysStreak: null
+    daysStreak: null,
+    isSessionCreating: false,
+    isSessionError: false
 }
 
 export const createStudyStore = (
@@ -65,8 +66,11 @@ export const createStudyStore = (
         ...initState,
         startSession: async () => {
             const { selectedDeck } = get()
+            set({
+                isSessionCreating: true
+            })
             try {
-                const session: StudySessionModel = await fetch(
+                const session = await fetch(
                     '/api/session/start',
                     {
                         method: 'POST',
@@ -76,10 +80,20 @@ export const createStudyStore = (
                             throw new Error(`Failed to create new session for deck with id=${selectedDeck?.deckId}`)
                         }
                         return res.json()
-                    }).then(s => StudySessionSchema.parse(s))
+                    }).then(s => {
+                        const data = StudySessionSchema.safeParse(s)
+                        if (!data.success) {
+                            set({
+                                isSessionError: true
+                            })
+                            throw new Error(`Failed to parse study session received from server: ${data.error}`)
+                        }
+                        return data.data
+                    })
                 set({
                     session: session,
-                    timerTimestamp: new Date()
+                    timerTimestamp: new Date(),
+                    isSessionCreating: false
                 })
             } catch (e) {
                 console.log(e)
@@ -95,15 +109,22 @@ export const createStudyStore = (
             }
 
             if (deck.studySessions.length !== 0) {
+                console.log(`Session exist on deck (deckId=${deck.deckId}): ${JSON.stringify(deck.studySessions[0])}`)
                 set({
-                    session: deck.studySessions[0]
+                    session: deck.studySessions[0],
+                    timerTimestamp: new Date(),
+                })
+            } else {
+                set({
+                    session: null
                 })
             }
 
             set({
                 selectedDeck: deck,
                 reviewedCount: deck?.flashcards.filter((c: FlashcardModel) => c.nextReviewAt > now).length,
-                cards: deck?.flashcards.filter(c => !(c.nextReviewAt > now) || !c.lastReviewAt)
+                cards: deck?.flashcards.filter(c => !(c.nextReviewAt > now) || !c.lastReviewAt),
+                isCurrentCardAnswered: false
             })
         },
         answerCard: (grade: Grade) => {
@@ -164,21 +185,21 @@ export const createStudyStore = (
                     })
                 }).catch(e => console.log(e))
 
+            const updatedCards = cards?.splice(1)
             set({
-                cards: cards?.splice(1),
+                cards: updatedCards,
                 isCurrentCardAnswered: false,
             })
 
-            if (cards?.length === 0) {
+            if (updatedCards.length === 0) {
                 console.log('Finishing session automatically because no cards left to review')
                 completeSession()
             }
         },
 
         revealCard: () => {
-            const { isCurrentCardAnswered } = get()
             set({
-                isCurrentCardAnswered: !isCurrentCardAnswered,
+                isCurrentCardAnswered: true,
             })
         },
         loadDecks: async () => {
@@ -193,8 +214,6 @@ export const createStudyStore = (
                     return EnhancedStudyDeckArraySchema.parse(decks)
                 })
 
-                // We don't need to wait for it
-                // as it is supplementory information
                 const streak = await fetch('/api/session/streak')
                     .then(res => {
                         if (!res.ok) {
@@ -226,51 +245,26 @@ export const createStudyStore = (
             }
         },
 
-        manageSession: async (desiredStatus: StudySessionActionsSchema) => {
-            const { session } = get()
+        completeSession: async () => {
+            const { loadDecks, session } = get()
             try {
-                const updatedSession: StudySessionModel = await fetch(
-                    `/api/session/${session?.sessionId}/manage`,
-                    {
-                        method: 'POST',
-                        body: JSON.stringify({ action: desiredStatus })
-                    }
+                set({
+                    session: null,
+                    selectedDeck: null
+                })
+                await fetch(
+                    `/api/session/${session?.sessionId}/finish`,
+                    { method: 'POST' }
                 ).then(res => {
                     if (!res.ok) {
-                        throw new Error(`Failed to manage the session with id=${session?.sessionId} and action to execute=${desiredStatus}`)
+                        throw new Error(`Failed to finish the session with id=${session?.sessionId}`)
                     }
                     return res.json()
-                }).then(s => StudySessionSchema.parse(s))
-                return updatedSession
+                })
+                loadDecks()
             } catch (e) {
                 console.log(e)
             }
-        },
-        pauseSession: async () => {
-            const { loadDecks, manageSession } = get()
-            const session = await manageSession(StudySessionActionsSchema.enum.PAUSE)
-            set({
-                session: session
-            })
-            loadDecks()
-            console.log('Successfully paused the session')
-        },
-        completeSession: async () => {
-            const { loadDecks, manageSession } = get()
-            const session = await manageSession(StudySessionActionsSchema.enum.FINISH)
-            set({
-                session: session
-            })
-            loadDecks()
-            console.log('Successfully finished the session')
-        },
-        resumeSession: async () => {
-            const { manageSession } = get()
-            const session = await manageSession(StudySessionActionsSchema.enum.FINISH)
-            set({
-                session: session
-            })
-            console.log('Successfully resumed the session')
         },
 
     }))

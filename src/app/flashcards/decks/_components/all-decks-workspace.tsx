@@ -156,7 +156,11 @@ export default function AllDecksWorkspace() {
                 setDeckDescription={setNewDeckDescription}
                 isOpen={isDialogOpen}
                 isMutating={isDeckCreationOngoing}
-                setClose={() => setDialogOpen(false)}
+                setClose={() => {
+                    setNewDeckTitle('')
+                    setNewDeckDescription('')
+                    setDialogOpen(false)
+                }}
                 onComplete={() => (
                     createNewDeck({
                         title: newDeckTitle,
