@@ -249,6 +249,10 @@ export const createStudyStore = (
         completeSession: async () => {
             const { loadDecks, session } = get()
             try {
+                set({
+                    session: null,
+                    selectedDeck: null
+                })
                 await fetch(
                     `/api/session/${session?.sessionId}/finish`,
                     { method: 'POST' }
@@ -257,10 +261,6 @@ export const createStudyStore = (
                         throw new Error(`Failed to finish the session with id=${session?.sessionId}`)
                     }
                     return res.json()
-                })
-                set({
-                    session: null,
-                    selectedDeck: null
                 })
                 loadDecks()
             } catch (e) {
