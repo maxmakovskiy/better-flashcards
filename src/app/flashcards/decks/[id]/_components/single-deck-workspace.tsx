@@ -34,8 +34,6 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
     const { deck, isDeckLoading, isDeckError, isDeckValidating } = useDeck(deckId)
     const { cards, isCardsLoading, isCardsError } = useCards(deckId)
     const { createNewCard, isCardCreationOngoing } = useCreateCard(deckId)
-    const [newCardFrontText, setNewCardFrontText] = useState<string>('')
-    const [newCardBackText, setNewCardBackText] = useState<string>('')
 
     const stats = useMemo(() => {
         const now = new Date()
@@ -168,25 +166,17 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
             }
 
             <CardDialog
-                dialogTitle='Modify card'
-                frontText={newCardFrontText}
-                backText={newCardBackText}
-                setFrontText={setNewCardFrontText}
-                setBackText={setNewCardBackText}
+                dialogTitle='Add New Card'
                 isOpen={isNewCardDialogOpen}
                 isMutating={isCardCreationOngoing}
                 setClose={() => {
-                    setNewCardFrontText('')
-                    setNewCardBackText('')
                     setNewCardDialogOpen(false)
                 }}
-                onComplete={() => (
+                onComplete={(front, back) => (
                     createNewCard({
-                        frontText: newCardFrontText,
-                        backText: newCardBackText,
+                        frontText: front,
+                        backText: back,
                         onDialogClose: () => {
-                            setNewCardFrontText('')
-                            setNewCardBackText('')
                             setNewCardDialogOpen(false)
                         }
                     })

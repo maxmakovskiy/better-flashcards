@@ -7,69 +7,117 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
+import Typography from '@mui/material/Typography'
 import DialogTitle from '@mui/material/DialogTitle'
 import Stack from '@mui/material/Stack'
+import Divider from '@mui/material/Divider'
+import Paper from '@mui/material/Paper'
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import { Markdown } from '@tiptap/markdown'
+
 
 export interface CardDialogProps {
     dialogTitle: string;
     dialogDescription?: string;
-    frontText: string;
-    backText: string;
-    setFrontText: (value: string) => void;
-    setBackText: (value: string) => void;
+    frontText?: string;
+    backText?: string;
     isOpen: boolean;
     isMutating?: boolean;
     setClose: () => void;
-    onComplete: () => void;
+    onComplete: (front: string, back: string) => void;
 }
 
 export default function CardDialog(props: CardDialogProps) {
-    const [isFrontEmpty, setFrontEmptyError] = useState<boolean>(false)
-    const [isBackEmpty, setBackEmptyError] = useState<boolean>(false)
+    const editorFrontSide = useEditor({
+        extensions: [StarterKit, Markdown],
+        content: props.frontText ?? '',
+        // Don't render immediately on the server to avoid SSR issues
+        immediatelyRender: false,
+        autofocus: true,
+        contentType: 'markdown'
+    })
+    const editorBackSide = useEditor({
+        extensions: [StarterKit, Markdown],
+        content: props.backText ?? '',
+        // Don't render immediately on the server to avoid SSR issues
+        immediatelyRender: false,
+        contentType: 'markdown'
+    })
 
     const resetErrorsOnClose = () => {
-        setFrontEmptyError(false)
-        setBackEmptyError(false)
         props.setClose()
     }
 
     return (
-        <Dialog open={props.isOpen} onClose={resetErrorsOnClose} fullWidth>
+        <Dialog
+            open={props.isOpen}
+            onClose={resetErrorsOnClose} fullWidth>
             <DialogTitle>
                 {props.dialogTitle}
             </DialogTitle>
-            <DialogContent>
+            <DialogContent
+                sx={{ bgcolor:'secondary.light' }}
+            >
                 <DialogContentText>
                     {props.dialogDescription}
                 </DialogContentText>
-                <Stack spacing={2}>
-                    <TextField
-                        error={isFrontEmpty}
-                        helperText={isFrontEmpty ? 'Front side should contain text': ''}
-                        autoFocus
-                        required
-                        margin='dense'
-                        label='Front side of a card'
-                        multiline
-                        fullWidth
-                        rows={4}
-                        variant='filled'
-                        value={props.frontText}
-                        onChange={e => props.setFrontText(e.target.value)}
-                    />
-                    <TextField
-                        error={isBackEmpty}
-                        helperText={isBackEmpty ? 'Back side should contain text' : ''}
-                        required
-                        margin='dense'
-                        label='Back side of a card'
-                        multiline
-                        fullWidth
-                        rows={4}
-                        variant='filled'
-                        value={props.backText}
-                        onChange={e => props.setBackText(e.target.value)}
-                    />
+                <Stack
+                    sx={{ mt:'1em' }}
+                    spacing={2}
+                >
+                    <Typography gutterBottom variant="subtitle2">Front side of a card</Typography>
+                    <Paper
+                        sx={{
+                            p:'0.5em',
+                            height:'10em',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            overflow:'scroll',
+                            '& .editor-content': {
+                                flex: 1,
+                                display: 'flex',
+                            },
+
+                            '& .ProseMirror': {
+                                flex: 1,
+                                outline: 'none',
+                            },
+                        }}
+                        variant="outlined"
+                    >
+                        <EditorContent
+                            className="editor-content"
+                            editor={editorFrontSide} />
+                    </Paper>
+
+                    <Divider />
+
+                    <Typography gutterBottom variant='subtitle2'>Back side of a card</Typography>
+                    <Paper
+                        sx={{
+                            p:'0.5em',
+                            height:'10em',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            overflow:'scroll',
+                            '& .editor-content': {
+                                flex: 1,
+                                display: 'flex',
+                            },
+
+                            '& .ProseMirror': {
+                                flex: 1,
+                                outline: 'none',
+                            },
+                        }}
+                        variant="outlined"
+                    >
+                        <EditorContent
+                            className="editor-content"
+                            editor={editorBackSide} />
+                    </Paper>
+
                 </Stack>
             </DialogContent>
             <DialogActions>
@@ -80,14 +128,17 @@ export default function CardDialog(props: CardDialogProps) {
                     loading={props.isMutating}
                     loadingPosition='start'
                     onClick={() => {
-                        const emptyFront = props.frontText.length === 0
-                        const emptyBack = props.backText.length === 0
-                        setFrontEmptyError(emptyFront)
-                        setBackEmptyError(emptyBack)
-                        if (emptyFront || emptyBack) {
+                        // const emptyFront = props.frontText.length === 0
+                        // const emptyBack = props.backText.length === 0
+                        // setFrontEmptyError(emptyFront)
+                        // setBackEmptyError(emptyBack)
+                        // if (emptyFront || emptyBack) {
+                        //     return
+                        // }
+                        if (!(editorFrontSide && editorBackSide)) {
                             return
                         }
-                        props.onComplete()
+                        props.onComplete(editorFrontSide.getMarkdown(), editorBackSide.getMarkdown())
                     }}
                 >
                     Done

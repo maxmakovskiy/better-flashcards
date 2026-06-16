@@ -26,15 +26,13 @@ interface CardModificationDialogProps {
 }
 
 export default function CardModificationDialog({ card, isDialogOpen, setDialogClose }: CardModificationDialogProps) {
-    const [cardFrontText, setCardFrontText] = useState(card.frontText)
-    const [cardBackText, setCardBackText] = useState(card.backText)
     const { mutate } = useSWRConfig()
 
-    const modify = async () => {
+    const modify = async (front: string, back: string) => {
         setDialogClose()
         await mutate(
             `/api/cards/${card.deckId}`,
-            modifyCard(card.deckId, card.flashcardNum, cardFrontText, cardBackText),
+            modifyCard(card.deckId, card.flashcardNum, front, back),
             {
                 populateCache: (result: FlashcardModel, currentData: FlashcardModel[] | undefined) => {
                     if (!Array.isArray(currentData)) {
@@ -46,11 +44,11 @@ export default function CardModificationDialog({ card, isDialogOpen, setDialogCl
                 },
                 optimisticData: currentData => {
                     if (!Array.isArray(currentData)) {
-                        return [{...card, frontText: cardFrontText, backText: cardBackText}]
+                        return [{...card, frontText: front, backText: back}]
                     }
                     return currentData.map((c: FlashcardModel) => {
                         return c.flashcardNum === card.flashcardNum
-                            ? {...card, frontText: cardFrontText, backText: cardBackText}
+                            ? {...card, frontText: front, backText: back}
                             : c
                     })
                 },
@@ -63,10 +61,8 @@ export default function CardModificationDialog({ card, isDialogOpen, setDialogCl
     return (
         <CardDialog
             dialogTitle='Modify card'
-            frontText={cardFrontText}
-            backText={cardBackText}
-            setFrontText={setCardFrontText}
-            setBackText={setCardBackText}
+            frontText={card.frontText}
+            backText={card.backText}
             isOpen={isDialogOpen}
             setClose={setDialogClose}
             onComplete={modify}
