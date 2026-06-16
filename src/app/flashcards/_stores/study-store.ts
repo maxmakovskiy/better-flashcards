@@ -30,6 +30,7 @@ export type StudySession = {
     isSessionCreating: boolean
     isSessionError: boolean
     canStopSession: boolean
+    isSessionFinishing: boolean
 }
 
 export type StudyStoreAction = {
@@ -58,7 +59,8 @@ export const defaultInitState: StudySession = {
     daysStreak: null,
     isSessionCreating: false,
     isSessionError: false,
-    canStopSession: true
+    canStopSession: true,
+    isSessionFinishing: false
 }
 
 export const createStudyStore = (
@@ -183,6 +185,12 @@ export const createStudyStore = (
                 canStopSession: false
             })
 
+            if (updatedCards.length === 0) {
+                set({
+                    isSessionFinishing: true
+                })
+            }
+
             fetch(`/api/session/${session?.sessionId}/add-review`,
                 { method: 'POST', body: JSON.stringify(body) })
                 .then(res => {
@@ -194,7 +202,7 @@ export const createStudyStore = (
                         reviewedCount: reviewedCount + 1,
                         canStopSession: true
                     })
-                    if (updatedCards.length === 0) { console.log('Finishing session automatically because no cards left to review')
+                    if (updatedCards.length === 0) {
                         completeSession()
                     }
                 }).catch(e => console.log(e))
@@ -252,10 +260,6 @@ export const createStudyStore = (
         completeSession: async () => {
             const { loadDecks, session } = get()
             try {
-                set({
-                    session: null,
-                    selectedDeck: null
-                })
                 await fetch(
                     `/api/session/${session?.sessionId}/finish`,
                     { method: 'POST' }
@@ -265,7 +269,12 @@ export const createStudyStore = (
                     }
                     return res.json()
                 })
-                loadDecks()
+                await loadDecks()
+                set({
+                    session: null,
+                    selectedDeck: null,
+                    isSessionFinishing: false
+                })
             } catch (e) {
                 console.log(e)
             }

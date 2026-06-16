@@ -11,13 +11,16 @@ import { StudyStore } from '../_stores/study-store'
 import { Rating, Grade } from 'ts-fsrs'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
-
+import CircularProgress from '@mui/material/CircularProgress'
+import { TransitionGroup } from 'react-transition-group'
+import Fade from '@mui/material/Fade'
 
 export default function Game() {
     const isCurrentCardAnswered = useStudyStore((s: StudyStore) => s.isCurrentCardAnswered)
     const cards = useStudyStore((s: StudyStore) => s.cards)
     const answerCard = useStudyStore((s: StudyStore) => s.answerCard)
     const revealCard = useStudyStore((s: StudyStore) => s.revealCard)
+    const isSessionFinishing = useStudyStore((s: StudyStore) => s.isSessionFinishing)
     const [isAlertOpen, setAlertOpen] = useState(false)
 
     const answer = (event: MouseEvent<HTMLElement>, grade: Grade) => {
@@ -37,6 +40,18 @@ export default function Game() {
             return
         }
         setAlertOpen(false)
+    }
+
+    if (isSessionFinishing) {
+        return (
+            <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                <TransitionGroup>
+                    <Fade>
+                        <CircularProgress aria-label="Loading…" />
+                    </Fade>
+                </TransitionGroup>
+            </Stack>
+        )
     }
 
     return (
