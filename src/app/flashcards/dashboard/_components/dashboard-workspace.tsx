@@ -198,6 +198,7 @@ export default function DashboardWorkspace() {
                     </Grid>
                     <Grid size={2}>
                         <DeckStatGadget
+                            withTooltip
                             icon={<MoreTimeIcon fontSize='large' />}
                             title={
                                 (
@@ -299,7 +300,7 @@ export default function DashboardWorkspace() {
                             <Paper sx={{ p:'1em', height:'100%' }}>
                                 <Stack>
                                     <Typography variant='h6'>
-                                        Most studied decks
+                                        Most studied decks (Top 3)
                                     </Typography>
                                     <Typography variant='overline' gutterBottom>
                                         By amount of reviews:

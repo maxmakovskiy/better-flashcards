@@ -1,14 +1,15 @@
 import { ReactNode } from 'react'
 import Paper from '@mui/material/Paper'
+import Markdown from 'react-markdown'
 
 export interface QuestionGameCardProps {
     height: string;
     width: string;
     isBlurred?: boolean;
-    children: ReactNode;
+    content: string;
 }
 
-export default function QuestionGameCard({ height, width, isBlurred=false, children }: QuestionGameCardProps) {
+export default function QuestionGameCard({ height, width, isBlurred=false, content }: QuestionGameCardProps) {
     return (
         <Paper
             elevation={3}
@@ -23,7 +24,9 @@ export default function QuestionGameCard({ height, width, isBlurred=false, child
                 overflow: 'scroll'
             }]}
         >
-            {children}
+            <Markdown>
+                {content as string}
+            </Markdown>
         </Paper>
     )
 }

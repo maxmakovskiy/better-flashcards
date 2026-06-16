@@ -29,6 +29,8 @@ export type StudySession = {
     // loading state
     isSessionCreating: boolean
     isSessionError: boolean
+    canStopSession: boolean
+    isSessionFinishing: boolean
 }
 
 export type StudyStoreAction = {
@@ -56,7 +58,9 @@ export const defaultInitState: StudySession = {
     numOfCardsLearned: 0,
     daysStreak: null,
     isSessionCreating: false,
-    isSessionError: false
+    isSessionError: false,
+    canStopSession: true,
+    isSessionFinishing: false
 }
 
 export const createStudyStore = (
@@ -127,7 +131,7 @@ export const createStudyStore = (
                 isCurrentCardAnswered: false
             })
         },
-        answerCard: (grade: Grade) => {
+        answerCard: async (grade: Grade) => {
             const {
                 session,
                 selectedDeck,
@@ -135,7 +139,8 @@ export const createStudyStore = (
                 completeSession,
                 timerTimestamp,
                 reviewedCount,
-                scheduler
+                scheduler,
+                isSessionFinishing
             } = get()
 
             if (!cards || cards.length === 0) {
@@ -173,6 +178,19 @@ export const createStudyStore = (
                 difficultyRating: DifficultyRatingFromFsrsSchema.parse(updatedFsrsCard.log.rating)
             }
 
+            const updatedCards = cards?.splice(1)
+            set({
+                cards: updatedCards,
+                isCurrentCardAnswered: false,
+                canStopSession: false
+            })
+
+            if (updatedCards.length === 0) {
+                set({
+                    isSessionFinishing: true
+                })
+            }
+
             fetch(`/api/session/${session?.sessionId}/add-review`,
                 { method: 'POST', body: JSON.stringify(body) })
                 .then(res => {
@@ -181,20 +199,17 @@ export const createStudyStore = (
                     }
                 }).then(() => {
                     set({
-                        reviewedCount: reviewedCount + 1
+                        reviewedCount: reviewedCount + 1,
                     })
+                    if (updatedCards.length === 0) {
+                        completeSession()
+                    } else {
+                        set({
+                            canStopSession: true
+                        })
+                    }
                 }).catch(e => console.log(e))
 
-            const updatedCards = cards?.splice(1)
-            set({
-                cards: updatedCards,
-                isCurrentCardAnswered: false,
-            })
-
-            if (updatedCards.length === 0) {
-                console.log('Finishing session automatically because no cards left to review')
-                completeSession()
-            }
         },
 
         revealCard: () => {
@@ -248,10 +263,6 @@ export const createStudyStore = (
         completeSession: async () => {
             const { loadDecks, session } = get()
             try {
-                set({
-                    session: null,
-                    selectedDeck: null
-                })
                 await fetch(
                     `/api/session/${session?.sessionId}/finish`,
                     { method: 'POST' }
@@ -262,6 +273,12 @@ export const createStudyStore = (
                     return res.json()
                 })
                 loadDecks()
+                set({
+                    session: null,
+                    selectedDeck: null,
+                    isSessionFinishing: false,
+                    canStopSession: true
+                })
             } catch (e) {
                 console.log(e)
             }
