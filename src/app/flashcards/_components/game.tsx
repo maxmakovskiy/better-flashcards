@@ -44,11 +44,8 @@ export default function Game() {
             <QuestionGameCard
                 height='13em'
                 width='20em'
-            >
-                <Typography variant='body1'>
-                    {cards?.at(0)?.frontText}
-                </Typography>
-            </QuestionGameCard>
+                content={cards?.at(0)?.frontText ?? ''}
+            />
 
             <Button variant='contained' onClick={revealCard}>Reveal</Button>
 
@@ -56,12 +53,8 @@ export default function Game() {
                 height='13em'
                 width='20em'
                 isBlurred={!isCurrentCardAnswered}
-            >
-                <Typography variant='body1'>
-                    {cards?.at(0)?.backText}
-                </Typography>
-            </QuestionGameCard>
-
+                content={cards?.at(0)?.backText ?? ''}
+            />
 
             <Grid container spacing={2} columns={8}>
                 <Grid size={2} onClick={e => answer(e, Rating.Again)}>

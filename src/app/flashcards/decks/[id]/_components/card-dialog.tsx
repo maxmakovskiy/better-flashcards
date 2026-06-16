@@ -58,8 +58,8 @@ export default function CardDialog(props: CardDialogProps) {
     const [isBackEmpty, setBackEmpty] = useState(false)
 
     const resetErrorsOnClose = () => {
-        editorFrontSide?.commands.setContent('')
-        editorBackSide?.commands.setContent('')
+        editorFrontSide?.commands.setContent('', { contentType: 'markdown' })
+        editorBackSide?.commands.setContent('', { contentType: 'markdown' })
         setFrontEmpty(false)
         setBackEmpty(false)
         props.setClose()

@@ -37,6 +37,7 @@ export default function StudyWorkspace() {
     const numOfCardsLearned = useStudyStore((s: StudyStore) => s.numOfCardsLearned)
     const daysStreak = useStudyStore((s: StudyStore) => s.daysStreak)
     const isSessionCreating = useStudyStore((s: StudyStore) => s.isSessionCreating)
+    const canStopSession = useStudyStore((s: StudyStore) => s.canStopSession)
 
     useEffect(() => {
         loadDecks()
@@ -162,7 +163,11 @@ export default function StudyWorkspace() {
                                             <PlayArrowIcon />
                                         </Button>
                                     :
-                                        <Button onClick={completeSession} variant='contained'>
+                                        <Button
+                                            disabled={!canStopSession}
+                                            onClick={completeSession}
+                                            variant='contained'
+                                        >
                                             <StopIcon />
                                         </Button>
                                 }
