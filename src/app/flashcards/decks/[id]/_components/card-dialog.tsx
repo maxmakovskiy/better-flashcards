@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -15,7 +14,8 @@ import Paper from '@mui/material/Paper'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Markdown } from '@tiptap/markdown'
-
+import { TransitionGroup } from 'react-transition-group'
+import Fade from '@mui/material/Fade'
 
 export interface CardDialogProps {
     dialogTitle: string;
@@ -35,17 +35,33 @@ export default function CardDialog(props: CardDialogProps) {
         // Don't render immediately on the server to avoid SSR issues
         immediatelyRender: false,
         autofocus: true,
-        contentType: 'markdown'
+        contentType: 'markdown',
+        onUpdate: ({ editor }) => {
+            if (isFrontEmpty && editor.getText().trim().length > 0) {
+                setFrontEmpty(false)
+            }
+        },
     })
     const editorBackSide = useEditor({
         extensions: [StarterKit, Markdown],
         content: props.backText ?? '',
         // Don't render immediately on the server to avoid SSR issues
         immediatelyRender: false,
-        contentType: 'markdown'
+        contentType: 'markdown',
+        onUpdate: ({ editor }) => {
+            if (isBackEmpty && editor.getText().trim().length > 0) {
+                setBackEmpty(false)
+            }
+        },
     })
+    const [isFrontEmpty, setFrontEmpty] = useState(false)
+    const [isBackEmpty, setBackEmpty] = useState(false)
 
     const resetErrorsOnClose = () => {
+        editorFrontSide?.commands.setContent('')
+        editorBackSide?.commands.setContent('')
+        setFrontEmpty(false)
+        setBackEmpty(false)
         props.setClose()
     }
 
@@ -66,9 +82,15 @@ export default function CardDialog(props: CardDialogProps) {
                     sx={{ mt:'1em' }}
                     spacing={2}
                 >
-                    <Typography gutterBottom variant="subtitle2">Front side of a card</Typography>
+                    <Typography
+                        gutterBottom
+                        variant='subtitle2'
+                    >
+                        Front side of a card (required)
+                    </Typography>
                     <Paper
                         sx={{
+                            borderColor: isFrontEmpty ? 'error.main' : undefined,
                             p:'0.5em',
                             height:'10em',
                             display: 'flex',
@@ -91,11 +113,30 @@ export default function CardDialog(props: CardDialogProps) {
                             editor={editorFrontSide} />
                     </Paper>
 
+                    <TransitionGroup>
+                        {isFrontEmpty && (
+                            <Fade>
+                                <Typography
+                                    variant="caption"
+                                    color="error"
+                                >
+                                    Front side cannot be empty
+                                </Typography>
+                            </Fade>
+                        )}
+                    </TransitionGroup>
+
                     <Divider />
 
-                    <Typography gutterBottom variant='subtitle2'>Back side of a card</Typography>
+                    <Typography
+                        gutterBottom
+                        variant='subtitle2'
+                    >
+                        Back side of a card (required)
+                    </Typography>
                     <Paper
                         sx={{
+                            borderColor: isBackEmpty ? 'error.main' : undefined,
                             p:'0.5em',
                             height:'10em',
                             display: 'flex',
@@ -118,6 +159,19 @@ export default function CardDialog(props: CardDialogProps) {
                             editor={editorBackSide} />
                     </Paper>
 
+                    <TransitionGroup>
+                        {isBackEmpty && (
+                            <Fade>
+                                <Typography
+                                    variant="caption"
+                                    color="error"
+                                >
+                                    Back side cannot be empty
+                                </Typography>
+                            </Fade>
+                        )}
+                    </TransitionGroup>
+
                 </Stack>
             </DialogContent>
             <DialogActions>
@@ -128,17 +182,23 @@ export default function CardDialog(props: CardDialogProps) {
                     loading={props.isMutating}
                     loadingPosition='start'
                     onClick={() => {
-                        // const emptyFront = props.frontText.length === 0
-                        // const emptyBack = props.backText.length === 0
-                        // setFrontEmptyError(emptyFront)
-                        // setBackEmptyError(emptyBack)
-                        // if (emptyFront || emptyBack) {
-                        //     return
-                        // }
                         if (!(editorFrontSide && editorBackSide)) {
                             return
                         }
+                        const frontText = editorFrontSide.getMarkdown().trim()
+                        const backText = editorBackSide.getMarkdown().trim()
+
+                        const emptyFront = frontText.length === 0
+                        const emptyBack = backText.length === 0
+                        setFrontEmpty(emptyFront)
+                        setBackEmpty(emptyBack)
+
+                        if (emptyFront || emptyBack) {
+                            return
+                        }
+
                         props.onComplete(editorFrontSide.getMarkdown(), editorBackSide.getMarkdown())
+                        resetErrorsOnClose()
                     }}
                 >
                     Done

@@ -169,16 +169,12 @@ export default function SingleDeckWorkspace({ deckId }: { deckId: string }) {
                 dialogTitle='Add New Card'
                 isOpen={isNewCardDialogOpen}
                 isMutating={isCardCreationOngoing}
-                setClose={() => {
-                    setNewCardDialogOpen(false)
-                }}
+                setClose={() => setNewCardDialogOpen(false)}
                 onComplete={(front, back) => (
                     createNewCard({
                         frontText: front,
                         backText: back,
-                        onDialogClose: () => {
-                            setNewCardDialogOpen(false)
-                        }
+                        onDialogClose: () => setNewCardDialogOpen(false)
                     })
                 )}
             />
