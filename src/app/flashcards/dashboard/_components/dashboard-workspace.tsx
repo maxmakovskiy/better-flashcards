@@ -198,6 +198,7 @@ export default function DashboardWorkspace() {
                     </Grid>
                     <Grid size={2}>
                         <DeckStatGadget
+                            withTooltip
                             icon={<MoreTimeIcon fontSize='large' />}
                             title={
                                 (

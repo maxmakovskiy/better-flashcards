@@ -269,7 +269,7 @@ export const createStudyStore = (
                     }
                     return res.json()
                 })
-                await loadDecks()
+                loadDecks()
                 set({
                     session: null,
                     selectedDeck: null,
