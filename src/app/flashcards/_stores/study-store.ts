@@ -140,7 +140,7 @@ export const createStudyStore = (
                 timerTimestamp,
                 reviewedCount,
                 scheduler,
-                canStopSession
+                isSessionFinishing
             } = get()
 
             if (!cards || cards.length === 0) {
@@ -200,10 +200,13 @@ export const createStudyStore = (
                 }).then(() => {
                     set({
                         reviewedCount: reviewedCount + 1,
-                        canStopSession: true
                     })
                     if (updatedCards.length === 0) {
                         completeSession()
+                    } else {
+                        set({
+                            canStopSession: true
+                        })
                     }
                 }).catch(e => console.log(e))
 
@@ -273,7 +276,8 @@ export const createStudyStore = (
                 set({
                     session: null,
                     selectedDeck: null,
-                    isSessionFinishing: false
+                    isSessionFinishing: false,
+                    canStopSession: true
                 })
             } catch (e) {
                 console.log(e)
