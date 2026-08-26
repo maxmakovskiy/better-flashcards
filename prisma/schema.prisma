@@ -139,17 +139,10 @@ model Flashcard {
   @@id([flashcardNum, deckId])
 }
 
-enum StudySessionStatusEnum {
-  STARTED
-  PAUSED
-  FINISHED
-}
-
 model StudySession {
   sessionId String @id @default(cuid())
   startedAt DateTime @default(now())
   endedAt DateTime?
-  status StudySessionStatusEnum
   totalReviews Int @default(0)
   correctAnswers Int @default(0)
   avgResponseTimeMs Int?

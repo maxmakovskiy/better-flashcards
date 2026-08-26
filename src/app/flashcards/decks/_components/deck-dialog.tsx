@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -6,64 +6,78 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import Stack from '@mui/material/Stack'
 
 export interface DeckDialogProps {
-    titleInit?: string;
-    descriptionInit?: string | null;
     dialogTitle: string;
-    dialogDescription?: string;
+    dialogDescription: string;
+    deckTitle: string;
+    deckDescription?: string | null;
+    setDeckTitle: (value: string) => void;
+    setDeckDescription: (value: string) => void;
     isOpen: boolean;
+    isMutating?: boolean;
     setClose: () => void;
-    handleSubmit: (title: string, description: string) => void;
+    onComplete: () => void;
 }
 
-export default function DeckDialog({ titleInit, descriptionInit, dialogTitle, dialogDescription, isOpen, setClose, handleSubmit }: DeckDialogProps) {
-    const handleCreate = (event) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        const formJson = Object.fromEntries((formData as any).entries())
-        const title = formJson.title
-        const description = formJson.description
-        setClose()
-        handleSubmit(title, description)
+export default function DeckDialog(props: DeckDialogProps) {
+    const [isTitleEmpty, setTitleError] = useState<boolean>(false)
+
+    const resetErrorOnClose = () => {
+        setTitleError(false)
+        props.setClose()
     }
 
     return (
-        <Dialog open={isOpen} onClose={setClose}>
+        <Dialog fullWidth open={props.isOpen} onClose={resetErrorOnClose}>
             <DialogTitle>
-                {dialogTitle}
+                {props.dialogTitle}
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {dialogDescription}
+                    {props.dialogDescription}
                 </DialogContentText>
-                <form onSubmit={handleCreate} id='new-deck-form'>
+                <Stack>
                     <TextField
+                        error={isTitleEmpty}
+                        helperText={isTitleEmpty ? 'Title cannot be empty' : ''}
                         autoFocus
                         required
                         margin='dense'
-                        id='title'
-                        name='title'
                         label='Title of a deck'
                         fullWidth
                         variant='standard'
-                        defaultValue={titleInit || ''}
+                        value={props.deckTitle}
+                        onChange={e => props.setDeckTitle(e.target.value)}
                     />
                     <TextField
                         autoFocus
                         margin='dense'
-                        id='description'
-                        name='description'
                         label='Description of a deck'
                         fullWidth
+                        multiline
+                        rows={4}
                         variant='standard'
-                        defaultValue={descriptionInit || ''}
+                        value={props.deckDescription}
+                        onChange={e => props.setDeckDescription(e.target.value)}
                     />
-                </form>
+                </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={setClose}>Cancel</Button>
-                <Button type='submit' form='new-deck-form'>
+                <Button onClick={resetErrorOnClose}>Cancel</Button>
+                <Button
+                    loading={props.isMutating}
+                    loadingPosition='start'
+                    onClick={() => {
+                        const emptyTitle = props.deckTitle.length === 0
+                        setTitleError(emptyTitle)
+                        if (emptyTitle) {
+                            return
+                        }
+                        props.onComplete()
+                    }}
+                >
                     Done
                 </Button>
             </DialogActions>

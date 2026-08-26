@@ -1,15 +1,11 @@
 import { z } from 'zod'
-import { StudySessionStatusEnum } from '@/../prisma/generated/prisma/enums'
 import { ReviewHistorySchema } from './review-history-schema'
 import { DeckSchema } from './basic-deck-schema'
-
-export const StudySessionStatusSchema = z.enum(StudySessionStatusEnum)
 
 export const StudySessionSchema = z.object({
     sessionId: z.string(),
     startedAt: z.coerce.date(),
     endedAt: z.coerce.date().nullable(),
-    status: StudySessionStatusSchema,
     totalReviews: z.number(),
     correctAnswers: z.number(),
     avgResponseTimeMs: z.number().nullable(),

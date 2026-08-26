@@ -17,14 +17,13 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import CardDialog from './card-dialog'
 import { useCards } from '../_hooks/use-cards'
 import Skeleton from '@mui/material/Skeleton'
 import LinearProgress from '@mui/material/LinearProgress'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
-import { FlashcardSchema } from '@/app/flashcards/_schemas/types/flashcard-schema'
 import { formatDistanceToNow } from 'date-fns'
+import CardModificationDialog from '@/app/flashcards/decks/[id]/_components/card-modification-dialog'
 
 
 export default function CardsTable({ deckId }: { deckId: string }) {
@@ -33,14 +32,11 @@ export default function CardsTable({ deckId }: { deckId: string }) {
     const [isModifyCardDialogOpen, setModifyCardDialogOpen] = useState<boolean>(false)
     const [cardToMod, setCardToMod] = useState<FlashcardModel | null>(null)
 
-    // const now = useRef<Date>(new Date())
-
     const defineStatus = (card: FlashcardModel): string => {
         const now = new Date()
         if (!card.lastReviewAt) {
             return 'New'
         }
-        // if (card.nextReviewAt > now.current) {
         if (card.nextReviewAt > now) {
             return 'Learned'
         }
@@ -56,63 +52,44 @@ export default function CardsTable({ deckId }: { deckId: string }) {
         })
     }
 
-    const handleCardModification = (newFront: string, newBack: string) => {
-        const body = { frontText: newFront, backText: newBack }
-        fetch(`/api/cards/${deckId}/${cardToMod!.flashcardNum}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed update the flashcard with url=${`/api/cards/${deckId}/${cardToMod!.flashcardNum}`}`)
-            }
-            return res.json()
-        }).then(card => {
-            return FlashcardSchema.parse(card)
-        }).then((updatedCard: FlashcardModel) => {
-            return cards!.map((card: FlashcardModel) => (
-                card.flashcardNum === updatedCard.flashcardNum
-                    ? updatedCard
-                    : card
-            ))
-        }).then((cardsWithUpdated: FlashcardModel[]) => {
-            cardsMutate(cardsWithUpdated, { revalidate: false })
-        }).catch(e => console.log(e))
-    }
+    const handleCardDeletion = async (flashcardNum: number) =>
+        cardsMutate(
+            async () => {
+                const optimistic = cards?.filter(c => c.flashcardNum !== flashcardNum)
 
-    const handleCardDeletion = (flashcardNum: number) => {
-        fetch(`/api/cards/${deckId}/${flashcardNum}`, {
-            method: 'DELETE'
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed deleting card with flashcardNum=${flashcardNum} in deck with id=${deckId}`)
+                await fetch(`/api/cards/${deckId}/${flashcardNum}`, {
+                    method: 'DELETE'
+                }).then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Failed deleting card with flashcardNum=${flashcardNum} in deck with id=${deckId}`)
+                    }
+                })
+
+                return optimistic;
+            },
+            {
+                optimisticData: cards?.filter(c => c.flashcardNum !== flashcardNum),
+                rollbackOnError: true,
             }
-            return res.json()
-        }).then(() => {
-            return cards!.filter((card: FlashcardModel) => card.flashcardNum !== flashcardNum)
-        }).then(filteredCards => {
-            return cardsMutate(filteredCards)
-        }).catch(e => console.error(e))
-    }
+        )
 
     return (
         <Stack spacing={2}>
             <Grid container>
                 <Grid size={6} spacing={3}>
-                    <TextField fullWidth
-                        // sx={{ width:'60%'}}
-                        // id={`${textFieldId}-input`}
-                               label='Search'
-                               slotProps={{
-                                   input: {
-                                       startAdornment: (
-                                           <InputAdornment position='start'>
-                                               <SearchIcon />
-                                           </InputAdornment>
-                                       ),
-                                   },
-                               }}
-                               variant='filled'
+                    <TextField
+                        fullWidth
+                        label='Search'
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                         <SearchIcon />
+                                     </InputAdornment>
+                                 ),
+                             },
+                        }}
+                        variant='filled'
                     />
                 </Grid>
                 <Grid size={3}>
@@ -213,7 +190,6 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                     <Typography variant='body1'>{c.backText}</Typography>
                                 </TableCell>
                                 <TableCell align='center'>
-                                    {/* TODO: replace with actual status */}
                                     <Typography variant='body2'>
                                         {defineStatus(c)}
                                     </Typography>
@@ -226,7 +202,6 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                                 <TableCell align='center'>
                                     <Button onClick={(e: MouseEvent<HTMLElement>) => {
                                         e.stopPropagation()
-                                        // e.preventDefault()
                                         handleCardDeletion(c.flashcardNum)
                                     }}>
                                         <DeleteForeverIcon />
@@ -237,14 +212,16 @@ export default function CardsTable({ deckId }: { deckId: string }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <CardDialog
-                dialogTitle='Modify card'
-                isOpen={isModifyCardDialogOpen}
-                setClose={() => setModifyCardDialogOpen(false)}
-                backTextInit={cardToMod?.backText}
-                frontTextInit={cardToMod?.frontText}
-                handleData={handleCardModification}
-            />
+            {cardToMod &&
+                <CardModificationDialog
+                    isDialogOpen={isModifyCardDialogOpen}
+                    setDialogClose={() => {
+                        setModifyCardDialogOpen(false)
+                        setCardToMod(null)
+                    }}
+                    card={cardToMod}
+                />
+            }
         </Stack>
     )
 }

@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 import { EnhancedStudyDeckModel } from '@/app/flashcards/types'
 import { FlashcardModel } from '@/../prisma/generated/prisma/models/Flashcard'
-import { StudySessionModel } from '@/../prisma/generated/prisma/models/StudySession'
 
 // endpoint to retrieve decks that need to be reviewed
 export const GET = auth(async function GET(req) {
@@ -21,6 +20,7 @@ export const GET = auth(async function GET(req) {
             },
             include: {
                 flashcards: true,
+                // studySessions: true,
                 studySessions: {
                     orderBy: {
                         startedAt: 'desc'
@@ -36,14 +36,21 @@ export const GET = auth(async function GET(req) {
 
         const decksToReview: EnhancedStudyDeckModel[] = allDecks.filter((deck: EnhancedStudyDeckModel) => {
             return deck.flashcards.find(isCardToReview) !== undefined
-        }).map((deck: EnhancedStudyDeckModel) => {
-            // keep only unfinished sessions
-            const sessions: StudySessionModel[] = deck.studySessions.filter(session => !session.endedAt)
+        }).map(deck => {
             return {
                 ...deck,
-                studySessions: ((sessions.length !== 0) && (!!sessions[0].endedAt)) ? [sessions[0]] : []
-            } as EnhancedStudyDeckModel
+                studySessions: (deck.studySessions.length > 0 && !deck.studySessions[0].endedAt) ? [deck.studySessions[0]] : []
+            }
         })
+
+        //     .map((deck: EnhancedStudyDeckModel) => {
+        //     // keep only unfinished sessions
+        //     const sessions: StudySessionModel[] = deck.studySessions.filter(session => !session.endedAt)
+        //     return {
+        //         ...deck,
+        //         studySessions: ((sessions.length !== 0) && (!!sessions[0].endedAt)) ? [sessions[0]] : []
+        //     } as EnhancedStudyDeckModel
+        // })
         return NextResponse.json(decksToReview)
     } catch (e) {
         console.error(e)

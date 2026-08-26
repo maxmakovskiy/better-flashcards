@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import AddIcon from '@mui/icons-material/Add'
+import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -14,39 +15,34 @@ import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ViewDayIcon from '@mui/icons-material/ViewDay'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { useAllDecks } from '@/app/flashcards/decks/_hooks/use-all-decks'
-import { EnhancedDeckModel } from '@/app/flashcards/types'
-import { EnhancedFlashcardsDeckSchema } from '@/app/flashcards/_schemas/types/deck-schema'
+import { useCreateDeck } from '@/app/flashcards/decks/_hooks/use-create-deck'
 import { TransitionGroup } from 'react-transition-group'
 import Fade from '@mui/material/Fade'
 import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import DeckStatGadget from '@/app/flashcards/decks/_components/deck-stat-gadget'
-import useSWRImmutable from 'swr/immutable'
-import { generalGetFetcher } from '@/app/flashcards/decks/_hooks/general-get-fetcher'
 import { useAnalytics } from '@/app/flashcards/dashboard/_hooks/use-analytics'
 import { startOfDay, endOfDay } from 'date-fns'
+import { useStreak } from '@/app/flashcards/decks/_hooks/use-streak'
 
 
 export default function AllDecksWorkspace() {
     const [isDialogOpen, setDialogOpen] = useState(false)
+    const [newDeckTitle, setNewDeckTitle] = useState('')
+    const [newDeckDescription, setNewDeckDescription] = useState('')
+
     const {
         allDecks,
         isAllDecksLoading,
         isAllDecksError,
         isAllDecksValidating,
-        mutateAllDecks
     } = useAllDecks()
-    const {
-        data: streak,
-        isLoading: isStreakLoading,
-        error: streakError
-    } = useSWRImmutable<number, Error>(
-        '/api/session/streak',
-        (url: string) => generalGetFetcher(url).then(({ streak }) => Number(streak))
-    )
+    const { streak, isStreakLoading, isStreakError } = useStreak()
     const { analyticsData, isAnalyticsLoading, isAnalyticsError } = useAnalytics(
         startOfDay(new Date()), endOfDay(new Date())
     )
+    const { createNewDeck, isDeckCreationOngoing } = useCreateDeck()
+
     const numDeckStudied = useMemo(( ) => {
         if (isAnalyticsLoading || isAnalyticsError || !analyticsData) {
             return 0
@@ -54,23 +50,6 @@ export default function AllDecksWorkspace() {
         const uniqueDeckIds = new Set(analyticsData.studySessions.map(s => s.deckId))
         return uniqueDeckIds.size
     }, [analyticsData, isAnalyticsError, isAnalyticsLoading])
-
-    const createNewDeck = (title: string, description: string) => {
-        fetch(`/api/decks`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, description }),
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed to create new deck with title=${title}`)
-            }
-            return res.json()
-        }).then(newDeck => {
-            return EnhancedFlashcardsDeckSchema.parse(newDeck)
-        }).then((newDeck: EnhancedDeckModel) => {
-            return mutateAllDecks([...allDecks || [], newDeck])
-        }).catch(e => console.log(e))
-    }
 
     return (
         <Stack sx={{ p:'3em'}} spacing={3}>
@@ -88,6 +67,7 @@ export default function AllDecksWorkspace() {
                         </Button>
                 </Stack>
             </Stack>
+
             <Grid container spacing={3} sx={{ alignItems:'stretch' }}>
                 <Grid size={3}>
                     <DeckStatGadget
@@ -115,10 +95,13 @@ export default function AllDecksWorkspace() {
                 <Grid size={3}>
                     <DeckStatGadget
                         icon={<TrendingUpIcon fontSize='large' />}
-                        title={isStreakLoading || !!streakError ? <Skeleton animation='wave' /> : streak}
+                        title={isStreakLoading || isStreakError
+                            ? <Skeleton animation='wave' /> : streak}
                         description='Day Study Streak' />
                 </Grid>
             </Grid>
+
+            <Divider />
 
             <TransitionGroup>
                 {(!isAllDecksLoading && isAllDecksValidating) &&
@@ -165,11 +148,30 @@ export default function AllDecksWorkspace() {
             }
 
             <DeckDialog
-                dialogTitle={'New Deck'}
-                dialogDescription={'Please enter the following information'}
+                dialogTitle='New Deck'
+                dialogDescription='Please enter the following information'
+                deckTitle={newDeckTitle}
+                deckDescription={newDeckDescription}
+                setDeckTitle={setNewDeckTitle}
+                setDeckDescription={setNewDeckDescription}
                 isOpen={isDialogOpen}
-                setClose={() => setDialogOpen(false)}
-                handleSubmit={createNewDeck}
+                isMutating={isDeckCreationOngoing}
+                setClose={() => {
+                    setNewDeckTitle('')
+                    setNewDeckDescription('')
+                    setDialogOpen(false)
+                }}
+                onComplete={() => (
+                    createNewDeck({
+                        title: newDeckTitle,
+                        description: newDeckDescription,
+                        onDialogClose: () => {
+                            setNewDeckTitle('')
+                            setNewDeckDescription('')
+                            setDialogOpen(false)
+                        }
+                    })
+                )}
             />
         </Stack>
     )

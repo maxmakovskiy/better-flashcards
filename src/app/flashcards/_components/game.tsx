@@ -11,13 +11,16 @@ import { StudyStore } from '../_stores/study-store'
 import { Rating, Grade } from 'ts-fsrs'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
-
+import CircularProgress from '@mui/material/CircularProgress'
+import { TransitionGroup } from 'react-transition-group'
+import Fade from '@mui/material/Fade'
 
 export default function Game() {
     const isCurrentCardAnswered = useStudyStore((s: StudyStore) => s.isCurrentCardAnswered)
     const cards = useStudyStore((s: StudyStore) => s.cards)
     const answerCard = useStudyStore((s: StudyStore) => s.answerCard)
     const revealCard = useStudyStore((s: StudyStore) => s.revealCard)
+    const isSessionFinishing = useStudyStore((s: StudyStore) => s.isSessionFinishing)
     const [isAlertOpen, setAlertOpen] = useState(false)
 
     const answer = (event: MouseEvent<HTMLElement>, grade: Grade) => {
@@ -39,16 +42,25 @@ export default function Game() {
         setAlertOpen(false)
     }
 
+    if (isSessionFinishing) {
+        return (
+            <Stack sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                <TransitionGroup>
+                    <Fade>
+                        <CircularProgress aria-label="Loading…" />
+                    </Fade>
+                </TransitionGroup>
+            </Stack>
+        )
+    }
+
     return (
         <Stack sx={{ alignItems:'center', pt:'2em', px:'1em'}} spacing={3}>
             <QuestionGameCard
                 height='13em'
                 width='20em'
-            >
-                <Typography variant='body1'>
-                    {cards?.at(0)?.frontText}
-                </Typography>
-            </QuestionGameCard>
+                content={cards?.at(0)?.frontText ?? ''}
+            />
 
             <Button variant='contained' onClick={revealCard}>Reveal</Button>
 
@@ -56,12 +68,8 @@ export default function Game() {
                 height='13em'
                 width='20em'
                 isBlurred={!isCurrentCardAnswered}
-            >
-                <Typography variant='body1'>
-                    {cards?.at(0)?.backText}
-                </Typography>
-            </QuestionGameCard>
-
+                content={cards?.at(0)?.backText ?? ''}
+            />
 
             <Grid container spacing={2} columns={8}>
                 <Grid size={2} onClick={e => answer(e, Rating.Again)}>
