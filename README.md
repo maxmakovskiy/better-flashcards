@@ -21,6 +21,23 @@ This combination enables users to have the right information at the right time, 
 8.[Technologies](#8-technologies) <br/>
 9.[Acknowledgements](#9-acknowledgements) <br/>
 
+---
+
+## Some screenshots of the app
+
+### Home page
+![home page](./docs/ui-screenshots/better_flashcards_home.png)
+
+### Deck overview
+![deck overview](./docs/ui-screenshots/better_flashcards_deck_overview.png)
+
+### Card modification
+![card modification](./docs/ui-screenshots/better_flashcards_modify_card.png)
+
+### Analytics
+![analytics](./docs/ui-screenshots/better_flashcards_analytics.png)
+
+---
 
 ## 2 Features
 
