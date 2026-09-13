@@ -23,16 +23,16 @@ This combination enables users to have the right information at the right time, 
 
 ## Some screenshots of the app
 
-#### Home page
+### Home page
 ![home page](./docs/ui-screenshots/better_flashcards_home.png)
 
-#### Deck overview
+### Deck overview
 ![deck overview](./docs/ui-screenshots/better_flashcards_deck_overview.png)
 
-#### Card modification
+### Card modification
 ![card modification](./docs/ui-screenshots/better_flashcards_modify_card.png)
 
-#### Analytics
+### Analytics
 ![analytics](./docs/ui-screenshots/better_flashcards_analytics.png)
 
 ## 2 Features
