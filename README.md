@@ -21,6 +21,8 @@ This combination enables users to have the right information at the right time, 
 8.[Technologies](#8-technologies) <br/>
 9.[Acknowledgements](#9-acknowledgements) <br/>
 
+---
+
 ## Some screenshots of the app
 
 ### Home page
@@ -34,6 +36,8 @@ This combination enables users to have the right information at the right time, 
 
 ### Analytics
 ![analytics](./docs/ui-screenshots/better_flashcards_analytics.png)
+
+---
 
 ## 2 Features
 
